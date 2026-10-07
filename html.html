@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>An Gờ | Free Fire Creator</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+        body { background: #080808; color: white; overflow-x: hidden; }
+        
+        /* ================= HEADER ================= */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; padding: 18px 8%;
+            background: rgba(8, 8, 8, 0.85); backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 60, 0, 0.2);
+            display: flex; justify-content: space-between; align-items: center; z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        .logo { 
+            font-size: 26px; font-weight: 900; color: #ff3c00; 
+            letter-spacing: 2px; text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(255, 60, 0, 0.5);
+        }
+        nav a { 
+            color: white; text-decoration: none; margin-left: 25px; font-weight: 600;
+            transition: 0.3s; position: relative; padding: 5px 0;
+        }
+        nav a::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px;
+            background: #ff3c00; transition: 0.3s; box-shadow: 0 0 8px #ff3c00;
+        }
+        nav a:hover { color: #ff3c00; }
+        nav a:hover::after { width: 100%; }
+
+        /* ================= HERO ================= */
+        .hero {
+            min-height: 100vh; display: flex; justify-content: center; align-items: center;
+            text-align: center; padding: 100px 20px; position: relative;
+            background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(8, 8, 8, 1)), 
+                        url("https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80") center/cover;
+        }
+        .hero-content h1 { 
+            font-size: 80px; font-weight: 900; color: #ff3c00; 
+            text-shadow: 0 0 20px rgba(255, 60, 0, 0.8), 0 0 40px rgba(255, 60, 0, 0.4);
+            animation: float 3s ease-in-out infinite alternate;
+        }
+        .hero-content p { 
+            margin: 20px auto 35px; font-size: 22px; color: #ddd; max-width: 600px;
+            border-right: 3px solid #ff3c00; white-space: nowrap; overflow: hidden;
+            animation: typing 3.5s steps(40, end), blink 0.75s step-end infinite;
+        }
+        .btn { 
+            display: inline-block; padding: 16px 36px; background: #ff3c00; color: white; 
+            text-decoration: none; border-radius: 30px; font-weight: bold; font-size: 18px;
+            box-shadow: 0 0 20px rgba(255, 60, 0, 0.5); transition: all 0.4s ease;
+            position: relative; overflow: hidden; cursor: pointer;
+        }
+        .btn:hover { 
+            background: #fff; color: #ff3c00; transform: translateY(-5px) scale(1.05); 
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.4);
+        }
+
+        /* ================= SECTIONS ================= */
+        section { padding: 100px 8%; opacity: 0; transform: translateY(40px); transition: all 0.8s ease-out; }
+        section.visible { opacity: 1; transform: translateY(0); }
+
+        .title { text-align: center; margin-bottom: 60px; }
+        .title h2 { font-size: 42px; color: #ff3c00; text-shadow: 0 0 10px rgba(255, 60, 0, 0.3); }
+        .title p { color: #888; margin-top: 8px; font-size: 16px; }
+
+        /* ================= ABOUT ================= */
+        .about { display: flex; align-items: center; gap: 60px; flex-wrap: wrap; }
+        .avatar-container { position: relative; display: inline-block; }
+        .avatar {
+            width: 280px; height: 280px; border-radius: 50%; object-fit: cover;
+            border: 4px solid #ff3c00; position: relative; z-index: 2;
+            box-shadow: 0 0 30px rgba(255, 60, 0, 0.6); transition: transform 0.5s ease;
+        }
+        .avatar-container::before {
+            content: ''; position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px;
+            border-radius: 50%; border: 2px dashed #ff3c00;
+            animation: rotate 12s linear infinite; z-index: 1;
+        }
+        .avatar-container:hover .avatar { transform: scale(1.05) rotate(2deg); }
+
+        .about-text { flex: 1; min-width: 280px; }
+        .about-text h3 { font-size: 34px; margin-bottom: 20px; color: #fff; }
+        .about-text p { color: #bbb; line-height: 1.8; font-size: 17px; }
+
+        /* ================= STATS ================= */
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 25px; }
+        .stat { 
+            background: #121212; padding: 35px 20px; text-align: center; border-radius: 16px; 
+            border: 1px solid #222; transition: all 0.4s ease; cursor: pointer;
+        }
+        .stat:hover { 
+            transform: translateY(-10px); border-color: #ff3c00; 
+            box-shadow: 0 10px 30px rgba(255, 60, 0, 0.25); background: #181818;
+        }
+        .stat h3 { font-size: 40px; color: #ff3c00; font-weight: 800; }
+        .stat p { color: #aaa; margin-top: 8px; }
+
+        /* ================= VIDEOS ================= */
+        .videos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        .video { 
+            background: #121212; border-radius: 16px; overflow: hidden; 
+            border: 1px solid #222; transition: all 0.4s ease; position: relative;
+        }
+        .video-thumb { overflow: hidden; position: relative; }
+        .video img { width: 100%; height: 200px; object-fit: cover; transition: transform 0.5s ease; }
+        .video:hover img { transform: scale(1.1); }
+        .video:hover { 
+            transform: translateY(-8px); border-color: #ff3c00; 
+            box-shadow: 0 15px 35px rgba(255, 60, 0, 0.2); 
+        }
+        .video h3 { padding: 20px 20px 10px; font-size: 20px; }
+        .video a { display: inline-block; padding: 0 20px 20px; color: #ff3c00; text-decoration: none; font-weight: bold; transition: 0.3s; }
+        .video a:hover { color: #fff; padding-left: 25px; }
+
+        /* ================= SOCIAL ================= */
+        .social { text-align: center; }
+        .social a { 
+            display: inline-block; margin: 12px; padding: 15px 30px; 
+            border: 2px solid #ff3c00; border-radius: 40px; color: white; 
+            text-decoration: none; font-weight: bold; transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 60, 0, 0.2);
+        }
+        .social a:hover { 
+            background: #ff3c00; transform: translateY(-5px) scale(1.05); 
+            box-shadow: 0 10px 25px rgba(255, 60, 0, 0.5);
+        }
+
+        /* ================= KEYFRAMES ANIMATIONS ================= */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-12px); }
+        }
+        @keyframes rotate {
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+
+        footer { padding: 30px; text-align: center; background: #040404; color: #666; border-top: 1px solid #111; }
+
+        @media (max-width: 700px) {
+            .hero-content h1 { font-size: 50px; }
+            .hero-content p { font-size: 16px; white-space: normal; animation: none; border: none; }
+            .avatar { width: 220px; height: 220px; }
+            .about { justify-content: center; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">AN GỜ</div>
+        <nav>
+            <a href="#home">Trang chủ</a>
+            <a href="#about">Giới thiệu</a>
+            <a href="#videos">Video</a>
+            <a href="#social">Liên hệ</a>
+        </nav>
+    </header>
+
+    <section class="hero visible" id="home">
+        <div class="hero-content">
+            <h1>AN GỜ</h1>
+            <p>🔥 Nhà sáng tạo nội dung Free Fire 🔥</p>
+
+            <!-- NÚT BẤM MỞ FREE FIRE -->
+            <a 
+                href="freefire://" 
+                onclick="setTimeout(() => { window.location.href = 'https://ff.garena.vn/'; }, 1000);" 
+                class="btn"
+            >
+                Vào Free Fire ngay 🚀
+            </a>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="title">
+            <h2>Về tôi</h2>
+            <p>Nhà sáng tạo nội dung Free Fire</p>
+        </div>
+        <div class="about">
+            <div class="avatar-container">
+                <img 
+                    class="avatar" 
+                    src="https://i.ibb.co/mrJynHcy/814660954-1658883409207761-7664311303546839748-n.jpg" 
+                    alt="An Gờ"
+                >
+            </div>
+            <div class="about-text">
+                <h3>Xin chào! Tôi là An Gờ 👋</h3>
+                <p>Mình là An Gờ, một nhà sáng tạo nội dung Free Fire.</p>
+                <br>
+                <p>Mình chia sẻ những khoảnh khắc gaming, highlight, livestream và những video giải trí dành cho cộng đồng Free Fire.</p>
+                <br>
+                <p>🎮 Gaming • 🔥 Free Fire • 🎥 Content Creator • 📱 TikTok Creator</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="title">
+            <h2>Thành tích</h2>
+            <p>Một vài thông tin ấn tượng</p>
+        </div>
+        <div class="stats">
+            <div class="stat"><h3>100K+</h3><p>Followers</p></div>
+            <div class="stat"><h3>10M+</h3><p>Lượt xem</p></div>
+            <div class="stat"><h3>500+</h3><p>Video</p></div>
+            <div class="stat"><h3>5+</h3><p>Năm gắn bó Free Fire</p></div>
+        </div>
+    </section>
+
+    <section id="videos">
+        <div class="title">
+            <h2>Video nổi bật</h2>
+            <p>Những video hấp dẫn nhất</p>
+        </div>
+        <div class="videos">
+            <div class="video">
+                <div class="video-thumb">
+                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80" alt="Free Fire">
+                </div>
+                <h3>🔥 Highlight Free Fire</h3>
+                <a href="#">Xem video →</a>
+            </div>
+            <div class="video">
+                <div class="video-thumb">
+                    <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&q=80" alt="Gaming">
+                </div>
+                <h3>🎮 Rank cùng anh em</h3>
+                <a href="#">Xem video →</a>
+            </div>
+            <div class="video">
+                <div class="video-thumb">
+                    <img src="https://images.unsplash.com/photo-1560253023-3ec5d502959f?auto=format&fit=crop&w=600&q=80" alt="Gaming">
+                </div>
+                <h3>⚡ Xử lý đỉnh cao</h3>
+                <a href="#">Xem video →</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="social">
+        <div class="title">
+            <h2>Kết nối với tôi</h2>
+            <p>Theo dõi An Gờ trên các nền tảng</p>
+        </div>
+        <div class="social">
+            <a href="https://www.tiktok.com/@angffyt" target="_blank" rel="noopener noreferrer">🎵 TikTok @angffyt</a>
+            <a href="#">▶️ YouTube</a>
+            <a href="#">📘 Facebook</a>
+            <a href="#">🎮 Garena</a>
+        </div>
+    </section>
+
+    <footer>
+        © 2026 An Gờ | Free Fire Content Creator
+    </footer>
+
+    <script>
+        const sections = document.querySelectorAll('section');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.15 });
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
