@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>An Gờ | Free Fire Creator</title>
+    
+    <!-- Thư viện Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         html { scroll-behavior: smooth; scroll-padding-top: 80px; }
@@ -46,7 +50,9 @@
             display: flex; align-items: center; justify-content: center;
             font-weight: 900; color: #fff; font-size: 16px;
             border: 2px solid #ff3c00; box-shadow: 0 0 15px rgba(255, 60, 0, 0.5);
+            overflow: hidden;
         }
+        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .user-name { color: #fff; font-weight: 600; font-size: 15px; }
         .btn-logout {
             padding: 8px 16px; background: transparent; color: #ff3c00;
@@ -213,6 +219,20 @@
 
         .form-panel { display: none; }
         .form-panel.active { display: block; }
+
+        /* Google Login Button Styles */
+        .divider {
+            display: flex; align-items: center; text-align: center;
+            margin: 20px 0; color: #666; font-size: 13px; font-weight: 600;
+        }
+        .divider::before, .divider::after {
+            content: ''; flex: 1; border-bottom: 1px solid #2a2a2a;
+        }
+        .divider::before { margin-right: 10px; }
+        .divider::after { margin-left: 10px; }
+        .google-btn-container {
+            display: flex; justify-content: center; margin-top: 10px;
+        }
 
         /* Toast */
         .toast {
@@ -386,6 +406,26 @@
                     <div class="error-msg" id="loginError"></div>
                     <button type="submit">Đăng nhập ngay</button>
                 </form>
+
+                <div class="divider">HOẶC</div>
+
+                <!-- Nút Đăng nhập Google -->
+                <div class="google-btn-container">
+                    <!-- Đã thay Client ID của bạn vào đây -->
+                    <div id="g_id_onload"
+                         data-client_id="314304357165-3tf6oeaanb0p77dhb91l59m11594da9b.apps.googleusercontent.com"
+                         data-callback="handleGoogleLogin"
+                         data-auto_prompt="false">
+                    </div>
+                    <div class="g_id_signin"
+                         data-type="standard"
+                         data-size="large"
+                         data-theme="outline"
+                         data-text="sign_in_with"
+                         data-shape="rectangular"
+                         data-logo_alignment="left">
+                    </div>
+                </div>
             </div>
 
             <!-- FORM ĐĂNG KÝ -->
@@ -422,16 +462,13 @@
         const USERS_KEY = 'angff_users';
         const SESSION_KEY = 'angff_currentUser';
 
-        // Lấy danh sách user
         function getUsers() {
             try { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; }
             catch { return []; }
         }
-        // Lưu danh sách user
         function saveUsers(users) {
             localStorage.setItem(USERS_KEY, JSON.stringify(users));
         }
-        // Hash mật khẩu đơn giản (chỉ demo — không dùng cho production thật)
         function hashPass(pass) {
             let hash = 0;
             for (let i = 0; i < pass.length; i++) {
@@ -490,27 +527,22 @@
             const pass = document.getElementById('regPass').value;
             const pass2 = document.getElementById('regPass2').value;
 
-            // Kiểm tra ký tự username
             if (!/^[a-zA-Z0-9_]+$/.test(username)) {
                 return showError('regError', '❌ Tên đăng nhập chỉ gồm chữ, số và dấu _');
             }
-            // Kiểm tra mật khẩu khớp
             if (pass !== pass2) {
                 return showError('regError', '❌ Mật khẩu nhập lại không khớp!');
             }
 
             const users = getUsers();
 
-            // Kiểm tra trùng username
             if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
                 return showError('regError', '❌ Tên đăng nhập đã được sử dụng!');
             }
-            // Kiểm tra trùng email → mỗi người chỉ 1 tài khoản
             if (users.some(u => u.email.toLowerCase() === email)) {
                 return showError('regError', '❌ Email này đã có tài khoản rồi! Mỗi người chỉ được 1 tài khoản.');
             }
 
-            // Tạo user mới
             const newUser = {
                 username,
                 email,
@@ -520,13 +552,12 @@
             users.push(newUser);
             saveUsers(users);
 
-            // Tự động đăng nhập luôn
             setSession(newUser);
             closeAuth();
             showToast('🎉 Đăng ký thành công! Chào mừng ' + username, 'success');
         }
 
-        /* ============ ĐĂNG NHẬP ============ */
+        /* ============ ĐĂNG NHẬP THƯỜNG ============ */
         function handleLogin(event) {
             event.preventDefault();
             clearErrors();
@@ -551,11 +582,57 @@
             showToast('✅ Đăng nhập thành công! Chào ' + user.username, 'success');
         }
 
+        /* ============ ĐĂNG NHẬP GOOGLE ============ */
+        function decodeJWT(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                return JSON.parse(jsonPayload);
+            } catch (e) {
+                console.error("Lỗi giải mã JWT:", e);
+                return null;
+            }
+        }
+
+        function handleGoogleLogin(response) {
+            const userInfo = decodeJWT(response.credential);
+            if (!userInfo) {
+                showToast('❌ Lỗi xác thực Google!', 'error');
+                return;
+            }
+
+            const users = getUsers();
+            let user = users.find(u => u.email.toLowerCase() === userInfo.email.toLowerCase());
+
+            if (!user) {
+                user = {
+                    username: userInfo.name || userInfo.email.split('@')[0],
+                    email: userInfo.email,
+                    password: null,
+                    googleId: userInfo.sub,
+                    avatar: userInfo.picture,
+                    createdAt: new Date().toISOString()
+                };
+                users.push(user);
+                saveUsers(users);
+                showToast('🎉 Đã tạo tài khoản mới qua Google! Chào mừng ' + user.username, 'success');
+            } else {
+                showToast('✅ Đăng nhập Google thành công! Chào ' + user.username, 'success');
+            }
+
+            setSession(user);
+            closeAuth();
+        }
+
         /* ============ SESSION ============ */
         function setSession(user) {
             localStorage.setItem(SESSION_KEY, JSON.stringify({
                 username: user.username,
-                email: user.email
+                email: user.email,
+                avatar: user.avatar || null
             }));
             updateUI();
         }
@@ -570,16 +647,23 @@
             const session = localStorage.getItem(SESSION_KEY);
             const btnLogin = document.getElementById('btnLogin');
             const userBox = document.getElementById('userBox');
+            const userAvatar = document.getElementById('userAvatar');
 
             if (session) {
                 const user = JSON.parse(session);
                 btnLogin.style.display = 'none';
                 userBox.classList.add('active');
                 document.getElementById('userName').textContent = user.username;
-                document.getElementById('userAvatar').textContent = user.username.charAt(0).toUpperCase();
+                
+                if (user.avatar) {
+                    userAvatar.innerHTML = `<img src="${user.avatar}" alt="Avatar">`;
+                } else {
+                    userAvatar.textContent = user.username.charAt(0).toUpperCase();
+                }
             } else {
                 btnLogin.style.display = 'inline-block';
                 userBox.classList.remove('active');
+                userAvatar.innerHTML = 'A';
             }
         }
 
