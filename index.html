@@ -12,100 +12,111 @@
         html { scroll-behavior: smooth; scroll-padding-top: 80px; }
         body { background: #080808; color: white; overflow-x: hidden; }
 
+        /* ================= HEADER ================= */
         header {
-            position: fixed; top: 0; left: 0; width: 100%; padding: 18px 8%;
-            background: rgba(8, 8, 8, 0.85); backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 60, 0, 0.2);
+            position: fixed; top: 0; left: 0; width: 100%; padding: 12px 8%;
+            background: rgba(8, 8, 8, 0.9); backdrop-filter: blur(12px);
+            border-bottom: 2px solid #FFC400;
+            box-shadow: 0 2px 15px rgba(255, 196, 0, 0.25);
             display: flex; justify-content: space-between; align-items: center; z-index: 1000;
         }
-        .logo { font-size: 26px; font-weight: 900; color: #ff3c00;
-            letter-spacing: 2px; text-transform: uppercase;
-            text-shadow: 0 0 10px rgba(255, 60, 0, 0.5); }
+        .logo { display: flex; align-items: center; }
+        .logo a { display: flex; align-items: center; }
+        .logo img {
+            height: 50px; width: auto;
+            /* Loại bỏ nền trắng của ảnh PNG */
+            mix-blend-mode: screen;
+            filter: drop-shadow(0 0 6px rgba(255, 196, 0, 0.6));
+            transition: transform 0.3s ease;
+        }
+        .logo img:hover { transform: scale(1.08); }
+
         .nav-right { display: flex; align-items: center; }
         nav a { color: white; text-decoration: none; margin-left: 25px; font-weight: 600;
             transition: 0.3s; position: relative; padding: 5px 0; }
         nav a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px;
-            background: #ff3c00; transition: 0.3s; box-shadow: 0 0 8px #ff3c00; }
-        nav a:hover { color: #ff3c00; }
+            background: #FFC400; transition: 0.3s; box-shadow: 0 0 8px #FFC400; }
+        nav a:hover { color: #FFC400; }
         nav a:hover::after { width: 100%; }
 
         .btn-login {
             margin-left: 25px; padding: 10px 24px;
-            background: transparent; color: #ff3c00;
-            border: 2px solid #ff3c00; border-radius: 30px;
+            background: transparent; color: #FFC400;
+            border: 2px solid #FFC400; border-radius: 30px;
             font-weight: 700; font-size: 15px; cursor: pointer;
             transition: all 0.3s ease; letter-spacing: 0.5px;
         }
-        .btn-login:hover { background: #ff3c00; color: #fff;
-            box-shadow: 0 0 20px rgba(255, 60, 0, 0.6); transform: translateY(-2px); }
+        .btn-login:hover { background: #FFC400; color: #080808;
+            box-shadow: 0 0 20px rgba(255, 196, 0, 0.7); transform: translateY(-2px); }
 
         .user-box { display: none; align-items: center; gap: 12px; margin-left: 25px; }
         .user-box.active { display: flex; }
         .user-avatar {
             width: 40px; height: 40px; border-radius: 50%;
-            background: linear-gradient(135deg, #ff3c00, #ff8c00);
+            background: linear-gradient(135deg, #FFC400, #FF8C00);
             display: flex; align-items: center; justify-content: center;
-            font-weight: 900; color: #fff; font-size: 16px;
-            border: 2px solid #ff3c00; box-shadow: 0 0 15px rgba(255, 60, 0, 0.5);
+            font-weight: 900; color: #080808; font-size: 16px;
+            border: 2px solid #FFC400; box-shadow: 0 0 15px rgba(255, 196, 0, 0.5);
             overflow: hidden; cursor: pointer; transition: 0.3s;
         }
         .user-avatar:hover { transform: scale(1.1); }
         .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .user-name { color: #fff; font-weight: 600; font-size: 15px; }
         .btn-logout {
-            padding: 8px 16px; background: transparent; color: #ff3c00;
-            border: 1px solid #ff3c00; border-radius: 20px;
+            padding: 8px 16px; background: transparent; color: #FFC400;
+            border: 1px solid #FFC400; border-radius: 20px;
             font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.3s;
         }
-        .btn-logout:hover { background: #ff3c00; color: #fff; }
+        .btn-logout:hover { background: #FFC400; color: #080808; }
 
         .btn-msg {
-            padding: 8px 16px; background: #ff3c00; color: #fff;
+            padding: 8px 16px; background: #FFC400; color: #080808;
             border: none; border-radius: 20px; font-size: 13px;
-            font-weight: 600; cursor: pointer; transition: 0.3s; margin-left: 5px;
+            font-weight: 700; cursor: pointer; transition: 0.3s; margin-left: 5px;
         }
-        .btn-msg:hover { background: #fff; color: #ff3c00; box-shadow: 0 0 15px rgba(255, 255, 255, 0.4); }
+        .btn-msg:hover { background: #fff; color: #FFC400; box-shadow: 0 0 15px rgba(255, 255, 255, 0.4); }
 
         .btn-profile {
-            padding: 8px 16px; background: transparent; color: #ff3c00;
-            border: 1px solid #ff3c00; border-radius: 20px; font-size: 13px;
+            padding: 8px 16px; background: transparent; color: #FFC400;
+            border: 1px solid #FFC400; border-radius: 20px; font-size: 13px;
             font-weight: 600; cursor: pointer; transition: 0.3s; margin-left: 5px;
         }
-        .btn-profile:hover { background: #ff3c00; color: #fff; }
+        .btn-profile:hover { background: #FFC400; color: #080808; }
 
+        /* ================= HERO ================= */
         .hero {
             min-height: 100vh; display: flex; justify-content: center; align-items: center;
             text-align: center; padding: 100px 20px; position: relative;
             background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(8, 8, 8, 1)),
                         url("https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80") center/cover;
         }
-        .hero-content h1 { font-size: 80px; font-weight: 900; color: #ff3c00;
-            text-shadow: 0 0 20px rgba(255, 60, 0, 0.8), 0 0 40px rgba(255, 60, 0, 0.4);
+        .hero-content h1 { font-size: 80px; font-weight: 900; color: #FFC400;
+            text-shadow: 0 0 20px rgba(255, 196, 0, 0.8), 0 0 40px rgba(255, 196, 0, 0.4);
             animation: float 3s ease-in-out infinite alternate; }
         .hero-content p { margin: 20px auto 35px; font-size: 22px; color: #ddd; max-width: 600px;
-            border-right: 3px solid #ff3c00; white-space: nowrap; overflow: hidden;
+            border-right: 3px solid #FFC400; white-space: nowrap; overflow: hidden;
             animation: typing 3.5s steps(40, end), blink 0.75s step-end infinite; }
-        .btn { display: inline-block; padding: 16px 36px; background: #ff3c00; color: white;
+        .btn { display: inline-block; padding: 16px 36px; background: #FFC400; color: #080808;
             text-decoration: none; border-radius: 30px; font-weight: bold; font-size: 18px;
-            box-shadow: 0 0 20px rgba(255, 60, 0, 0.5); transition: all 0.4s ease;
+            box-shadow: 0 0 20px rgba(255, 196, 0, 0.6); transition: all 0.4s ease;
             cursor: pointer; }
-        .btn:hover { background: #fff; color: #ff3c00; transform: translateY(-5px) scale(1.05);
+        .btn:hover { background: #fff; color: #FFC400; transform: translateY(-5px) scale(1.05);
             box-shadow: 0 10px 30px rgba(255, 255, 255, 0.4); }
 
         section { padding: 100px 8%; opacity: 0; transform: translateY(40px); transition: all 0.8s ease-out; }
         section.visible { opacity: 1; transform: translateY(0); }
 
         .title { text-align: center; margin-bottom: 60px; }
-        .title h2 { font-size: 42px; color: #ff3c00; text-shadow: 0 0 10px rgba(255, 60, 0, 0.3); }
+        .title h2 { font-size: 42px; color: #FFC400; text-shadow: 0 0 10px rgba(255, 196, 0, 0.3); }
         .title p { color: #888; margin-top: 8px; font-size: 16px; }
 
         .about { display: flex; align-items: center; gap: 60px; flex-wrap: wrap; }
         .avatar-container { position: relative; display: inline-block; }
         .avatar { width: 280px; height: 280px; border-radius: 50%; object-fit: cover;
-            border: 4px solid #ff3c00; position: relative; z-index: 2;
-            box-shadow: 0 0 30px rgba(255, 60, 0, 0.6); transition: transform 0.5s ease; }
+            border: 4px solid #FFC400; position: relative; z-index: 2;
+            box-shadow: 0 0 30px rgba(255, 196, 0, 0.6); transition: transform 0.5s ease; }
         .avatar-container::before { content: ''; position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px;
-            border-radius: 50%; border: 2px dashed #ff3c00;
+            border-radius: 50%; border: 2px dashed #FFC400;
             animation: rotate 12s linear infinite; z-index: 1; }
         .avatar-container:hover .avatar { transform: scale(1.05) rotate(2deg); }
         .about-text { flex: 1; min-width: 280px; }
@@ -115,9 +126,9 @@
         .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 25px; }
         .stat { background: #121212; padding: 35px 20px; text-align: center; border-radius: 16px;
             border: 1px solid #222; transition: all 0.4s ease; cursor: pointer; }
-        .stat:hover { transform: translateY(-10px); border-color: #ff3c00;
-            box-shadow: 0 10px 30px rgba(255, 60, 0, 0.25); background: #181818; }
-        .stat h3 { font-size: 40px; color: #ff3c00; font-weight: 800; }
+        .stat:hover { transform: translateY(-10px); border-color: #FFC400;
+            box-shadow: 0 10px 30px rgba(255, 196, 0, 0.25); background: #181818; }
+        .stat h3 { font-size: 40px; color: #FFC400; font-weight: 800; }
         .stat p { color: #aaa; margin-top: 8px; }
 
         .videos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
@@ -126,19 +137,19 @@
         .video-thumb { overflow: hidden; position: relative; }
         .video img { width: 100%; height: 200px; object-fit: cover; transition: transform 0.5s ease; }
         .video:hover img { transform: scale(1.1); }
-        .video:hover { transform: translateY(-8px); border-color: #ff3c00;
-            box-shadow: 0 15px 35px rgba(255, 60, 0, 0.2); }
+        .video:hover { transform: translateY(-8px); border-color: #FFC400;
+            box-shadow: 0 15px 35px rgba(255, 196, 0, 0.2); }
         .video h3 { padding: 20px 20px 10px; font-size: 20px; }
-        .video a { display: inline-block; padding: 0 20px 20px; color: #ff3c00; text-decoration: none; font-weight: bold; transition: 0.3s; }
+        .video a { display: inline-block; padding: 0 20px 20px; color: #FFC400; text-decoration: none; font-weight: bold; transition: 0.3s; }
         .video a:hover { color: #fff; padding-left: 25px; }
 
         .social { text-align: center; }
         .social a { display: inline-block; margin: 12px; padding: 15px 30px;
-            border: 2px solid #ff3c00; border-radius: 40px; color: white;
+            border: 2px solid #FFC400; border-radius: 40px; color: white;
             text-decoration: none; font-weight: bold; transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(255, 60, 0, 0.2); }
-        .social a:hover { background: #ff3c00; transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 10px 25px rgba(255, 60, 0, 0.5); }
+            box-shadow: 0 0 10px rgba(255, 196, 0, 0.2); }
+        .social a:hover { background: #FFC400; color: #080808; transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 196, 0, 0.5); }
 
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
@@ -149,9 +160,9 @@
         .modal-overlay.active { opacity: 1; visibility: visible; }
 
         .modal {
-            background: #111; border: 1px solid rgba(255, 60, 0, 0.35);
+            background: #111; border: 1px solid rgba(255, 196, 0, 0.35);
             border-radius: 20px; width: 100%; max-width: 430px; padding: 40px 35px;
-            box-shadow: 0 20px 60px rgba(255, 60, 0, 0.25);
+            box-shadow: 0 20px 60px rgba(255, 196, 0, 0.25);
             transform: translateY(30px) scale(0.95); transition: all 0.35s ease;
             position: relative; margin: auto;
         }
@@ -160,7 +171,7 @@
         .modal-close { position: absolute; top: 15px; right: 20px;
             background: none; border: none; color: #888; font-size: 28px;
             cursor: pointer; line-height: 1; transition: 0.3s; }
-        .modal-close:hover { color: #ff3c00; transform: rotate(90deg); }
+        .modal-close:hover { color: #FFC400; transform: rotate(90deg); }
 
         .tabs {
             display: flex; background: #1a1a1a; border-radius: 12px;
@@ -172,12 +183,12 @@
             background: none; border-radius: 9px; transition: all 0.3s ease;
             z-index: 1;
         }
-        .tab.active { color: #fff; background: linear-gradient(135deg, #ff3c00, #ff6a00);
-            box-shadow: 0 0 15px rgba(255, 60, 0, 0.5); }
+        .tab.active { color: #080808; background: linear-gradient(135deg, #FFC400, #FF8C00);
+            box-shadow: 0 0 15px rgba(255, 196, 0, 0.5); }
 
         .modal h2 {
-            text-align: center; color: #ff3c00; font-size: 26px;
-            margin-bottom: 8px; text-shadow: 0 0 15px rgba(255, 60, 0, 0.4);
+            text-align: center; color: #FFC400; font-size: 26px;
+            margin-bottom: 8px; text-shadow: 0 0 15px rgba(255, 196, 0, 0.4);
         }
         .modal .subtitle { text-align: center; color: #888; font-size: 14px; margin-bottom: 25px; }
 
@@ -189,8 +200,8 @@
             transition: all 0.3s ease; outline: none;
         }
         .modal input:focus {
-            border-color: #ff3c00;
-            box-shadow: 0 0 15px rgba(255, 60, 0, 0.3);
+            border-color: #FFC400;
+            box-shadow: 0 0 15px rgba(255, 196, 0, 0.3);
             background: #1e1e1e;
         }
         .modal input::placeholder { color: #666; }
@@ -204,22 +215,20 @@
 
         .modal button[type="submit"] {
             margin-top: 5px; padding: 15px;
-            background: #ff3c00; color: #fff; border: none;
+            background: #FFC400; color: #080808; border: none;
             border-radius: 12px; font-size: 16px; font-weight: 700;
             cursor: pointer; transition: all 0.3s ease;
             letter-spacing: 0.5px;
-            box-shadow: 0 0 20px rgba(255, 60, 0, 0.4);
+            box-shadow: 0 0 20px rgba(255, 196, 0, 0.4);
         }
         .modal button[type="submit"]:hover {
-            background: #fff; color: #ff3c00;
+            background: #fff; color: #FFC400;
             transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
         }
 
-        .modal .terms {
-            font-size: 12px; color: #666; text-align: center; margin-top: 5px;
-        }
-        .modal .terms a { color: #ff3c00; text-decoration: none; }
+        .modal .terms { font-size: 12px; color: #666; text-align: center; margin-top: 5px; }
+        .modal .terms a { color: #FFC400; text-decoration: none; }
 
         .form-panel { display: none; }
         .form-panel.active { display: block; }
@@ -233,11 +242,8 @@
         }
         .divider::before { margin-right: 10px; }
         .divider::after { margin-left: 10px; }
-        .google-btn-container {
-            display: flex; justify-content: center; margin-top: 10px;
-        }
+        .google-btn-container { display: flex; justify-content: center; margin-top: 10px; }
 
-        /* ================= MESSAGES MODAL ================= */
         .msg-modal { max-width: 500px; padding: 25px; }
         .msg-header {
             display: flex; justify-content: space-between; align-items: center;
@@ -256,10 +262,10 @@
             align-self: flex-start; position: relative;
         }
         .msg-bubble.mine {
-            background: rgba(255, 60, 0, 0.15); border-color: #ff3c00;
+            background: rgba(255, 196, 0, 0.15); border-color: #FFC400;
             align-self: flex-end;
         }
-        .msg-bubble strong { color: #ff3c00; font-size: 12px; display: block; margin-bottom: 4px; }
+        .msg-bubble strong { color: #FFC400; font-size: 12px; display: block; margin-bottom: 4px; }
         .msg-bubble p { font-size: 15px; color: #eee; line-height: 1.4; word-break: break-word; }
         .msg-time { font-size: 10px; color: #666; display: block; margin-top: 5px; }
         .msg-input-area { display: flex; gap: 10px; }
@@ -268,15 +274,14 @@
             border: 1px solid #2a2a2a; border-radius: 20px;
             color: #fff; font-size: 14px; outline: none; transition: 0.3s;
         }
-        .msg-input-area input:focus { border-color: #ff3c00; }
+        .msg-input-area input:focus { border-color: #FFC400; }
         .msg-input-area button {
-            padding: 0 20px; background: #ff3c00; color: #fff;
+            padding: 0 20px; background: #FFC400; color: #080808;
             border: none; border-radius: 20px; font-weight: 700;
             cursor: pointer; transition: 0.3s;
         }
-        .msg-input-area button:hover { background: #fff; color: #ff3c00; }
+        .msg-input-area button:hover { background: #fff; color: #FFC400; }
 
-        /* ================= PROFILE MODAL ================= */
         .profile-modal { max-width: 480px; padding: 30px; }
         .profile-header {
             display: flex; align-items: center; gap: 20px;
@@ -285,11 +290,11 @@
         }
         .profile-avatar-big {
             width: 90px; height: 90px; border-radius: 50%;
-            background: linear-gradient(135deg, #ff3c00, #ff8c00);
+            background: linear-gradient(135deg, #FFC400, #FF8C00);
             display: flex; align-items: center; justify-content: center;
-            font-weight: 900; color: #fff; font-size: 36px;
-            border: 3px solid #ff3c00; overflow: hidden;
-            box-shadow: 0 0 20px rgba(255, 60, 0, 0.5);
+            font-weight: 900; color: #080808; font-size: 36px;
+            border: 3px solid #FFC400; overflow: hidden;
+            box-shadow: 0 0 20px rgba(255, 196, 0, 0.5);
             flex-shrink: 0;
         }
         .profile-avatar-big img { width: 100%; height: 100%; object-fit: cover; }
@@ -297,19 +302,14 @@
         .profile-info .email { color: #888; font-size: 14px; word-break: break-all; }
         .profile-info .join-date { color: #666; font-size: 12px; margin-top: 4px; }
 
-        .profile-field {
-            padding: 14px 0; border-bottom: 1px solid #1a1a1a;
-        }
+        .profile-field { padding: 14px 0; border-bottom: 1px solid #1a1a1a; }
         .profile-field:last-of-type { border-bottom: none; }
         .profile-field label {
             display: block; color: #888; font-size: 12px;
             text-transform: uppercase; letter-spacing: 1px;
             margin-bottom: 6px; font-weight: 700;
         }
-        .profile-field .value {
-            color: #eee; font-size: 15px; line-height: 1.5;
-            word-break: break-word;
-        }
+        .profile-field .value { color: #eee; font-size: 15px; line-height: 1.5; word-break: break-word; }
         .profile-field .value.empty { color: #555; font-style: italic; }
 
         .profile-field input, .profile-field textarea {
@@ -320,40 +320,29 @@
             resize: vertical;
         }
         .profile-field input:focus, .profile-field textarea:focus {
-            border-color: #ff3c00;
-            box-shadow: 0 0 12px rgba(255, 60, 0, 0.3);
+            border-color: #FFC400;
+            box-shadow: 0 0 12px rgba(255, 196, 0, 0.3);
         }
 
-        .profile-actions {
-            display: flex; gap: 10px; margin-top: 20px;
-        }
+        .profile-actions { display: flex; gap: 10px; margin-top: 20px; }
         .profile-actions button {
             flex: 1; padding: 14px; border: none;
             border-radius: 12px; font-size: 15px; font-weight: 700;
             cursor: pointer; transition: 0.3s; letter-spacing: 0.5px;
         }
-        .btn-edit {
-            background: #ff3c00; color: #fff;
-            box-shadow: 0 0 15px rgba(255, 60, 0, 0.4);
-        }
-        .btn-edit:hover { background: #fff; color: #ff3c00; }
-        .btn-save {
-            background: #22c55e; color: #fff;
-            box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
-        }
+        .btn-edit { background: #FFC400; color: #080808; box-shadow: 0 0 15px rgba(255, 196, 0, 0.4); }
+        .btn-edit:hover { background: #fff; color: #FFC400; }
+        .btn-save { background: #22c55e; color: #fff; box-shadow: 0 0 15px rgba(34, 197, 94, 0.4); }
         .btn-save:hover { background: #fff; color: #22c55e; }
-        .btn-cancel {
-            background: #2a2a2a; color: #aaa;
-        }
+        .btn-cancel { background: #2a2a2a; color: #aaa; }
         .btn-cancel:hover { background: #333; color: #fff; }
 
-        /* ================= TOAST ================= */
         .toast {
             position: fixed; top: 100px; right: 30px;
-            background: #121212; border-left: 4px solid #ff3c00;
+            background: #121212; border-left: 4px solid #FFC400;
             padding: 16px 24px; border-radius: 10px;
             color: #fff; font-weight: 600; font-size: 15px;
-            box-shadow: 0 10px 30px rgba(255, 60, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(255, 196, 0, 0.3);
             transform: translateX(400px); transition: all 0.5s ease;
             z-index: 3000; max-width: 320px;
         }
@@ -366,7 +355,7 @@
         @keyframes typing { from { width: 0; } to { width: 100%; } }
         @keyframes blink { 50% { border-color: transparent; } }
 
-        footer { padding: 30px; text-align: center; background: #040404; color: #666; border-top: 1px solid #111; }
+        footer { padding: 30px; text-align: center; background: #040404; color: #666; border-top: 1px solid #FFC400; }
 
         @media (max-width: 700px) {
             .hero-content h1 { font-size: 50px; }
@@ -374,6 +363,7 @@
             .avatar { width: 220px; height: 220px; }
             .about { justify-content: center; text-align: center; }
             nav a { display: none; }
+            .logo img { height: 40px; }
             .btn-login { margin-left: 0; padding: 8px 18px; font-size: 14px; }
             .user-name { display: none; }
             .user-box { margin-left: 0; }
@@ -386,7 +376,11 @@
 <body>
 
     <header>
-        <div class="logo">AN GỜ</div>
+        <div class="logo">
+            <a href="#home">
+                <img src="https://cdn.vn.garenanow.com/web/ddt/ffugc/images/logo.png" alt="Free Fire">
+            </a>
+        </div>
         <div class="nav-right">
             <nav>
                 <a href="#home">Trang chủ</a>
@@ -586,7 +580,6 @@
                 </div>
             </div>
 
-            <!-- Chế độ XEM -->
             <div id="profileViewMode">
                 <div class="profile-field">
                     <label>Tên hiển thị</label>
@@ -605,7 +598,6 @@
                 </div>
             </div>
 
-            <!-- Chế độ SỬA -->
             <div id="profileEditMode" style="display:none;">
                 <div class="profile-field">
                     <label>Tên hiển thị</label>
@@ -630,12 +622,10 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        /* ============ CẤU HÌNH SUPABASE ============ */
         const SUPABASE_URL = "https://fnthhoxyobcqnbsnqazy.supabase.co";
         const SUPABASE_KEY = "sb_publishable_zF5aZXKbAc054Ky2N8Wwnw_LXOq2jHt";
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        /* ============ HIỆU ỨNG CUỘN ============ */
         const sections = document.querySelectorAll('section');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -644,7 +634,6 @@
         }, { threshold: 0.15 });
         sections.forEach(s => observer.observe(s));
 
-        /* ============ QUẢN LÝ TÀI KHOẢN ============ */
         const USERS_KEY = 'angff_users';
         const SESSION_KEY = 'angff_currentUser';
         const PROFILE_KEY = 'angff_profiles';
@@ -665,7 +654,6 @@
             return 'h_' + hash.toString(36);
         }
 
-        /* ============ PROFILE LƯU TRỮ ============ */
         function getProfiles() {
             try { return JSON.parse(localStorage.getItem(PROFILE_KEY)) || {}; }
             catch { return {}; }
@@ -684,7 +672,6 @@
             saveProfiles(profiles);
         }
 
-        /* ============ MODAL AUTH ============ */
         const authModal = document.getElementById('authModal');
 
         function openAuth(tab = 'login') {
@@ -724,7 +711,6 @@
             el.classList.add('show');
         }
 
-        /* ============ ĐĂNG KÝ ============ */
         function handleRegister(event) {
             event.preventDefault();
             clearErrors();
@@ -762,7 +748,6 @@
             showToast('🎉 Đăng ký thành công! Chào mừng ' + username, 'success');
         }
 
-        /* ============ ĐĂNG NHẬP ============ */
         function handleLogin(event) {
             event.preventDefault();
             clearErrors();
@@ -783,7 +768,6 @@
             showToast('✅ Đăng nhập thành công! Chào ' + user.username, 'success');
         }
 
-        /* ============ ĐĂNG NHẬP GOOGLE ============ */
         function decodeJWT(token) {
             try {
                 const base64Url = token.split('.')[1];
@@ -822,7 +806,6 @@
             closeAuth();
         }
 
-        /* ============ SESSION ============ */
         function setSession(user) {
             localStorage.setItem(SESSION_KEY, JSON.stringify({
                 username: user.username,
@@ -867,7 +850,6 @@
             }
         }
 
-        /* ============ PROFILE ============ */
         const profileModal = document.getElementById('profileModal');
         let isEditMode = false;
 
@@ -900,7 +882,6 @@
             const avatarUrl = profile.avatarUrl || session.avatar || '';
             const createdAt = session.createdAt || new Date().toISOString();
 
-            // Cập nhật header modal
             const avatarBig = document.getElementById('profileAvatar');
             if (avatarUrl) {
                 avatarBig.innerHTML = `<img src="${avatarUrl}" alt="Avatar" onerror="this.parentElement.textContent='${displayName.charAt(0).toUpperCase()}'">`;
@@ -913,14 +894,12 @@
             document.getElementById('profileJoinDate').textContent =
                 '📅 Tham gia: ' + new Date(createdAt).toLocaleDateString('vi-VN');
 
-            // Chế độ xem
             document.getElementById('viewDisplayName').textContent = displayName;
             document.getElementById('viewBio').textContent = bio || 'Chưa có tiểu sử';
             document.getElementById('viewBio').className = 'value' + (bio ? '' : ' empty');
             document.getElementById('viewAvatarUrl').textContent = avatarUrl || 'Chưa có ảnh đại diện';
             document.getElementById('viewAvatarUrl').className = 'value' + (avatarUrl ? '' : ' empty');
 
-            // Điền sẵn vào form edit
             document.getElementById('editDisplayName').value = displayName;
             document.getElementById('editBio').value = bio;
             document.getElementById('editAvatarUrl').value = avatarUrl;
@@ -953,7 +932,6 @@
             setProfileField(session.username, 'bio', newBio);
             setProfileField(session.username, 'avatarUrl', newAvatarUrl);
 
-            // Cập nhật session nếu đổi avatar
             const newSession = { ...session };
             if (newAvatarUrl) newSession.avatar = newAvatarUrl;
             localStorage.setItem(SESSION_KEY, JSON.stringify(newSession));
@@ -964,7 +942,6 @@
             showToast('✅ Đã lưu hồ sơ!', 'success');
         }
 
-        /* ============ CHAT VỚI SUPABASE ============ */
         const msgModal = document.getElementById('msgModal');
         let realtimeChannel = null;
 
@@ -1072,7 +1049,6 @@
 
             input.value = '';
 
-            // Lấy avatar từ profile (nếu có) hoặc session
             const profile = getProfile(session.username);
             const avatarToSend = profile.avatarUrl || session.avatar || null;
 
@@ -1090,7 +1066,6 @@
             }
         }
 
-        /* ============ TOAST ============ */
         const toast = document.getElementById('toast');
         function showToast(message, type = 'success') {
             toast.textContent = message;
@@ -1101,7 +1076,6 @@
             }, 3000);
         }
 
-        /* ============ KHỞI TẠO ============ */
         updateUI();
     </script>
 </body>
