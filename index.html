@@ -275,7 +275,7 @@
         .msg-bubble p {
             font-size: 15px; color: #eee; line-height: 1.4;
             word-break: break-word;
-            white-space: pre-wrap; /* Giữ xuống dòng */
+            white-space: pre-wrap;
             overflow-wrap: anywhere;
         }
         .msg-time { font-size: 10px; color: #666; display: block; margin-top: 5px; }
@@ -582,7 +582,7 @@
                 <p style="text-align: center; color: #666; font-size: 14px; margin-top: 20px;">Đang tải tin nhắn...</p>
             </div>
             <form class="msg-input-area" onsubmit="sendMessage(event)">
-                <textarea id="msgInput" placeholder="Nhập tin nhắn... (Enter để gửi, Shift+Enter xuống dòng)" rows="1"></textarea>
+                <textarea id="msgInput" placeholder="Nhập tin nhắn..." rows="1"></textarea>
                 <button type="submit">Gửi</button>
             </form>
         </div>
@@ -602,6 +602,7 @@
                 </div>
             </div>
 
+            <!-- Chế độ XEM -->
             <div id="profileViewMode">
                 <div class="profile-field">
                     <label>Tên hiển thị</label>
@@ -611,15 +612,12 @@
                     <label>Tiểu sử</label>
                     <div class="value" id="viewBio"></div>
                 </div>
-                <div class="profile-field">
-                    <label>Ảnh đại diện (URL)</label>
-                    <div class="value" id="viewAvatarUrl" style="font-size:12px;"></div>
-                </div>
                 <div class="profile-actions">
                     <button class="btn-edit" onclick="enableEditProfile()">✏️ Chỉnh sửa</button>
                 </div>
             </div>
 
+            <!-- Chế độ SỬA -->
             <div id="profileEditMode" style="display:none;">
                 <div class="profile-field">
                     <label>Tên hiển thị</label>
@@ -929,8 +927,6 @@
             document.getElementById('viewDisplayName').textContent = displayName;
             document.getElementById('viewBio').textContent = bio || 'Chưa có tiểu sử';
             document.getElementById('viewBio').className = 'value' + (bio ? '' : ' empty');
-            document.getElementById('viewAvatarUrl').textContent = avatarUrl || 'Chưa có ảnh đại diện';
-            document.getElementById('viewAvatarUrl').className = 'value' + (avatarUrl ? '' : ' empty');
 
             document.getElementById('editDisplayName').value = displayName;
             document.getElementById('editBio').value = bio;
@@ -1073,13 +1069,11 @@
             const msgInput = document.getElementById('msgInput');
             if (!msgInput) return;
 
-            // Tự động giãn chiều cao khi gõ
             msgInput.addEventListener('input', () => {
                 msgInput.style.height = 'auto';
                 msgInput.style.height = Math.min(msgInput.scrollHeight, 120) + 'px';
             });
 
-            // Enter để gửi, Shift+Enter để xuống dòng
             msgInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
@@ -1100,7 +1094,6 @@
                 return;
             }
 
-            // Reset textarea
             input.value = '';
             input.style.height = 'auto';
 
