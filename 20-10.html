@@ -3,25 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chúc Mừng 20/10</title>
+<title>Gửi cậu - 20/10</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at center, #ffe4ec 0%, #f8bbd0 50%, #f48fb1 100%);
     position: relative;
-    background: linear-gradient(-45deg, #fce4ec, #f8bbd0, #f48fb1, #ec407a);
-    background-size: 400% 400%;
-    animation: gradientShift 15s ease infinite;
-  }
-  @keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
   }
 
-  /* ===== HIỆU ỨNG 1: HOA VÀ TIM RƠI ===== */
+  /* ===== HOA RƠI ===== */
   .falling {
     position: fixed;
     top: -60px;
@@ -35,201 +31,169 @@
     100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
   }
 
-  /* ===== HIỆU ỨNG 2: TRÁI TIM BAY LƠ LỬNG ===== */
-  .floating-heart {
-    position: fixed;
-    pointer-events: none;
-    z-index: 1;
-    font-size: 30px;
-    opacity: 0.4;
-    animation: floatUp linear infinite;
-  }
-  @keyframes floatUp {
-    0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
-    10% { opacity: 0.5; }
-    90% { opacity: 0.5; }
-    100% { transform: translateY(-100px) scale(1.2); opacity: 0; }
-  }
-
-  /* ===== HIỆU ỨNG 3: BƯỚM BAY ===== */
-  .butterfly {
-    position: fixed;
-    pointer-events: none;
+  /* ===== VÒNG TRÒN TRÁI TIM BẰNG CHẤM ===== */
+  .heart-outline {
+    position: absolute;
+    width: 400px;
+    height: 360px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -55%);
     z-index: 3;
-    font-size: 28px;
-    animation: butterflyFly linear infinite;
-    opacity: 0.75;
-  }
-  @keyframes butterflyFly {
-    0% { transform: translate(0, 0) rotate(0deg); }
-    25% { transform: translate(30px, -40px) rotate(10deg); }
-    50% { transform: translate(-20px, -80px) rotate(-10deg); }
-    75% { transform: translate(40px, -120px) rotate(8deg); }
-    100% { transform: translate(0, -180px) rotate(0deg); opacity: 0; }
-  }
-
-  /* ===== HIỆU ỨNG 4: LẤP LÁNH ===== */
-  .sparkle {
-    position: fixed;
     pointer-events: none;
-    z-index: 3;
-    font-size: 16px;
-    animation: twinkle 2s ease-in-out infinite;
-    opacity: 0;
   }
-  @keyframes twinkle {
-    0%, 100% { opacity: 0; transform: scale(0.5); }
-    50% { opacity: 1; transform: scale(1.2); }
-  }
-
-  /* ===== HIỆU ỨNG 5: VÒNG SÁNG LAN TỎA ===== */
-  .pulse-ring {
-    position: fixed;
+  .heart-outline .dot {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #d81b60;
     border-radius: 50%;
-    border: 2px solid rgba(255, 105, 180, 0.5);
-    pointer-events: none;
-    z-index: 1;
-    animation: pulseOut 4s ease-out infinite;
-  }
-  @keyframes pulseOut {
-    0% { width: 0; height: 0; opacity: 0.8; }
-    100% { width: 600px; height: 600px; opacity: 0; margin-left: -300px; margin-top: -300px; }
+    opacity: 0.7;
+    box-shadow: 0 0 6px rgba(216, 27, 96, 0.6);
   }
 
-  /* ===== SLIDER ===== */
-  .slider {
-    position: relative;
+  /* ===== TEXT VÒNG CUNG TRÁI TIM ===== */
+  .arc-text {
+    position: absolute;
     width: 100%;
-    height: 100vh;
-    z-index: 10;
+    text-align: center;
+    color: #d81b60;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: 2px;
+    z-index: 4;
+    pointer-events: none;
+    text-shadow: 0 2px 6px rgba(255,255,255,0.7);
+  }
+  .arc-text.top {
+    top: 12%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+  .arc-text.top span {
+    display: inline-block;
+    color: #d81b60;
   }
 
-  .slide {
+  /* ===== PHONG BÌ ===== */
+  .envelope-wrapper {
+    position: relative;
+    z-index: 10;
+    width: 320px;
+    height: 220px;
+    perspective: 1000px;
+    cursor: pointer;
+    transition: transform 0.5s;
+  }
+  .envelope-wrapper:hover { transform: scale(1.03); }
+
+  .envelope {
     position: absolute;
     inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 30px 20px;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.8s ease, transform 0.8s ease;
-    transform: scale(0.95);
-    text-align: center;
-  }
-  .slide.active {
-    opacity: 1;
-    visibility: visible;
-    transform: scale(1);
+    background: linear-gradient(135deg, #f8a5c2, #f48fb1);
+    border-radius: 8px;
+    box-shadow: 0 15px 40px rgba(216, 27, 96, 0.35);
+    overflow: visible;
   }
 
-  .card {
-    max-width: 600px;
-    width: 100%;
-    background: rgba(255, 255, 255, 0.88);
-    backdrop-filter: blur(15px);
-    border-radius: 30px;
-    padding: 50px 35px;
-    box-shadow: 0 20px 60px rgba(233, 30, 99, 0.3);
-    border: 2px solid rgba(255, 255, 255, 0.9);
-    position: relative;
-    overflow: hidden;
-  }
-  /* Ánh sáng chạy qua thẻ */
-  .card::before {
-    content: '';
+  /* Nắp phong bì */
+  .envelope-flap {
     position: absolute;
     top: 0;
-    left: -100%;
+    left: 0;
+    width: 100%;
+    height: 0;
+    border-left: 160px solid transparent;
+    border-right: 160px solid transparent;
+    border-top: 110px solid #f48fb1;
+    border-radius: 8px 8px 0 0;
+    transform-origin: top;
+    transition: transform 0.8s ease;
+    z-index: 5;
+    filter: drop-shadow(0 4px 6px rgba(216,27,96,0.2));
+  }
+  .envelope.open .envelope-flap {
+    transform: rotateX(180deg);
+    z-index: 1;
+  }
+
+  /* Thân phong bì (mặt trước) */
+  .envelope-front {
+    position: absolute;
+    bottom: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
-    animation: shine 4s infinite;
-  }
-  @keyframes shine {
-    0% { left: -100%; }
-    50% { left: 100%; }
-    100% { left: 100%; }
+    background: linear-gradient(135deg, #f8a5c2, #ec6f9e);
+    border-radius: 8px;
+    clip-path: polygon(0 30%, 50% 65%, 100% 30%, 100% 100%, 0 100%);
+    z-index: 3;
   }
 
-  .heart-main {
-    font-size: 80px;
-    display: inline-block;
-    animation: heartbeat 1.2s ease-in-out infinite;
-    margin-bottom: 20px;
-    position: relative;
+  /* Thiệp chứa bên trong */
+  .card-inside {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    width: 280px;
+    height: 180px;
+    background: #fff5f8;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(216, 27, 96, 0.3);
+    z-index: 2;
+    opacity: 0;
+    transition: all 0.8s ease 0.4s;
+    overflow: hidden;
+    border: 1px dashed #f48fb1;
   }
-  @keyframes heartbeat {
-    0%, 100% { transform: scale(1); }
-    25% { transform: scale(1.18); }
-    50% { transform: scale(1); }
-    75% { transform: scale(1.12); }
-  }
-
-  .flower-main {
-    font-size: 80px;
-    display: inline-block;
-    animation: sway 2s ease-in-out infinite;
-    margin-bottom: 20px;
-  }
-  @keyframes sway {
-    0%, 100% { transform: rotate(-8deg); }
-    50% { transform: rotate(8deg); }
-  }
-
-  .star-main {
-    font-size: 80px;
-    display: inline-block;
-    animation: sparkleMain 1.5s ease-in-out infinite;
-    margin-bottom: 20px;
-  }
-  @keyframes sparkleMain {
-    0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
-    50% { transform: scale(1.15) rotate(180deg); opacity: 0.85; }
+  .envelope.open .card-inside {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-140px) scale(1.05);
+    z-index: 20;
   }
 
-  h1 {
-    font-size: 32px;
+  /* Nội dung thiệp */
+  .card-title {
+    font-size: 18px;
     color: #d81b60;
-    margin-bottom: 15px;
-    line-height: 1.3;
     font-weight: 800;
-    text-shadow: 0 2px 8px rgba(216, 27, 96, 0.15);
+    margin-bottom: 8px;
+    font-wrapper-style: { italic;
   }
-
-  .subtitle {
-    font-size: 14px;
-    color: #ad1457;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    margin-bottom: 25px;
-    font-weight: 600;
-    opacity: 0.8;
-  }
-
-  .message {
-    font-size: 19px;
+ width  .card-text {
+:    font-size: 14px;
     color: #4a4a4a;
-    line-height: 1.9;
+    line-height: 1.6;
     font-style: italic;
-    font-weight: 500;
-    padding: 0 10px;
-    margin-bottom: 30px;
+  }
+  .card-text .cursor {
+    display: inline-block;
+    width: 8px;
+    height: 14px;
+    background: #d81b60;
+    margin-left: 2px;
+    animation: blink 0.7s steps(1) infinite;
+    vertical-align: middle;
+  }
+  @keyframes blink {
+    50% { opacity: 0; }
   }
 
-  /* ===== NÚT TIẾP THEO (góc phải dưới) ===== */
+  /* ===== NÚT NEXT GÓC PHẢI DƯỚI ===== */
   .btn-next-float {
     position: fixed;
     bottom: 30px;
     right: 30px;
-    width: 70px;
-    height: 70px;
+    width: 65px;
+    height: 65px;
     border-radius: 50%;
     background: linear-gradient(135deg, #ec407a, #d81b60);
     color: #fff;
     border: none;
-    font-size: 30px;
+    font-size: 28px;
     font-weight: 700;
     cursor: pointer;
     box-shadow: 0 8px 25px rgba(216, 27, 96, 0.5);
@@ -244,265 +208,269 @@
     transform: scale(1.15) rotate(10deg);
     box-shadow: 0 12px 40px rgba(216, 27, 96, 0.7);
   }
-  .btn-next-float:active { transform: scale(0.95); }
   @keyframes pulseBtn {
     0%, 100% { box-shadow: 0 8px 25px rgba(216, 27, 96, 0.5); }
     50% { box-shadow: 0 8px 40px rgba(216, 27, 96, 0.9); }
   }
 
-  /* Tooltip nhỏ cho nút */
-  .btn-next-float::after {
-    content: 'Tiếp theo';
-    position: absolute;
-    right: 80px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(216, 27, 96, 0.95);
-    color: #fff;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 600;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-  }
-  .btn-next-float:hover::after {
-    opacity: 1;
-  }
-
-  /* ===== DOTS ===== */
-  .dots {
+  /* Nút đóng thiệp */
+  .btn-close {
     position: fixed;
     bottom: 30px;
+    left: 30px;
+    padding: 12px 24px;
+    border-radius: 50px;
+    background: rgba(255,255,255,0.85);
+    color: #d81b60;
+    border: 2px solid #d81b60;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(216, 27, 96, 0.25);
+    transition: all 0.3s;
+    z-index: 1000;
+    display: none;
+  }
+  .btn-close:hover {
+    background: #d81b60;
+    color: #fff;
+  }
+  .btn-close.show { display: block; }
+
+  /* Gợi ý bấm */
+  .hint {
+    position: absolute;
+    bottom: -50px;
     left: 50%;
     transform: translateX(-50%);
-    display: flex;
-    gap: 10px;
-    z-index: 100;
+    font-size: 13px;
+    color: #ad1457;
+    font-style: italic;
+    animation: bounceHint 1.5s ease-in-out infinite;
+    white-space: nowrap;
   }
-  .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: rgba(216, 27, 96, 0.35);
-    transition: all 0.3s;
-  }
-  .dot.active {
-    background: #d81b60;
-    width: 28px;
-    border-radius: 10px;
+  @keyframes bounceHint {
+    0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.7; }
+    50% { transform: translateX(-50%) translateY(-5px); opacity: 1; }
   }
 
   @media (max-width: 600px) {
-    .card { padding: 35px 22px; border-radius: 22px; }
-    h1 { font-size: 22px; }
-    .heart-main, .flower-main, .star-main { font-size: 60px; }
-    .message { font-size: 16px; }
-    .subtitle { font-size: 12px; letter-spacing: 3px; }
-    .btn-next-float { width: 60px; height: 60px; font-size: 26px; bottom: 20px; right: 20px; }
-    .btn-next-float::after { display: none; }
+    .heart-outline { width: 320px; height: 290px; }
+    .arc-text { font-size: 16px; }
+    .envelope 260px; height: 180px; }
+    .envelope-flap {
+      border-left-width: 130px;
+      border-right-width: 130px;
+      border-top-width: 90px;
+    }
+    .card-inside { width: 230px; height: 160px; padding: 16px; }
+    .card-title { font-size: 16px; }
+    .card-text { font-size: 13px; }
+    .envelope.open .card-inside { transform: translateX(-50%) translateY(-120px) scale(1.05); }
+    .btn-next-float { width: 55px; height: 55px; font-size: 24px; }
   }
 </style>
 </head>
 <body>
 
-  <div class="slider">
+  <!-- Vòng tim bằng chấm -->
+  <div class="heart-outline" id="heartOutline"></div>
 
-    <!-- SLIDE 1 -->
-    <div class="slide active">
-      <div class="card">
-        <span class="heart-main">💖</span>
-        <h1>Chúc Mừng Ngày<br>Phụ Nữ Việt Nam</h1>
-        <p class="subtitle">20 / 10</p>
-        <p class="message">Một ngày đặc biệt dành cho những người phụ nữ tuyệt vời 🌸</p>
-      </div>
-    </div>
-
-    <!-- SLIDE 2 -->
-    <div class="slide">
-      <div class="card">
-        <span class="flower-main">🌷</span>
-        <h1>Gửi Các Bạn Nữ</h1>
-        <p class="subtitle">Xinh đẹp & Tỏa sáng</p>
-        <p class="message">
-          Chúc các bạn luôn xinh đẹp, rạng rỡ,<br>
-          học giỏi, thành công và luôn vui vẻ 🌸
-        </p>
-      </div>
-    </div>
-
-    <!-- SLIDE 3 -->
-    <div class="slide">
-      <div class="card">
-        <span class="flower-main">🌹</span>
-        <h1>Gửi Quý Thầy Cô</h1>
-        <p class="subtitle">Kính trọng & Biết ơn</p>
-        <p class="message">
-          Chúc các cô luôn mạnh khỏe, hạnh phúc<br>
-          và thành công trong sự nghiệp trồng người 💐
-        </p>
-      </div>
-    </div>
-
-    <!-- SLIDE 4 -->
-    <div class="slide">
-      <div class="card">
-        <span class="star-main">✨</span>
-        <h1>Chúc Mừng 20/10</h1>
-        <p class="subtitle">Dành cho tất cả phụ nữ</p>
-        <p class="message">
-          Chúc một nửa thế giới luôn xinh đẹp,<br>
-          mạnh khỏe và hạnh phúc trọn vẹn 🌸💕
-        </p>
-      </div>
-    </div>
-
+  <!-- Text chúc vòng cung -->
+  <div class="arc-text top" id="arcText">
+    <span>F</span><span>r</span><span>o</span><span>m</span>
+    <span>&nbsp;</span>
+    <span>W</span><span>i</span><span>t</span><span>h</span>
+    <span>&nbsp;</span>
+    <span>L</span><span>o</span><span>v</span><span>e</span>
+    <span>&nbsp;</span>
+    <span>2</span><span>0</span><span>/</span><span>1</span><span>0</span>
+    <span>&nbsp;</span>
+    <span>🌹</span>
+    <span>&nbsp;</span>
+    <span>H</span><span>a</span><span>p</span><span>p</span><span>y</span>
+    <span>&nbsp;</span>
+    <span>W</span><span>o</span><span>m</span><span>e</span><span>n</span><span>'</span><span>s</span>
+    <span>&nbsp;</span>
+    <span>D</span><span>a</span><span>y</span>
   </div>
 
-  <!-- Nút Next góc phải dưới -->
-  <button class="btn-next-float" id="btnNext" onclick="nextSlide()">›</button>
+  <!-- Phong bì -->
+  <div class="envelope-wrapper" id="envelopeWrapper" onclick="openEnvelope()">
+    <div class="envelope" id="envelope">
+      <div class="envelope-flap"></div>
+      <div class="envelope-front"></div>
+      <div class="card-inside" id="cardInside">
+        <div class="card-title">Gửi cậu!</div>
+        <div class="card-text" id="cardText"></div>
+      </div>
+    </div>
+    <div class="hint" id="hint">👆 Bấm vào phong bì để mở</div>
+  </div>
 
-  <div class="dots" id="dots"></div>
+  <!-- Nút Next -->
+  <button class="btn-next-float" id="btnNext" onclick="nextMessage()">›</button>
+
+  <!-- Nút Đóng -->
+  <button class="btn-close" id="btnClose" onclick="closeEnvelope()">← Đóng lại</button>
 
 <script>
-  const slides = document.querySelectorAll('.slide');
-  const dotsContainer = document.getElementById('dots');
-  const btnNext = document.getElementById('btnNext');
-  let currentSlide = 0;
+  /* ===== TẠO VÒNG TRÁI TIM BẰNG CHẤM ===== */
+  const heartOutline = document.getElementById('heartOutline');
+  const dotCount = 90;
 
-  // Tạo dots
-  slides.forEach((_, i) => {
+  // Hàm tạo toạ độ trái tim
+  function heartPoint(t) {
+    // Công thức trái tim
+    const x = 16 * Math.pow(Math.sin(t), 3);
+    const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+    return { x: x * 11, y: -y * 11 };
+  }
+
+  for (let i = 0; i < dotCount; i++) {
+    const t = (i / dotCount) * Math.PI * 2;
+    const p = heartPoint(t);
     const dot = document.createElement('div');
-    dot.className = 'dot' + (i === 0 ? ' active' : '');
-    dotsContainer.appendChild(dot);
-  });
-
-  function updateDots() {
-    document.querySelectorAll('.dot').forEach((d, i) => {
-      d.classList.toggle('active', i === currentSlide);
-    });
+    dot.className = 'dot';
+    dot.style.left = `calc(50% + ${p.x}px - 4px)`;
+    dot.style.top = `calc(50% + ${p.y}px - 4px)`;
+    // Hiệu ứng nhấp nháy so le
+    dot.style.animation = `dotBlink 2s ease-in-out ${i * 0.02}s infinite`;
+    heartOutline.appendChild(dot);
   }
 
-  function goToSlide(index) {
-    slides[currentSlide].classList.remove('active');
-    currentSlide = index;
-    slides[currentSlide].classList.add('active');
-    updateDots();
+  // Thêm animation cho dot
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes dotBlink {
+      0%, 100% { opacity: 0.4; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+  `;
+  document.head.appendChild(style);
 
-    // Bùng nổ hoa và tim khi chuyển slide
-    for (let i = 0; i < 20; i++) {
-      setTimeout(createFalling, i * 50);
+  /* ===== NỘI DUNG THIỆP ===== */
+  const messages = [
+    {
+      title: "Gửi cậu!",
+      text: "Chúc cậu ngày 20/10 thật vui vẻ, luôn xinh đẹp và rạng rỡ như ánh mặt trời nhé! 🌸"
+    },
+    {
+      title: "Gửi cậu!",
+      text: "Cảm ơn cậu vì đã luôn là chính mình — dịu dàng, mạnh mẽ và đầy yêu thương 💖"
+    },
+    {
+      title: "Gửi cậu!",
+      text: "Mong cậu luôn hạnh phúc, gặp nhiều điều tốt đẹp và đạt được mọi ước mơ nhé ✨"
+    },
+    {
+      title: "Gửi cậu!",
+      text: "Cậu là một cô gái tuyệt vời, hãy luôn tỏa sáng theo cách riêng của mình nhé 🌷"
+    },
+    {
+      title: "Gửi cậu!",
+      text: "Chúc mừng 20/10! Chúc cậu luôn bình an, vui vẻ và được yêu thương thật nhiều 💐"
     }
-    for (let i = 0; i < 6; i++) {
-      setTimeout(createButterfly, i * 100);
-    }
+  ];
+
+  let currentMsg = 0;
+  const envelope = document.getElementById('envelope');
+  const envelopeWrapper = document.getElementById('envelopeWrapper');
+  const hint = document.getElementById('hint');
+  const btnClose = document.getElementById('btnClose');
+  const btnNext = document.getElementById('btnNext');
+  const cardText = document.getElementById('cardText');
+
+  let typeTimer = null;
+  let isOpen = false;
+
+  /* ===== MỞ PHONG BÌ ===== */
+  function openEnvelope() {
+    if (isOpen) return;
+    isOpen = true;
+    envelope.classList.add('open');
+    hint.style.opacity = '0';
+    btnClose.classList.add('show');
+
+    // Đợi phong bì mở xong rồi bắt đầu gõ chữ
+    setTimeout(() => {
+      typeText(messages[currentMsg].text);
+    }, 900);
   }
 
-  function nextSlide() {
-    if (currentSlide < slides.length - 1) {
-      goToSlide(currentSlide + 1);
-      // Đổi icon nút khi gần hết
-      if (currentSlide === slides.length - 1) {
-        btnNext.textContent = '↻';
-        btnNext.title = 'Xem lại từ đầu';
+  /* ===== ĐÓNG PHONG BÌ ===== */
+  function closeEnvelope() {
+    isOpen = false;
+    envelope.classList.remove('open');
+    btnClose.classList.remove('show');
+    cardText.innerHTML = '';
+    clearTimeout(typeTimer);
+    hint.style.opacity = '1';
+  }
+
+  /* ===== HIỆU ỨNG GÕ CHỮ TỪNG KÝ TỰ ===== */
+  function typeText(text) {
+    cardText.innerHTML = '';
+    let i = 0;
+    clearInterval(typeTimer);
+
+    // Tạo cursor
+    const cursor = document.createElement('span');
+    cursor.className = 'cursor';
+    cardText.appendChild(cursor);
+
+    typeTimer = setInterval(() => {
+      if (i < text.length) {
+        const char = document.createElement('span');
+        char.textContent = text[i];
+        cardText.insertBefore(char, cursor);
+        i++;
+
+        // Bùng nổ hoa nhỏ mỗi 5 ký tự
+        if (i % 5 === 0) createFalling();
+
+      } else {
+        clearInterval(typeTimer);
+        // Giữ cursor nhấp nháy, không xóa
       }
+    }, 35); // Tốc độ gõ: 35ms/ký tự (nhanh)
+  }
+
+  /* ===== NÚT NEXT ===== */
+  function nextMessage() {
+    currentMsg = (currentMsg + 1) % messages.length;
+
+    // Nếu phong bì đang mở → gõ lại chữ mới
+    if (isOpen) {
+      typeText(messages[currentMsg].text);
     } else {
-      // Nếu đang ở slide cuối → quay lại đầu
-      goToSlide(0);
-      btnNext.textContent = '›';
-      btnNext.title = 'Tiếp theo';
+      // Nếu đang đóng → mở luôn
+      openEnvelope();
+    }
+
+    // Bùng nổ hoa
+    for (let i = 0; i < 8; i++) {
+      setTimeout(createFalling, i * 60);
     }
   }
 
-  /* ===== HIỆU ỨNG 1: HOA VÀ TIM RƠI ===== */
-  const emojis = ['❤️', '🌸', '💖', '🌹', '💕', '🌺', '💗', '🌸', '💝', '🌷', '✨', '💐', '🌼'];
+  /* ===== HIỆU ỨNG HOA VÀ TIM RƠI ===== */
+  const emojis = ['❤️', '🌸', '💖', '🌹', '💕', '🌺', '💗', '🌸', '💝', '🌷', '✨', '💐'];
 
   function createFalling() {
     const el = document.createElement('div');
     el.className = 'falling';
     el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
     el.style.left = Math.random() * 100 + 'vw';
-    el.style.fontSize = (Math.random() * 20 + 18) + 'px';
-    const duration = Math.random() * 4 + 5;
+    el.style.fontSize = (Math.random() * 18 + 16) + 'px';
+    const duration = Math.random() * 3 + 4;
     el.style.animationDuration = duration + 's';
     el.style.animationDelay = Math.random() * 1 + 's';
     document.body.appendChild(el);
     setTimeout(() => el.remove(), (duration + 2) * 1000);
   }
 
-  /* ===== HIỆU ỨNG 2: TRÁI TIM BAY LƠ LỬNG ===== */
-  function createFloatingHeart() {
-    const el = document.createElement('div');
-    el.className = 'floating-heart';
-    el.textContent = ['💗', '💕', '💖', '❤️'][Math.floor(Math.random() * 4)];
-    el.style.left = Math.random() * 100 + 'vw';
-    el.style.fontSize = (Math.random() * 25 + 20) + 'px';
-    const duration = Math.random() * 8 + 10;
-    el.style.animationDuration = duration + 's';
-    el.style.animationDelay = Math.random() * 5 + 's';
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), (duration + 6) * 1000);
-  }
-
-  /* ===== HIỆU ỨNG 3: BƯỚM BAY ===== */
-  function createButterfly() {
-    const el = document.createElement('div');
-    el.className = 'butterfly';
-    el.textContent = ['🦋', '🦋', '🧚‍♀️'][Math.floor(Math.random() * 3)];
-    el.style.left = Math.random() * 100 + 'vw';
-    el.style.top = (Math.random() * 60 + 40) + 'vh';
-    el.style.fontSize = (Math.random() * 15 + 22) + 'px';
-    const duration = Math.random() * 4 + 5;
-    el.style.animationDuration =( duration + 's';
-    el.stylecreate.animationDelay = Math.random() * 2 + 's';
-    document.bodyBut.appendChild(el);
-    setTimeout(() => el.remove(), (terduration + 3fly) * 1000,);
-  }
-
-  /* ===== HIỆU ỨNG 4: LẤP LÁNH ===== */
-  function createSparkle() {
-    const el = document.createElement('div');
-    el.className = 'sparkle';
-    el.textContent = ['✨', '⭐', '💫', '🌟'][Math.floor(Math.random() * 4)];
-    el.style.left = Math.random() * 100 + 'vw';
-    el.style.top = Math.random() * 100 + 'vh';
-    el.style.fontSize = (Math.random() * 15 + 12) + 'px';
-    el.style.animationDuration = (Math.random() * 1.5 + 1.5) + 's';
-    el.style.animationDelay = Math.random() * 2 + 's';
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 5000);
-  }
-
-  /* ===== HIỆU ỨNG 5: VÒNG SÁNG LAN TỎA ===== */
-  function createPulseRing() {
-    const el = document.createElement('div');
-    el.className = 'pulse-ring';
-    el.style.left = Math.random() * 80 + 10 + 'vw';
-    el.style.top = Math.random() * 80 + 10 + 'vh';
-    el.style.animationDuration = (Math.random() * 2 + 3) + 's';
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 6000);
-  }
-
-  /* ===== KHỞI ĐỘNG CÁC HIỆU ỨNG ===== */
-  // Hoa và tim rơi
-  setInterval(createFalling, 350);
-  // Trái tim bay lơ lửng
-  setInterval(createFloatingHeart, 800);
-  // Bướm bay
-  setInterval(createButterfly, 1500);
-  // Lấp lánh
-  setInterval(createSparkle, 400);
-  // Vòng sáng lan tỏa
-  setInterval(createPulseRing, 1200);
-
-  // Tạo sẵn vài cái lúc mới vào
-  for (let i = 0; i < 15; i++) setTimeout(createFalling, i * 80);
-  for (let i = 0; i < 5; i++) setTimeout(createFloatingHeart, i * 300);
-  for (let i = 0; i < 3; i++) setTimeout i * 400);
-  for (let i = 0; i < 10; i++) setTimeout(createSparkle, i * 100);
+  setInterval(createFalling, 500);
 </script>
 </body>
 </html>
