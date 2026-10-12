@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>An Gờ | Free Fire Creator</title>
-    
-    <!-- Thư viện Google Identity Services -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -41,7 +40,6 @@
         .btn-login:hover { background: #ff3c00; color: #fff;
             box-shadow: 0 0 20px rgba(255, 60, 0, 0.6); transform: translateY(-2px); }
 
-        /* Khu vực user đã đăng nhập */
         .user-box { display: none; align-items: center; gap: 12px; margin-left: 25px; }
         .user-box.active { display: flex; }
         .user-avatar {
@@ -60,8 +58,7 @@
             font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.3s;
         }
         .btn-logout:hover { background: #ff3c00; color: #fff; }
-        
-        /* Nút Tin nhắn */
+
         .btn-msg {
             padding: 8px 16px; background: #ff3c00; color: #fff;
             border: none; border-radius: 20px; font-size: 13px;
@@ -165,7 +162,6 @@
             cursor: pointer; line-height: 1; transition: 0.3s; }
         .modal-close:hover { color: #ff3c00; transform: rotate(90deg); }
 
-        /* Tabs Đăng nhập / Đăng ký */
         .tabs {
             display: flex; background: #1a1a1a; border-radius: 12px;
             padding: 5px; margin-bottom: 25px; position: relative;
@@ -228,7 +224,6 @@
         .form-panel { display: none; }
         .form-panel.active { display: block; }
 
-        /* Google Login Button Styles */
         .divider {
             display: flex; align-items: center; text-align: center;
             margin: 20px 0; color: #666; font-size: 13px; font-weight: 600;
@@ -243,32 +238,30 @@
         }
 
         /* ================= MESSAGES MODAL ================= */
-        .msg-modal {
-            max-width: 500px; padding: 25px;
-        }
+        .msg-modal { max-width: 500px; padding: 25px; }
         .msg-header {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #222;
         }
         .msg-header h2 { font-size: 20px; margin: 0; }
         .msg-container {
-            height: 300px; overflow-y: auto; display: flex; flex-direction: column;
+            height: 350px; overflow-y: auto; display: flex; flex-direction: column;
             gap: 12px; padding-right: 5px; margin-bottom: 15px;
         }
         .msg-container::-webkit-scrollbar { width: 6px; }
         .msg-container::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
         .msg-bubble {
             background: #1a1a1a; border: 1px solid #2a2a2a;
-            padding: 12px 16px; border-radius: 12px; max-width: 85%;
+            padding: 10px 14px; border-radius: 12px; max-width: 85%;
             align-self: flex-start; position: relative;
         }
         .msg-bubble.mine {
             background: rgba(255, 60, 0, 0.15); border-color: #ff3c00;
-            align-self: flex-end; text-align: right;
+            align-self: flex-end;
         }
-        .msg-bubble strong { color: #ff3c00; font-size: 13px; display: block; margin-bottom: 4px; }
+        .msg-bubble strong { color: #ff3c00; font-size: 12px; display: block; margin-bottom: 4px; }
         .msg-bubble p { font-size: 15px; color: #eee; line-height: 1.4; word-break: break-word; }
-        .msg-time { font-size: 11px; color: #666; display: block; margin-top: 6px; }
+        .msg-time { font-size: 10px; color: #666; display: block; margin-top: 5px; }
         .msg-input-area { display: flex; gap: 10px; }
         .msg-input-area input {
             flex: 1; padding: 12px 16px; background: #1a1a1a;
@@ -283,7 +276,7 @@
         }
         .msg-input-area button:hover { background: #fff; color: #ff3c00; }
 
-        /* Toast */
+        /* ================= TOAST ================= */
         .toast {
             position: fixed; top: 100px; right: 30px;
             background: #121212; border-left: 4px solid #ff3c00;
@@ -305,7 +298,6 @@
 
         footer { padding: 30px; text-align: center; background: #040404; color: #666; border-top: 1px solid #111; }
 
-        /* ================= RESPONSIVE ================= */
         @media (max-width: 700px) {
             .hero-content h1 { font-size: 50px; }
             .hero-content p { font-size: 16px; white-space: normal; animation: none; border: none; }
@@ -337,7 +329,6 @@
             <div class="user-box" id="userBox">
                 <div class="user-avatar" id="userAvatar">A</div>
                 <span class="user-name" id="userName">User</span>
-                <!-- Nút mở tin nhắn -->
                 <button class="btn-msg" onclick="openMsg()">✉️ Tin nhắn</button>
                 <button class="btn-logout" onclick="logout()">Đăng xuất</button>
             </div>
@@ -448,7 +439,6 @@
                 <button class="tab" id="tabRegister" onclick="switchTab('register')">Đăng ký</button>
             </div>
 
-            <!-- FORM ĐĂNG NHẬP -->
             <div class="form-panel active" id="panelLogin">
                 <h2>Đăng nhập</h2>
                 <p class="subtitle">Chào mừng trở lại với An Gờ 🔥</p>
@@ -461,7 +451,6 @@
 
                 <div class="divider">HOẶC</div>
 
-                <!-- Nút Đăng nhập Google -->
                 <div class="google-btn-container">
                     <div id="g_id_onload"
                          data-client_id="314304357165-3tf6oeaanb0p77dhb91l59m11594da9b.apps.googleusercontent.com"
@@ -479,7 +468,6 @@
                 </div>
             </div>
 
-            <!-- FORM ĐĂNG KÝ -->
             <div class="form-panel" id="panelRegister">
                 <h2>Đăng ký</h2>
                 <p class="subtitle">Tạo tài khoản mới — mỗi người 1 tài khoản 🎮</p>
@@ -500,12 +488,11 @@
     <div class="modal-overlay" id="msgModal">
         <div class="modal msg-modal">
             <div class="msg-header">
-                <h2>✉️ Tin nhắn</h2>
+                <h2>✉️ Tin nhắn cộng đồng</h2>
                 <button class="modal-close" onclick="closeMsg()" style="position: static; font-size: 24px;">×</button>
             </div>
             <div class="msg-container" id="msgContainer">
-                <!-- Tin nhắn sẽ hiển thị ở đây -->
-                <p style="text-align: center; color: #666; font-size: 14px; margin-top: 20px;">Chưa có tin nhắn nào. Hãy bắt đầu trò chuyện!</p>
+                <p style="text-align: center; color: #666; font-size: 14px; margin-top: 20px;">Đang tải tin nhắn...</p>
             </div>
             <form class="msg-input-area" onsubmit="sendMessage(event)">
                 <input type="text" id="msgInput" placeholder="Nhập tin nhắn..." required autocomplete="off">
@@ -514,10 +501,14 @@
         </div>
     </div>
 
-    <!-- Toast -->
     <div class="toast" id="toast"></div>
 
     <script>
+        /* ============ CẤU HÌNH SUPABASE ============ */
+        const SUPABASE_URL = "https://fnthhoxyobcqnbsnqazy.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_zF5aZXKbAc054Ky2N8Wwnw_LXOq2jHt";
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
         /* ============ HIỆU ỨNG CUỘN ============ */
         const sections = document.querySelectorAll('section');
         const observer = new IntersectionObserver((entries) => {
@@ -527,10 +518,9 @@
         }, { threshold: 0.15 });
         sections.forEach(s => observer.observe(s));
 
-        /* ============ QUẢN LÝ TÀI KHOẢN (localStorage) ============ */
+        /* ============ QUẢN LÝ TÀI KHOẢN ============ */
         const USERS_KEY = 'angff_users';
         const SESSION_KEY = 'angff_currentUser';
-        const MSG_KEY = 'angff_messages'; // Key lưu tin nhắn
 
         function getUsers() {
             try { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; }
@@ -580,7 +570,6 @@
                 el.classList.remove('show');
             });
         }
-
         function showError(id, msg) {
             const el = document.getElementById(id);
             el.textContent = msg;
@@ -605,17 +594,15 @@
             }
 
             const users = getUsers();
-
             if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
                 return showError('regError', '❌ Tên đăng nhập đã được sử dụng!');
             }
             if (users.some(u => u.email.toLowerCase() === email)) {
-                return showError('regError', '❌ Email này đã có tài khoản rồi! Mỗi người chỉ được 1 tài khoản.');
+                return showError('regError', '❌ Email này đã có tài khoản rồi!');
             }
 
             const newUser = {
-                username,
-                email,
+                username, email,
                 password: hashPass(pass),
                 createdAt: new Date().toISOString()
             };
@@ -627,7 +614,7 @@
             showToast('🎉 Đăng ký thành công! Chào mừng ' + username, 'success');
         }
 
-        /* ============ ĐĂNG NHẬP THƯỜNG ============ */
+        /* ============ ĐĂNG NHẬP ============ */
         function handleLogin(event) {
             event.preventDefault();
             clearErrors();
@@ -640,12 +627,8 @@
                 u.username.toLowerCase() === input || u.email.toLowerCase() === input
             );
 
-            if (!user) {
-                return showError('loginError', '❌ Không tìm thấy tài khoản này!');
-            }
-            if (user.password !== hashPass(pass)) {
-                return showError('loginError', '❌ Mật khẩu không đúng!');
-            }
+            if (!user) return showError('loginError', '❌ Không tìm thấy tài khoản này!');
+            if (user.password !== hashPass(pass)) return showError('loginError', '❌ Mật khẩu không đúng!');
 
             setSession(user);
             closeAuth();
@@ -661,18 +644,12 @@
                     return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
                 }).join(''));
                 return JSON.parse(jsonPayload);
-            } catch (e) {
-                console.error("Lỗi giải mã JWT:", e);
-                return null;
-            }
+            } catch (e) { return null; }
         }
 
         function handleGoogleLogin(response) {
             const userInfo = decodeJWT(response.credential);
-            if (!userInfo) {
-                showToast('❌ Lỗi xác thực Google!', 'error');
-                return;
-            }
+            if (!userInfo) return showToast('❌ Lỗi xác thực Google!', 'error');
 
             const users = getUsers();
             let user = users.find(u => u.email.toLowerCase() === userInfo.email.toLowerCase());
@@ -724,7 +701,7 @@
                 btnLogin.style.display = 'none';
                 userBox.classList.add('active');
                 document.getElementById('userName').textContent = user.username;
-                
+
                 if (user.avatar) {
                     userAvatar.innerHTML = `<img src="${user.avatar}" alt="Avatar">`;
                 } else {
@@ -737,75 +714,134 @@
             }
         }
 
-        /* ============ XỬ LÝ TIN NHẮN ============ */
+        /* ============ CHAT VỚI SUPABASE ============ */
         const msgModal = document.getElementById('msgModal');
+        let realtimeChannel = null;
 
         function openMsg() {
             msgModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
             loadMessages();
+            startRealtime();
         }
+
         function closeMsg() {
             msgModal.classList.remove('active');
+            document.body.style.overflow = '';
+            stopRealtime();
         }
+
         msgModal.addEventListener('click', e => { if (e.target === msgModal) closeMsg(); });
 
-        function sendMessage(event) {
+        // Bắt đầu lắng nghe tin nhắn mới theo thời gian thực
+        function startRealtime() {
+            if (realtimeChannel) return;
+            realtimeChannel = supabaseClient
+                .channel('public:messages')
+                .on('postgres_changes',
+                    { event: 'INSERT', schema: 'public', table: 'messages' },
+                    payload => {
+                        appendMessage(payload.new);
+                    }
+                )
+                .subscribe();
+        }
+
+        function stopRealtime() {
+            if (realtimeChannel) {
+                supabaseClient.removeChannel(realtimeChannel);
+                realtimeChannel = null;
+            }
+        }
+
+        // Tải toàn bộ tin nhắn (50 tin gần nhất)
+        async function loadMessages() {
+            const container = document.getElementById('msgContainer');
+            container.innerHTML = `<p style="text-align: center; color: #666; font-size: 14px; margin-top: 20px;">Đang tải tin nhắn...</p>`;
+
+            const { data, error } = await supabaseClient
+                .from('messages')
+                .select('*')
+                .order('created_at', { ascending: true })
+                .limit(50);
+
+            if (error) {
+                console.error('Lỗi tải tin nhắn:', error);
+                container.innerHTML = `<p style="text-align: center; color: #ef4444; font-size: 14px; margin-top: 20px;">❌ Không tải được tin nhắn. Hãy kiểm tra bảng "messages" đã được tạo chưa.</p>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            if (data.length === 0) {
+                container.innerHTML = `<p style="text-align: center; color: #666; font-size: 14px; margin-top: 20px;">Chưa có tin nhắn nào. Hãy bắt đầu trò chuyện!</p>`;
+                return;
+            }
+
+            data.forEach(m => appendMessage(m));
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Thêm 1 tin nhắn vào giao diện
+        function appendMessage(m) {
+            const container = document.getElementById('msgContainer');
+            const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+            const isMine = session && m.username === session.username;
+
+            // Xóa thông báo "Chưa có tin nhắn"
+            const empty = container.querySelector('p');
+            if (empty && empty.textContent.includes('Chưa có')) empty.remove();
+
+            const bubble = document.createElement('div');
+            bubble.className = 'msg-bubble' + (isMine ? ' mine' : '');
+
+            const time = new Date(m.created_at).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+
+            const avatarHtml = m.avatar
+                ? `<img src="${m.avatar}" style="width:18px;height:18px;border-radius:50%;margin-right:5px;vertical-align:middle;display:inline-block;">`
+                : '';
+
+            bubble.innerHTML = `
+                <strong>${avatarHtml}${escapeHtml(m.username)}</strong>
+                <p>${escapeHtml(m.text)}</p>
+                <span class="msg-time">${time}</span>
+            `;
+            container.appendChild(bubble);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // Gửi tin nhắn
+        async function sendMessage(event) {
             event.preventDefault();
             const input = document.getElementById('msgInput');
             const text = input.value.trim();
             if (!text) return;
 
-            const session = JSON.parse(localStorage.getItem(SESSION_KEY));
-            if (!session) return;
-
-            // Tạo đối tượng tin nhắn mới
-            const newMsg = {
-                id: Date.now(), // ID duy nhất
-                sender: session.username,
-                avatar: session.avatar || null,
-                text: text,
-                time: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
-            };
-
-            // Lưu vào localStorage (Demo)
-            // Lưu ý: Cách này chỉ lưu trên máy của bạn. Để chat thật giữa nhiều người,
-            // bạn cần thay thế bằng API của Supabase/Firebase.
-            let msgs = JSON.parse(localStorage.getItem(MSG_KEY)) || [];
-            msgs.push(newMsg);
-            // Giới hạn chỉ lưu 50 tin nhắn gần nhất để tránh đầy bộ nhớ
-            if (msgs.length > 50) msgs = msgs.slice(-50); 
-            localStorage.setItem(MSG_KEY, JSON.stringify(msgs));
-
-            input.value = '';
-            loadMessages();
-        }
-
-        function loadMessages() {
-            const container = document.getElementById('msgContainer');
-            const session = JSON.parse(localStorage.getItem(SESSION_KEY));
-            const msgs = JSON.parse(localStorage.getItem(MSG_KEY)) || [];
-
-            if (msgs.length === 0) {
-                container.innerHTML = `<p style="text-align: center; color: #666; font-size: 14px; margin-top: 20px;">Chưa có tin nhắn nào. Hãy bắt đầu trò chuyện!</p>`;
+            const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+            if (!session) {
+                showToast('❌ Bạn cần đăng nhập để gửi tin nhắn!', 'error');
                 return;
             }
 
-            container.innerHTML = msgs.map(m => {
-                const isMine = m.sender === (session ? session.username : '');
-                const avatarHtml = m.avatar 
-                    ? `<img src="${m.avatar}" style="width: 20px; height: 20px; border-radius: 50%; margin-right: 5px; vertical-align: middle;">` 
-                    : '';
-                return `
-                    <div class="msg-bubble ${isMine ? 'mine' : ''}">
-                        <strong>${avatarHtml}${m.sender}</strong>
-                        <p>${m.text}</p>
-                        <span class="msg-time">${m.time}</span>
-                    </div>
-                `;
-            }).join('');
+            input.value = '';
 
-            // Tự động cuộn xuống tin nhắn mới nhất
-            container.scrollTop = container.scrollHeight;
+            const { error } = await supabaseClient
+                .from('messages')
+                .insert([{
+                    username: session.username,
+                    avatar: session.avatar || null,
+                    text: text
+                }]);
+
+            if (error) {
+                console.error('Lỗi gửi tin nhắn:', error);
+                showToast('❌ Không gửi được tin nhắn!', 'error');
+            }
         }
 
         /* ============ TOAST ============ */
