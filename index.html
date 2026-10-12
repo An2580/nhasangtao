@@ -8,33 +8,25 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         html { scroll-behavior: smooth; scroll-padding-top: 80px; }
         body { background: #080808; color: white; overflow-x: hidden; }
-        
+
         /* ================= HEADER ================= */
         header {
             position: fixed; top: 0; left: 0; width: 100%; padding: 18px 8%;
             background: rgba(8, 8, 8, 0.85); backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(255, 60, 0, 0.2);
             display: flex; justify-content: space-between; align-items: center; z-index: 1000;
-            transition: all 0.3s ease;
         }
-        .logo { 
-            font-size: 26px; font-weight: 900; color: #ff3c00; 
+        .logo { font-size: 26px; font-weight: 900; color: #ff3c00;
             letter-spacing: 2px; text-transform: uppercase;
-            text-shadow: 0 0 10px rgba(255, 60, 0, 0.5);
-        }
+            text-shadow: 0 0 10px rgba(255, 60, 0, 0.5); }
         .nav-right { display: flex; align-items: center; }
-        nav a { 
-            color: white; text-decoration: none; margin-left: 25px; font-weight: 600;
-            transition: 0.3s; position: relative; padding: 5px 0;
-        }
-        nav a::after {
-            content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px;
-            background: #ff3c00; transition: 0.3s; box-shadow: 0 0 8px #ff3c00;
-        }
+        nav a { color: white; text-decoration: none; margin-left: 25px; font-weight: 600;
+            transition: 0.3s; position: relative; padding: 5px 0; }
+        nav a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px;
+            background: #ff3c00; transition: 0.3s; box-shadow: 0 0 8px #ff3c00; }
         nav a:hover { color: #ff3c00; }
         nav a:hover::after { width: 100%; }
 
-        /* Nút đăng nhập trên header */
         .btn-login {
             margin-left: 25px; padding: 10px 24px;
             background: transparent; color: #ff3c00;
@@ -42,39 +34,46 @@
             font-weight: 700; font-size: 15px; cursor: pointer;
             transition: all 0.3s ease; letter-spacing: 0.5px;
         }
-        .btn-login:hover {
-            background: #ff3c00; color: #fff;
-            box-shadow: 0 0 20px rgba(255, 60, 0, 0.6);
-            transform: translateY(-2px);
+        .btn-login:hover { background: #ff3c00; color: #fff;
+            box-shadow: 0 0 20px rgba(255, 60, 0, 0.6); transform: translateY(-2px); }
+
+        /* Khu vực user đã đăng nhập */
+        .user-box { display: none; align-items: center; gap: 12px; margin-left: 25px; }
+        .user-box.active { display: flex; }
+        .user-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: linear-gradient(135deg, #ff3c00, #ff8c00);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; color: #fff; font-size: 16px;
+            border: 2px solid #ff3c00; box-shadow: 0 0 15px rgba(255, 60, 0, 0.5);
         }
+        .user-name { color: #fff; font-weight: 600; font-size: 15px; }
+        .btn-logout {
+            padding: 8px 16px; background: transparent; color: #ff3c00;
+            border: 1px solid #ff3c00; border-radius: 20px;
+            font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.3s;
+        }
+        .btn-logout:hover { background: #ff3c00; color: #fff; }
 
         /* ================= HERO ================= */
         .hero {
             min-height: 100vh; display: flex; justify-content: center; align-items: center;
             text-align: center; padding: 100px 20px; position: relative;
-            background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(8, 8, 8, 1)), 
+            background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(8, 8, 8, 1)),
                         url("https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80") center/cover;
         }
-        .hero-content h1 { 
-            font-size: 80px; font-weight: 900; color: #ff3c00; 
+        .hero-content h1 { font-size: 80px; font-weight: 900; color: #ff3c00;
             text-shadow: 0 0 20px rgba(255, 60, 0, 0.8), 0 0 40px rgba(255, 60, 0, 0.4);
-            animation: float 3s ease-in-out infinite alternate;
-        }
-        .hero-content p { 
-            margin: 20px auto 35px; font-size: 22px; color: #ddd; max-width: 600px;
+            animation: float 3s ease-in-out infinite alternate; }
+        .hero-content p { margin: 20px auto 35px; font-size: 22px; color: #ddd; max-width: 600px;
             border-right: 3px solid #ff3c00; white-space: nowrap; overflow: hidden;
-            animation: typing 3.5s steps(40, end), blink 0.75s step-end infinite;
-        }
-        .btn { 
-            display: inline-block; padding: 16px 36px; background: #ff3c00; color: white; 
+            animation: typing 3.5s steps(40, end), blink 0.75s step-end infinite; }
+        .btn { display: inline-block; padding: 16px 36px; background: #ff3c00; color: white;
             text-decoration: none; border-radius: 30px; font-weight: bold; font-size: 18px;
             box-shadow: 0 0 20px rgba(255, 60, 0, 0.5); transition: all 0.4s ease;
-            position: relative; overflow: hidden; cursor: pointer;
-        }
-        .btn:hover { 
-            background: #fff; color: #ff3c00; transform: translateY(-5px) scale(1.05); 
-            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.4);
-        }
+            cursor: pointer; }
+        .btn:hover { background: #fff; color: #ff3c00; transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.4); }
 
         /* ================= SECTIONS ================= */
         section { padding: 100px 8%; opacity: 0; transform: translateY(40px); transition: all 0.8s ease-out; }
@@ -87,98 +86,92 @@
         /* ================= ABOUT ================= */
         .about { display: flex; align-items: center; gap: 60px; flex-wrap: wrap; }
         .avatar-container { position: relative; display: inline-block; }
-        .avatar {
-            width: 280px; height: 280px; border-radius: 50%; object-fit: cover;
+        .avatar { width: 280px; height: 280px; border-radius: 50%; object-fit: cover;
             border: 4px solid #ff3c00; position: relative; z-index: 2;
-            box-shadow: 0 0 30px rgba(255, 60, 0, 0.6); transition: transform 0.5s ease;
-        }
-        .avatar-container::before {
-            content: ''; position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px;
+            box-shadow: 0 0 30px rgba(255, 60, 0, 0.6); transition: transform 0.5s ease; }
+        .avatar-container::before { content: ''; position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px;
             border-radius: 50%; border: 2px dashed #ff3c00;
-            animation: rotate 12s linear infinite; z-index: 1;
-        }
+            animation: rotate 12s linear infinite; z-index: 1; }
         .avatar-container:hover .avatar { transform: scale(1.05) rotate(2deg); }
-
         .about-text { flex: 1; min-width: 280px; }
         .about-text h3 { font-size: 34px; margin-bottom: 20px; color: #fff; }
         .about-text p { color: #bbb; line-height: 1.8; font-size: 17px; }
 
         /* ================= STATS ================= */
         .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 25px; }
-        .stat { 
-            background: #121212; padding: 35px 20px; text-align: center; border-radius: 16px; 
-            border: 1px solid #222; transition: all 0.4s ease; cursor: pointer;
-        }
-        .stat:hover { 
-            transform: translateY(-10px); border-color: #ff3c00; 
-            box-shadow: 0 10px 30px rgba(255, 60, 0, 0.25); background: #181818;
-        }
+        .stat { background: #121212; padding: 35px 20px; text-align: center; border-radius: 16px;
+            border: 1px solid #222; transition: all 0.4s ease; cursor: pointer; }
+        .stat:hover { transform: translateY(-10px); border-color: #ff3c00;
+            box-shadow: 0 10px 30px rgba(255, 60, 0, 0.25); background: #181818; }
         .stat h3 { font-size: 40px; color: #ff3c00; font-weight: 800; }
         .stat p { color: #aaa; margin-top: 8px; }
 
         /* ================= VIDEOS ================= */
         .videos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
-        .video { 
-            background: #121212; border-radius: 16px; overflow: hidden; 
-            border: 1px solid #222; transition: all 0.4s ease; position: relative;
-        }
+        .video { background: #121212; border-radius: 16px; overflow: hidden;
+            border: 1px solid #222; transition: all 0.4s ease; position: relative; }
         .video-thumb { overflow: hidden; position: relative; }
         .video img { width: 100%; height: 200px; object-fit: cover; transition: transform 0.5s ease; }
         .video:hover img { transform: scale(1.1); }
-        .video:hover { 
-            transform: translateY(-8px); border-color: #ff3c00; 
-            box-shadow: 0 15px 35px rgba(255, 60, 0, 0.2); 
-        }
+        .video:hover { transform: translateY(-8px); border-color: #ff3c00;
+            box-shadow: 0 15px 35px rgba(255, 60, 0, 0.2); }
         .video h3 { padding: 20px 20px 10px; font-size: 20px; }
         .video a { display: inline-block; padding: 0 20px 20px; color: #ff3c00; text-decoration: none; font-weight: bold; transition: 0.3s; }
         .video a:hover { color: #fff; padding-left: 25px; }
 
         /* ================= SOCIAL ================= */
         .social { text-align: center; }
-        .social a { 
-            display: inline-block; margin: 12px; padding: 15px 30px; 
-            border: 2px solid #ff3c00; border-radius: 40px; color: white; 
+        .social a { display: inline-block; margin: 12px; padding: 15px 30px;
+            border: 2px solid #ff3c00; border-radius: 40px; color: white;
             text-decoration: none; font-weight: bold; transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(255, 60, 0, 0.2);
-        }
-        .social a:hover { 
-            background: #ff3c00; transform: translateY(-5px) scale(1.05); 
-            box-shadow: 0 10px 25px rgba(255, 60, 0, 0.5);
-        }
+            box-shadow: 0 0 10px rgba(255, 60, 0, 0.2); }
+        .social a:hover { background: #ff3c00; transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 60, 0, 0.5); }
 
-        /* ================= MODAL ĐĂNG NHẬP ================= */
+        /* ================= MODAL ================= */
         .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center;
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center;
             z-index: 2000; opacity: 0; visibility: hidden; transition: all 0.35s ease;
-            padding: 20px;
+            padding: 20px; overflow-y: auto;
         }
         .modal-overlay.active { opacity: 1; visibility: visible; }
 
         .modal {
             background: #111; border: 1px solid rgba(255, 60, 0, 0.35);
-            border-radius: 20px; width: 100%; max-width: 420px; padding: 40px 35px;
+            border-radius: 20px; width: 100%; max-width: 430px; padding: 40px 35px;
             box-shadow: 0 20px 60px rgba(255, 60, 0, 0.25);
             transform: translateY(30px) scale(0.95); transition: all 0.35s ease;
-            position: relative;
+            position: relative; margin: auto;
         }
         .modal-overlay.active .modal { transform: translateY(0) scale(1); }
 
-        .modal-close {
-            position: absolute; top: 15px; right: 20px;
+        .modal-close { position: absolute; top: 15px; right: 20px;
             background: none; border: none; color: #888; font-size: 28px;
-            cursor: pointer; line-height: 1; transition: 0.3s;
-        }
+            cursor: pointer; line-height: 1; transition: 0.3s; }
         .modal-close:hover { color: #ff3c00; transform: rotate(90deg); }
 
+        /* Tabs Đăng nhập / Đăng ký */
+        .tabs {
+            display: flex; background: #1a1a1a; border-radius: 12px;
+            padding: 5px; margin-bottom: 25px; position: relative;
+        }
+        .tab {
+            flex: 1; padding: 12px; text-align: center; cursor: pointer;
+            font-weight: 700; font-size: 15px; color: #888; border: none;
+            background: none; border-radius: 9px; transition: all 0.3s ease;
+            z-index: 1;
+        }
+        .tab.active { color: #fff; background: linear-gradient(135deg, #ff3c00, #ff6a00);
+            box-shadow: 0 0 15px rgba(255, 60, 0, 0.5); }
+
         .modal h2 {
-            text-align: center; color: #ff3c00; font-size: 28px;
+            text-align: center; color: #ff3c00; font-size: 26px;
             margin-bottom: 8px; text-shadow: 0 0 15px rgba(255, 60, 0, 0.4);
         }
-        .modal .subtitle {
-            text-align: center; color: #888; font-size: 14px; margin-bottom: 30px;
-        }
-        .modal form { display: flex; flex-direction: column; gap: 16px; }
+        .modal .subtitle { text-align: center; color: #888; font-size: 14px; margin-bottom: 25px; }
+
+        .modal form { display: flex; flex-direction: column; gap: 14px; }
         .modal input {
             width: 100%; padding: 14px 18px;
             background: #1a1a1a; border: 1px solid #2a2a2a;
@@ -192,8 +185,15 @@
         }
         .modal input::placeholder { color: #666; }
 
+        .modal .error-msg {
+            color: #ff4444; font-size: 13px; font-weight: 600;
+            text-align: center; min-height: 18px; margin-top: -4px;
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .modal .error-msg.show { opacity: 1; }
+
         .modal button[type="submit"] {
-            margin-top: 10px; padding: 15px;
+            margin-top: 5px; padding: 15px;
             background: #ff3c00; color: #fff; border: none;
             border-radius: 12px; font-size: 16px; font-weight: 700;
             cursor: pointer; transition: all 0.3s ease;
@@ -206,28 +206,15 @@
             box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
         }
 
-        .modal .divider {
-            text-align: center; color: #555; font-size: 13px;
-            margin: 22px 0 18px; position: relative;
+        .modal .terms {
+            font-size: 12px; color: #666; text-align: center; margin-top: 5px;
         }
-        .modal .divider::before,
-        .modal .divider::after {
-            content: ''; position: absolute; top: 50%; width: 40%; height: 1px;
-            background: #2a2a2a;
-        }
-        .modal .divider::before { left: 0; }
-        .modal .divider::after { right: 0; }
+        .modal .terms a { color: #ff3c00; text-decoration: none; }
 
-        .modal .alt-action {
-            text-align: center; color: #aaa; font-size: 14px;
-        }
-        .modal .alt-action a {
-            color: #ff3c00; text-decoration: none; font-weight: 600;
-            transition: 0.3s;
-        }
-        .modal .alt-action a:hover { text-shadow: 0 0 10px rgba(255, 60, 0, 0.6); }
+        .form-panel { display: none; }
+        .form-panel.active { display: block; }
 
-        /* Thông báo đăng nhập thành công */
+        /* Toast */
         .toast {
             position: fixed; top: 100px; right: 30px;
             background: #121212; border-left: 4px solid #ff3c00;
@@ -235,25 +222,17 @@
             color: #fff; font-weight: 600; font-size: 15px;
             box-shadow: 0 10px 30px rgba(255, 60, 0, 0.3);
             transform: translateX(400px); transition: all 0.5s ease;
-            z-index: 3000;
+            z-index: 3000; max-width: 320px;
         }
         .toast.show { transform: translateX(0); }
+        .toast.success { border-left-color: #22c55e; }
+        .toast.error { border-left-color: #ef4444; }
 
         /* ================= KEYFRAMES ================= */
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            100% { transform: translateY(-12px); }
-        }
-        @keyframes rotate {
-            100% { transform: rotate(360deg); }
-        }
-        @keyframes typing {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-        @keyframes blink {
-            50% { border-color: transparent; }
-        }
+        @keyframes float { 0% { transform: translateY(0px); } 100% { transform: translateY(-12px); } }
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
+        @keyframes typing { from { width: 0; } to { width: 100%; } }
+        @keyframes blink { 50% { border-color: transparent; } }
 
         footer { padding: 30px; text-align: center; background: #040404; color: #666; border-top: 1px solid #111; }
 
@@ -265,7 +244,10 @@
             .about { justify-content: center; text-align: center; }
             nav a { display: none; }
             .btn-login { margin-left: 0; padding: 8px 18px; font-size: 14px; }
+            .user-name { display: none; }
+            .user-box { margin-left: 0; }
             .modal { padding: 35px 25px; }
+            .toast { top: 90px; right: 15px; left: 15px; max-width: none; }
         }
     </style>
 </head>
@@ -280,7 +262,13 @@
                 <a href="#videos">Video</a>
                 <a href="#social">Liên hệ</a>
             </nav>
-            <button class="btn-login" onclick="openLogin()">🔐 Đăng nhập</button>
+            <button class="btn-login" id="btnLogin" onclick="openAuth('login')">🔐 Đăng nhập</button>
+
+            <div class="user-box" id="userBox">
+                <div class="user-avatar" id="userAvatar">A</div>
+                <span class="user-name" id="userName">User</span>
+                <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+            </div>
         </div>
     </header>
 
@@ -288,12 +276,9 @@
         <div class="hero-content">
             <h1>AN GỜ</h1>
             <p>🔥 Nhà sáng tạo nội dung Free Fire 🔥</p>
-
-            <a 
-                href="freefire://" 
-                onclick="setTimeout(() => { window.location.href = 'https://ff.garena.vn/'; }, 1000);" 
-                class="btn"
-            >
+            <a href="freefire://"
+               onclick="setTimeout(() => { window.location.href = 'https://ff.garena.vn/'; }, 1000);"
+               class="btn">
                 Vào Free Fire ngay 🚀
             </a>
         </div>
@@ -306,11 +291,9 @@
         </div>
         <div class="about">
             <div class="avatar-container">
-                <img 
-                    class="avatar" 
-                    src="https://i.ibb.co/mrJynHcy/814660954-1658883409207761-7664311303546839748-n.jpg" 
-                    alt="An Gờ"
-                >
+                <img class="avatar"
+                     src="https://i.ibb.co/mrJynHcy/814660954-1658883409207761-7664311303546839748-n.jpg"
+                     alt="An Gờ">
             </div>
             <div class="about-text">
                 <h3>Xin chào! Tôi là An Gờ 👋</h3>
@@ -383,76 +366,236 @@
         © 2026 An Gờ | Free Fire Content Creator
     </footer>
 
-    <!-- ================= MODAL ĐĂNG NHẬP ================= -->
-    <div class="modal-overlay" id="loginModal">
+    <!-- ================= MODAL AUTH ================= -->
+    <div class="modal-overlay" id="authModal">
         <div class="modal">
-            <button class="modal-close" onclick="closeLogin()">×</button>
-            <h2>Đăng nhập</h2>
-            <p class="subtitle">Chào mừng trở lại với An Gờ 🔥</p>
-            <form onsubmit="handleLogin(event)">
-                <input type="text" placeholder="Tên đăng nhập hoặc Email" required>
-                <input type="password" placeholder="Mật khẩu" required>
-                <button type="submit">Đăng nhập ngay</button>
-            </form>
-            <div class="divider">hoặc</div>
-            <div class="alt-action">
-                Chưa có tài khoản? <a href="#">Đăng ký ngay</a>
+            <button class="modal-close" onclick="closeAuth()">×</button>
+
+            <div class="tabs">
+                <button class="tab active" id="tabLogin" onclick="switchTab('login')">Đăng nhập</button>
+                <button class="tab" id="tabRegister" onclick="switchTab('register')">Đăng ký</button>
+            </div>
+
+            <!-- FORM ĐĂNG NHẬP -->
+            <div class="form-panel active" id="panelLogin">
+                <h2>Đăng nhập</h2>
+                <p class="subtitle">Chào mừng trở lại với An Gờ 🔥</p>
+                <form onsubmit="handleLogin(event)">
+                    <input type="text" id="loginUser" placeholder="Tên đăng nhập hoặc Email" required autocomplete="username">
+                    <input type="password" id="loginPass" placeholder="Mật khẩu" required autocomplete="current-password">
+                    <div class="error-msg" id="loginError"></div>
+                    <button type="submit">Đăng nhập ngay</button>
+                </form>
+            </div>
+
+            <!-- FORM ĐĂNG KÝ -->
+            <div class="form-panel" id="panelRegister">
+                <h2>Đăng ký</h2>
+                <p class="subtitle">Tạo tài khoản mới — mỗi người 1 tài khoản 🎮</p>
+                <form onsubmit="handleRegister(event)">
+                    <input type="text" id="regUser" placeholder="Tên đăng nhập (3-20 ký tự)" required minlength="3" maxlength="20" autocomplete="username">
+                    <input type="email" id="regEmail" placeholder="Email" required autocomplete="email">
+                    <input type="password" id="regPass" placeholder="Mật khẩu (ít nhất 6 ký tự)" required minlength="6" autocomplete="new-password">
+                    <input type="password" id="regPass2" placeholder="Nhập lại mật khẩu" required autocomplete="new-password">
+                    <div class="error-msg" id="regError"></div>
+                    <button type="submit">Tạo tài khoản</button>
+                    <p class="terms">Bằng cách đăng ký, bạn đồng ý với <a href="#">Điều khoản</a> của An Gờ.</p>
+                </form>
             </div>
         </div>
     </div>
 
-    <!-- Thông báo -->
-    <div class="toast" id="toast">✅ Đăng nhập thành công!</div>
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
 
     <script>
-        // Hiệu ứng xuất hiện khi cuộn
+        /* ============ HIỆU ỨNG CUỘN ============ */
         const sections = document.querySelectorAll('section');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
+                if (entry.isIntersecting) entry.target.classList.add('visible');
             });
         }, { threshold: 0.15 });
-        sections.forEach(section => observer.observe(section));
+        sections.forEach(s => observer.observe(s));
 
-        // ================= ĐĂNG NHẬP =================
-        const loginModal = document.getElementById('loginModal');
-        const toast = document.getElementById('toast');
+        /* ============ QUẢN LÝ TÀI KHOẢN (localStorage) ============ */
+        const USERS_KEY = 'angff_users';
+        const SESSION_KEY = 'angff_currentUser';
 
-        function openLogin() {
-            loginModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
+        // Lấy danh sách user
+        function getUsers() {
+            try { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; }
+            catch { return []; }
+        }
+        // Lưu danh sách user
+        function saveUsers(users) {
+            localStorage.setItem(USERS_KEY, JSON.stringify(users));
+        }
+        // Hash mật khẩu đơn giản (chỉ demo — không dùng cho production thật)
+        function hashPass(pass) {
+            let hash = 0;
+            for (let i = 0; i < pass.length; i++) {
+                hash = ((hash << 5) - hash) + pass.charCodeAt(i);
+                hash |= 0;
+            }
+            return 'h_' + hash.toString(36);
         }
 
-        function closeLogin() {
-            loginModal.classList.remove('active');
+        /* ============ MODAL ============ */
+        const authModal = document.getElementById('authModal');
+
+        function openAuth(tab = 'login') {
+            authModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            switchTab(tab);
+            clearErrors();
+            document.querySelectorAll('#authModal input').forEach(i => i.value = '');
+        }
+        function closeAuth() {
+            authModal.classList.remove('active');
             document.body.style.overflow = '';
         }
+        authModal.addEventListener('click', e => { if (e.target === authModal) closeAuth(); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAuth(); });
 
-        // Đóng khi bấm ra ngoài modal
-        loginModal.addEventListener('click', (e) => {
-            if (e.target === loginModal) closeLogin();
-        });
+        function switchTab(tab) {
+            document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+            document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+            document.getElementById('panelLogin').classList.toggle('active', tab === 'login');
+            document.getElementById('panelRegister').classList.toggle('active', tab === 'register');
+            clearErrors();
+        }
 
-        // Đóng khi bấm phím ESC
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeLogin();
-        });
+        function clearErrors() {
+            ['loginError', 'regError'].forEach(id => {
+                const el = document.getElementById(id);
+                el.textContent = '';
+                el.classList.remove('show');
+            });
+        }
 
-        // Xử lý đăng nhập
+        function showError(id, msg) {
+            const el = document.getElementById(id);
+            el.textContent = msg;
+            el.classList.add('show');
+        }
+
+        /* ============ ĐĂNG KÝ ============ */
+        function handleRegister(event) {
+            event.preventDefault();
+            clearErrors();
+
+            const username = document.getElementById('regUser').value.trim();
+            const email = document.getElementById('regEmail').value.trim().toLowerCase();
+            const pass = document.getElementById('regPass').value;
+            const pass2 = document.getElementById('regPass2').value;
+
+            // Kiểm tra ký tự username
+            if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+                return showError('regError', '❌ Tên đăng nhập chỉ gồm chữ, số và dấu _');
+            }
+            // Kiểm tra mật khẩu khớp
+            if (pass !== pass2) {
+                return showError('regError', '❌ Mật khẩu nhập lại không khớp!');
+            }
+
+            const users = getUsers();
+
+            // Kiểm tra trùng username
+            if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+                return showError('regError', '❌ Tên đăng nhập đã được sử dụng!');
+            }
+            // Kiểm tra trùng email → mỗi người chỉ 1 tài khoản
+            if (users.some(u => u.email.toLowerCase() === email)) {
+                return showError('regError', '❌ Email này đã có tài khoản rồi! Mỗi người chỉ được 1 tài khoản.');
+            }
+
+            // Tạo user mới
+            const newUser = {
+                username,
+                email,
+                password: hashPass(pass),
+                createdAt: new Date().toISOString()
+            };
+            users.push(newUser);
+            saveUsers(users);
+
+            // Tự động đăng nhập luôn
+            setSession(newUser);
+            closeAuth();
+            showToast('🎉 Đăng ký thành công! Chào mừng ' + username, 'success');
+        }
+
+        /* ============ ĐĂNG NHẬP ============ */
         function handleLogin(event) {
             event.preventDefault();
-            closeLogin();
-            showToast('✅ Đăng nhập thành công!');
-            event.target.reset();
+            clearErrors();
+
+            const input = document.getElementById('loginUser').value.trim().toLowerCase();
+            const pass = document.getElementById('loginPass').value;
+
+            const users = getUsers();
+            const user = users.find(u =>
+                u.username.toLowerCase() === input || u.email.toLowerCase() === input
+            );
+
+            if (!user) {
+                return showError('loginError', '❌ Không tìm thấy tài khoản này!');
+            }
+            if (user.password !== hashPass(pass)) {
+                return showError('loginError', '❌ Mật khẩu không đúng!');
+            }
+
+            setSession(user);
+            closeAuth();
+            showToast('✅ Đăng nhập thành công! Chào ' + user.username, 'success');
         }
 
-        function showToast(message) {
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
+        /* ============ SESSION ============ */
+        function setSession(user) {
+            localStorage.setItem(SESSION_KEY, JSON.stringify({
+                username: user.username,
+                email: user.email
+            }));
+            updateUI();
         }
+
+        function logout() {
+            localStorage.removeItem(SESSION_KEY);
+            updateUI();
+            showToast('👋 Đã đăng xuất!', 'success');
+        }
+
+        function updateUI() {
+            const session = localStorage.getItem(SESSION_KEY);
+            const btnLogin = document.getElementById('btnLogin');
+            const userBox = document.getElementById('userBox');
+
+            if (session) {
+                const user = JSON.parse(session);
+                btnLogin.style.display = 'none';
+                userBox.classList.add('active');
+                document.getElementById('userName').textContent = user.username;
+                document.getElementById('userAvatar').textContent = user.username.charAt(0).toUpperCase();
+            } else {
+                btnLogin.style.display = 'inline-block';
+                userBox.classList.remove('active');
+            }
+        }
+
+        /* ============ TOAST ============ */
+        const toast = document.getElementById('toast');
+        function showToast(message, type = 'success') {
+            toast.textContent = message;
+            toast.className = 'toast show ' + type;
+            clearTimeout(toast._timer);
+            toast._timer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        /* ============ KHỞI TẠO ============ */
+        updateUI();
     </script>
 </body>
 </html>
