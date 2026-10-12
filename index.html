@@ -12,7 +12,6 @@
         html { scroll-behavior: smooth; scroll-padding-top: 80px; }
         body { background: #080808; color: white; overflow-x: hidden; }
 
-        /* ================= HEADER ================= */
         header {
             position: fixed; top: 0; left: 0; width: 100%; padding: 18px 8%;
             background: rgba(8, 8, 8, 0.85); backdrop-filter: blur(12px);
@@ -48,8 +47,9 @@
             display: flex; align-items: center; justify-content: center;
             font-weight: 900; color: #fff; font-size: 16px;
             border: 2px solid #ff3c00; box-shadow: 0 0 15px rgba(255, 60, 0, 0.5);
-            overflow: hidden;
+            overflow: hidden; cursor: pointer; transition: 0.3s;
         }
+        .user-avatar:hover { transform: scale(1.1); }
         .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .user-name { color: #fff; font-weight: 600; font-size: 15px; }
         .btn-logout {
@@ -66,7 +66,13 @@
         }
         .btn-msg:hover { background: #fff; color: #ff3c00; box-shadow: 0 0 15px rgba(255, 255, 255, 0.4); }
 
-        /* ================= HERO ================= */
+        .btn-profile {
+            padding: 8px 16px; background: transparent; color: #ff3c00;
+            border: 1px solid #ff3c00; border-radius: 20px; font-size: 13px;
+            font-weight: 600; cursor: pointer; transition: 0.3s; margin-left: 5px;
+        }
+        .btn-profile:hover { background: #ff3c00; color: #fff; }
+
         .hero {
             min-height: 100vh; display: flex; justify-content: center; align-items: center;
             text-align: center; padding: 100px 20px; position: relative;
@@ -86,7 +92,6 @@
         .btn:hover { background: #fff; color: #ff3c00; transform: translateY(-5px) scale(1.05);
             box-shadow: 0 10px 30px rgba(255, 255, 255, 0.4); }
 
-        /* ================= SECTIONS ================= */
         section { padding: 100px 8%; opacity: 0; transform: translateY(40px); transition: all 0.8s ease-out; }
         section.visible { opacity: 1; transform: translateY(0); }
 
@@ -94,7 +99,6 @@
         .title h2 { font-size: 42px; color: #ff3c00; text-shadow: 0 0 10px rgba(255, 60, 0, 0.3); }
         .title p { color: #888; margin-top: 8px; font-size: 16px; }
 
-        /* ================= ABOUT ================= */
         .about { display: flex; align-items: center; gap: 60px; flex-wrap: wrap; }
         .avatar-container { position: relative; display: inline-block; }
         .avatar { width: 280px; height: 280px; border-radius: 50%; object-fit: cover;
@@ -108,7 +112,6 @@
         .about-text h3 { font-size: 34px; margin-bottom: 20px; color: #fff; }
         .about-text p { color: #bbb; line-height: 1.8; font-size: 17px; }
 
-        /* ================= STATS ================= */
         .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 25px; }
         .stat { background: #121212; padding: 35px 20px; text-align: center; border-radius: 16px;
             border: 1px solid #222; transition: all 0.4s ease; cursor: pointer; }
@@ -117,7 +120,6 @@
         .stat h3 { font-size: 40px; color: #ff3c00; font-weight: 800; }
         .stat p { color: #aaa; margin-top: 8px; }
 
-        /* ================= VIDEOS ================= */
         .videos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
         .video { background: #121212; border-radius: 16px; overflow: hidden;
             border: 1px solid #222; transition: all 0.4s ease; position: relative; }
@@ -130,7 +132,6 @@
         .video a { display: inline-block; padding: 0 20px 20px; color: #ff3c00; text-decoration: none; font-weight: bold; transition: 0.3s; }
         .video a:hover { color: #fff; padding-left: 25px; }
 
-        /* ================= SOCIAL ================= */
         .social { text-align: center; }
         .social a { display: inline-block; margin: 12px; padding: 15px 30px;
             border: 2px solid #ff3c00; border-radius: 40px; color: white;
@@ -139,7 +140,6 @@
         .social a:hover { background: #ff3c00; transform: translateY(-5px) scale(1.05);
             box-shadow: 0 10px 25px rgba(255, 60, 0, 0.5); }
 
-        /* ================= MODAL ================= */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center;
@@ -276,6 +276,77 @@
         }
         .msg-input-area button:hover { background: #fff; color: #ff3c00; }
 
+        /* ================= PROFILE MODAL ================= */
+        .profile-modal { max-width: 480px; padding: 30px; }
+        .profile-header {
+            display: flex; align-items: center; gap: 20px;
+            padding-bottom: 20px; border-bottom: 1px solid #222;
+            margin-bottom: 20px;
+        }
+        .profile-avatar-big {
+            width: 90px; height: 90px; border-radius: 50%;
+            background: linear-gradient(135deg, #ff3c00, #ff8c00);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; color: #fff; font-size: 36px;
+            border: 3px solid #ff3c00; overflow: hidden;
+            box-shadow: 0 0 20px rgba(255, 60, 0, 0.5);
+            flex-shrink: 0;
+        }
+        .profile-avatar-big img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-info h3 { font-size: 24px; color: #fff; margin-bottom: 6px; }
+        .profile-info .email { color: #888; font-size: 14px; word-break: break-all; }
+        .profile-info .join-date { color: #666; font-size: 12px; margin-top: 4px; }
+
+        .profile-field {
+            padding: 14px 0; border-bottom: 1px solid #1a1a1a;
+        }
+        .profile-field:last-of-type { border-bottom: none; }
+        .profile-field label {
+            display: block; color: #888; font-size: 12px;
+            text-transform: uppercase; letter-spacing: 1px;
+            margin-bottom: 6px; font-weight: 700;
+        }
+        .profile-field .value {
+            color: #eee; font-size: 15px; line-height: 1.5;
+            word-break: break-word;
+        }
+        .profile-field .value.empty { color: #555; font-style: italic; }
+
+        .profile-field input, .profile-field textarea {
+            width: 100%; padding: 12px 14px;
+            background: #1a1a1a; border: 1px solid #2a2a2a;
+            border-radius: 10px; color: #fff; font-size: 14px;
+            outline: none; transition: 0.3s; font-family: inherit;
+            resize: vertical;
+        }
+        .profile-field input:focus, .profile-field textarea:focus {
+            border-color: #ff3c00;
+            box-shadow: 0 0 12px rgba(255, 60, 0, 0.3);
+        }
+
+        .profile-actions {
+            display: flex; gap: 10px; margin-top: 20px;
+        }
+        .profile-actions button {
+            flex: 1; padding: 14px; border: none;
+            border-radius: 12px; font-size: 15px; font-weight: 700;
+            cursor: pointer; transition: 0.3s; letter-spacing: 0.5px;
+        }
+        .btn-edit {
+            background: #ff3c00; color: #fff;
+            box-shadow: 0 0 15px rgba(255, 60, 0, 0.4);
+        }
+        .btn-edit:hover { background: #fff; color: #ff3c00; }
+        .btn-save {
+            background: #22c55e; color: #fff;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+        }
+        .btn-save:hover { background: #fff; color: #22c55e; }
+        .btn-cancel {
+            background: #2a2a2a; color: #aaa;
+        }
+        .btn-cancel:hover { background: #333; color: #fff; }
+
         /* ================= TOAST ================= */
         .toast {
             position: fixed; top: 100px; right: 30px;
@@ -290,7 +361,6 @@
         .toast.success { border-left-color: #22c55e; }
         .toast.error { border-left-color: #ef4444; }
 
-        /* ================= KEYFRAMES ================= */
         @keyframes float { 0% { transform: translateY(0px); } 100% { transform: translateY(-12px); } }
         @keyframes rotate { 100% { transform: rotate(360deg); } }
         @keyframes typing { from { width: 0; } to { width: 100%; } }
@@ -309,7 +379,7 @@
             .user-box { margin-left: 0; }
             .modal { padding: 35px 25px; }
             .toast { top: 90px; right: 15px; left: 15px; max-width: none; }
-            .btn-msg { padding: 8px 12px; font-size: 12px; }
+            .btn-msg, .btn-profile { padding: 8px 10px; font-size: 11px; }
         }
     </style>
 </head>
@@ -327,9 +397,10 @@
             <button class="btn-login" id="btnLogin" onclick="openAuth('login')">🔐 Đăng nhập</button>
 
             <div class="user-box" id="userBox">
-                <div class="user-avatar" id="userAvatar">A</div>
+                <div class="user-avatar" id="userAvatar" onclick="openProfile()">A</div>
                 <span class="user-name" id="userName">User</span>
-                <button class="btn-msg" onclick="openMsg()">✉️ Tin nhắn</button>
+                <button class="btn-msg" onclick="openMsg()">✉️ Chat</button>
+                <button class="btn-profile" onclick="openProfile()">👤 Hồ sơ</button>
                 <button class="btn-logout" onclick="logout()">Đăng xuất</button>
             </div>
         </div>
@@ -501,6 +572,61 @@
         </div>
     </div>
 
+    <!-- ================= MODAL PROFILE ================= -->
+    <div class="modal-overlay" id="profileModal">
+        <div class="modal profile-modal">
+            <button class="modal-close" onclick="closeProfile()">×</button>
+
+            <div class="profile-header">
+                <div class="profile-avatar-big" id="profileAvatar">A</div>
+                <div class="profile-info">
+                    <h3 id="profileDisplayName">User</h3>
+                    <div class="email" id="profileEmail">email</div>
+                    <div class="join-date" id="profileJoinDate"></div>
+                </div>
+            </div>
+
+            <!-- Chế độ XEM -->
+            <div id="profileViewMode">
+                <div class="profile-field">
+                    <label>Tên hiển thị</label>
+                    <div class="value" id="viewDisplayName"></div>
+                </div>
+                <div class="profile-field">
+                    <label>Tiểu sử</label>
+                    <div class="value" id="viewBio"></div>
+                </div>
+                <div class="profile-field">
+                    <label>Ảnh đại diện (URL)</label>
+                    <div class="value" id="viewAvatarUrl" style="font-size:12px;"></div>
+                </div>
+                <div class="profile-actions">
+                    <button class="btn-edit" onclick="enableEditProfile()">✏️ Chỉnh sửa</button>
+                </div>
+            </div>
+
+            <!-- Chế độ SỬA -->
+            <div id="profileEditMode" style="display:none;">
+                <div class="profile-field">
+                    <label>Tên hiển thị</label>
+                    <input type="text" id="editDisplayName" placeholder="Nhập tên hiển thị..." maxlength="50">
+                </div>
+                <div class="profile-field">
+                    <label>Tiểu sử</label>
+                    <textarea id="editBio" rows="3" placeholder="Giới thiệu về bạn..." maxlength="200"></textarea>
+                </div>
+                <div class="profile-field">
+                    <label>Link ảnh đại diện</label>
+                    <input type="url" id="editAvatarUrl" placeholder="https://...">
+                </div>
+                <div class="profile-actions">
+                    <button class="btn-cancel" onclick="cancelEditProfile()">Hủy</button>
+                    <button class="btn-save" onclick="saveProfile()">💾 Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="toast" id="toast"></div>
 
     <script>
@@ -521,6 +647,7 @@
         /* ============ QUẢN LÝ TÀI KHOẢN ============ */
         const USERS_KEY = 'angff_users';
         const SESSION_KEY = 'angff_currentUser';
+        const PROFILE_KEY = 'angff_profiles';
 
         function getUsers() {
             try { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; }
@@ -538,6 +665,25 @@
             return 'h_' + hash.toString(36);
         }
 
+        /* ============ PROFILE LƯU TRỮ ============ */
+        function getProfiles() {
+            try { return JSON.parse(localStorage.getItem(PROFILE_KEY)) || {}; }
+            catch { return {}; }
+        }
+        function saveProfiles(profiles) {
+            localStorage.setItem(PROFILE_KEY, JSON.stringify(profiles));
+        }
+        function getProfile(username) {
+            const profiles = getProfiles();
+            return profiles[username] || {};
+        }
+        function setProfileField(username, field, value) {
+            const profiles = getProfiles();
+            if (!profiles[username]) profiles[username] = {};
+            profiles[username][field] = value;
+            saveProfiles(profiles);
+        }
+
         /* ============ MODAL AUTH ============ */
         const authModal = document.getElementById('authModal');
 
@@ -553,7 +699,9 @@
             document.body.style.overflow = '';
         }
         authModal.addEventListener('click', e => { if (e.target === authModal) closeAuth(); });
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeAuth(); closeMsg(); } });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') { closeAuth(); closeMsg(); closeProfile(); }
+        });
 
         function switchTab(tab) {
             document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
@@ -679,7 +827,8 @@
             localStorage.setItem(SESSION_KEY, JSON.stringify({
                 username: user.username,
                 email: user.email,
-                avatar: user.avatar || null
+                avatar: user.avatar || null,
+                createdAt: user.createdAt || new Date().toISOString()
             }));
             updateUI();
         }
@@ -698,20 +847,121 @@
 
             if (session) {
                 const user = JSON.parse(session);
+                const profile = getProfile(user.username);
+                const displayName = profile.displayName || user.username;
+                const avatarUrl = profile.avatarUrl || user.avatar;
+
                 btnLogin.style.display = 'none';
                 userBox.classList.add('active');
-                document.getElementById('userName').textContent = user.username;
+                document.getElementById('userName').textContent = displayName;
 
-                if (user.avatar) {
-                    userAvatar.innerHTML = `<img src="${user.avatar}" alt="Avatar">`;
+                if (avatarUrl) {
+                    userAvatar.innerHTML = `<img src="${avatarUrl}" alt="Avatar" onerror="this.parentElement.textContent='${displayName.charAt(0).toUpperCase()}'">`;
                 } else {
-                    userAvatar.textContent = user.username.charAt(0).toUpperCase();
+                    userAvatar.textContent = displayName.charAt(0).toUpperCase();
                 }
             } else {
                 btnLogin.style.display = 'inline-block';
                 userBox.classList.remove('active');
                 userAvatar.innerHTML = 'A';
             }
+        }
+
+        /* ============ PROFILE ============ */
+        const profileModal = document.getElementById('profileModal');
+        let isEditMode = false;
+
+        function openProfile() {
+            const session = localStorage.getItem(SESSION_KEY);
+            if (!session) {
+                showToast('❌ Bạn cần đăng nhập!', 'error');
+                return;
+            }
+            profileModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            isEditMode = false;
+            renderProfile();
+            document.getElementById('profileViewMode').style.display = 'block';
+            document.getElementById('profileEditMode').style.display = 'none';
+        }
+
+        function closeProfile() {
+            profileModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        profileModal.addEventListener('click', e => { if (e.target === profileModal) closeProfile(); });
+
+        function renderProfile() {
+            const session = JSON.parse(localStorage.getItem(SESSION_KEY));
+            const profile = getProfile(session.username);
+            const displayName = profile.displayName || session.username;
+            const bio = profile.bio || '';
+            const avatarUrl = profile.avatarUrl || session.avatar || '';
+            const createdAt = session.createdAt || new Date().toISOString();
+
+            // Cập nhật header modal
+            const avatarBig = document.getElementById('profileAvatar');
+            if (avatarUrl) {
+                avatarBig.innerHTML = `<img src="${avatarUrl}" alt="Avatar" onerror="this.parentElement.textContent='${displayName.charAt(0).toUpperCase()}'">`;
+            } else {
+                avatarBig.textContent = displayName.charAt(0).toUpperCase();
+            }
+
+            document.getElementById('profileDisplayName').textContent = displayName;
+            document.getElementById('profileEmail').textContent = session.email;
+            document.getElementById('profileJoinDate').textContent =
+                '📅 Tham gia: ' + new Date(createdAt).toLocaleDateString('vi-VN');
+
+            // Chế độ xem
+            document.getElementById('viewDisplayName').textContent = displayName;
+            document.getElementById('viewBio').textContent = bio || 'Chưa có tiểu sử';
+            document.getElementById('viewBio').className = 'value' + (bio ? '' : ' empty');
+            document.getElementById('viewAvatarUrl').textContent = avatarUrl || 'Chưa có ảnh đại diện';
+            document.getElementById('viewAvatarUrl').className = 'value' + (avatarUrl ? '' : ' empty');
+
+            // Điền sẵn vào form edit
+            document.getElementById('editDisplayName').value = displayName;
+            document.getElementById('editBio').value = bio;
+            document.getElementById('editAvatarUrl').value = avatarUrl;
+        }
+
+        function enableEditProfile() {
+            isEditMode = true;
+            document.getElementById('profileViewMode').style.display = 'none';
+            document.getElementById('profileEditMode').style.display = 'block';
+        }
+
+        function cancelEditProfile() {
+            isEditMode = false;
+            document.getElementById('profileViewMode').style.display = 'block';
+            document.getElementById('profileEditMode').style.display = 'none';
+        }
+
+        function saveProfile() {
+            const session = JSON.parse(localStorage.getItem(SESSION_KEY));
+            const newDisplayName = document.getElementById('editDisplayName').value.trim();
+            const newBio = document.getElementById('editBio').value.trim();
+            const newAvatarUrl = document.getElementById('editAvatarUrl').value.trim();
+
+            if (!newDisplayName) {
+                showToast('❌ Tên hiển thị không được để trống!', 'error');
+                return;
+            }
+
+            setProfileField(session.username, 'displayName', newDisplayName);
+            setProfileField(session.username, 'bio', newBio);
+            setProfileField(session.username, 'avatarUrl', newAvatarUrl);
+
+            // Cập nhật session nếu đổi avatar
+            const newSession = { ...session };
+            if (newAvatarUrl) newSession.avatar = newAvatarUrl;
+            localStorage.setItem(SESSION_KEY, JSON.stringify(newSession));
+
+            updateUI();
+            renderProfile();
+            cancelEditProfile();
+            showToast('✅ Đã lưu hồ sơ!', 'success');
         }
 
         /* ============ CHAT VỚI SUPABASE ============ */
@@ -733,16 +983,13 @@
 
         msgModal.addEventListener('click', e => { if (e.target === msgModal) closeMsg(); });
 
-        // Bắt đầu lắng nghe tin nhắn mới theo thời gian thực
         function startRealtime() {
             if (realtimeChannel) return;
             realtimeChannel = supabaseClient
                 .channel('public:messages')
                 .on('postgres_changes',
                     { event: 'INSERT', schema: 'public', table: 'messages' },
-                    payload => {
-                        appendMessage(payload.new);
-                    }
+                    payload => { appendMessage(payload.new); }
                 )
                 .subscribe();
         }
@@ -754,7 +1001,6 @@
             }
         }
 
-        // Tải toàn bộ tin nhắn (50 tin gần nhất)
         async function loadMessages() {
             const container = document.getElementById('msgContainer');
             container.innerHTML = `<p style="text-align: center; color: #666; font-size: 14px; margin-top: 20px;">Đang tải tin nhắn...</p>`;
@@ -767,7 +1013,7 @@
 
             if (error) {
                 console.error('Lỗi tải tin nhắn:', error);
-                container.innerHTML = `<p style="text-align: center; color: #ef4444; font-size: 14px; margin-top: 20px;">❌ Không tải được tin nhắn. Hãy kiểm tra bảng "messages" đã được tạo chưa.</p>`;
+                container.innerHTML = `<p style="text-align: center; color: #ef4444; font-size: 14px; margin-top: 20px;">❌ Không tải được tin nhắn.</p>`;
                 return;
             }
 
@@ -781,13 +1027,11 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        // Thêm 1 tin nhắn vào giao diện
         function appendMessage(m) {
             const container = document.getElementById('msgContainer');
             const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
             const isMine = session && m.username === session.username;
 
-            // Xóa thông báo "Chưa có tin nhắn"
             const empty = container.querySelector('p');
             if (empty && empty.textContent.includes('Chưa có')) empty.remove();
 
@@ -795,7 +1039,6 @@
             bubble.className = 'msg-bubble' + (isMine ? ' mine' : '');
 
             const time = new Date(m.created_at).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-
             const avatarHtml = m.avatar
                 ? `<img src="${m.avatar}" style="width:18px;height:18px;border-radius:50%;margin-right:5px;vertical-align:middle;display:inline-block;">`
                 : '';
@@ -815,7 +1058,6 @@
             return div.innerHTML;
         }
 
-        // Gửi tin nhắn
         async function sendMessage(event) {
             event.preventDefault();
             const input = document.getElementById('msgInput');
@@ -830,11 +1072,15 @@
 
             input.value = '';
 
+            // Lấy avatar từ profile (nếu có) hoặc session
+            const profile = getProfile(session.username);
+            const avatarToSend = profile.avatarUrl || session.avatar || null;
+
             const { error } = await supabaseClient
                 .from('messages')
                 .insert([{
                     username: session.username,
-                    avatar: session.avatar || null,
+                    avatar: avatarToSend,
                     text: text
                 }]);
 
