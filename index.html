@@ -24,7 +24,6 @@
         .logo a { display: flex; align-items: center; }
         .logo img {
             height: 50px; width: auto;
-            /* Loại bỏ nền trắng của ảnh PNG */
             mix-blend-mode: screen;
             filter: drop-shadow(0 0 6px rgba(255, 196, 0, 0.6));
             transition: transform 0.3s ease;
@@ -103,6 +102,7 @@
         .btn:hover { background: #fff; color: #FFC400; transform: translateY(-5px) scale(1.05);
             box-shadow: 0 10px 30px rgba(255, 255, 255, 0.4); }
 
+        /* ================= SECTIONS ================= */
         section { padding: 100px 8%; opacity: 0; transform: translateY(40px); transition: all 0.8s ease-out; }
         section.visible { opacity: 1; transform: translateY(0); }
 
@@ -110,6 +110,7 @@
         .title h2 { font-size: 42px; color: #FFC400; text-shadow: 0 0 10px rgba(255, 196, 0, 0.3); }
         .title p { color: #888; margin-top: 8px; font-size: 16px; }
 
+        /* ================= ABOUT ================= */
         .about { display: flex; align-items: center; gap: 60px; flex-wrap: wrap; }
         .avatar-container { position: relative; display: inline-block; }
         .avatar { width: 280px; height: 280px; border-radius: 50%; object-fit: cover;
@@ -123,6 +124,7 @@
         .about-text h3 { font-size: 34px; margin-bottom: 20px; color: #fff; }
         .about-text p { color: #bbb; line-height: 1.8; font-size: 17px; }
 
+        /* ================= STATS ================= */
         .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 25px; }
         .stat { background: #121212; padding: 35px 20px; text-align: center; border-radius: 16px;
             border: 1px solid #222; transition: all 0.4s ease; cursor: pointer; }
@@ -131,6 +133,7 @@
         .stat h3 { font-size: 40px; color: #FFC400; font-weight: 800; }
         .stat p { color: #aaa; margin-top: 8px; }
 
+        /* ================= VIDEOS ================= */
         .videos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
         .video { background: #121212; border-radius: 16px; overflow: hidden;
             border: 1px solid #222; transition: all 0.4s ease; position: relative; }
@@ -143,6 +146,7 @@
         .video a { display: inline-block; padding: 0 20px 20px; color: #FFC400; text-decoration: none; font-weight: bold; transition: 0.3s; }
         .video a:hover { color: #fff; padding-left: 25px; }
 
+        /* ================= SOCIAL ================= */
         .social { text-align: center; }
         .social a { display: inline-block; margin: 12px; padding: 15px 30px;
             border: 2px solid #FFC400; border-radius: 40px; color: white;
@@ -151,6 +155,7 @@
         .social a:hover { background: #FFC400; color: #080808; transform: translateY(-5px) scale(1.05);
             box-shadow: 0 10px 25px rgba(255, 196, 0, 0.5); }
 
+        /* ================= MODAL ================= */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center;
@@ -244,14 +249,15 @@
         .divider::after { margin-left: 10px; }
         .google-btn-container { display: flex; justify-content: center; margin-top: 10px; }
 
-        .msg-modal { max-width: 500px; padding: 25px; }
+        /* ================= MESSAGES MODAL ================= */
+        .msg-modal { max-width: 520px; padding: 25px; }
         .msg-header {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #222;
         }
         .msg-header h2 { font-size: 20px; margin: 0; }
         .msg-container {
-            height: 350px; overflow-y: auto; display: flex; flex-direction: column;
+            height: 380px; overflow-y: auto; display: flex; flex-direction: column;
             gap: 12px; padding-right: 5px; margin-bottom: 15px;
         }
         .msg-container::-webkit-scrollbar { width: 6px; }
@@ -266,22 +272,36 @@
             align-self: flex-end;
         }
         .msg-bubble strong { color: #FFC400; font-size: 12px; display: block; margin-bottom: 4px; }
-        .msg-bubble p { font-size: 15px; color: #eee; line-height: 1.4; word-break: break-word; }
+        .msg-bubble p {
+            font-size: 15px; color: #eee; line-height: 1.4;
+            word-break: break-word;
+            white-space: pre-wrap; /* Giữ xuống dòng */
+            overflow-wrap: anywhere;
+        }
         .msg-time { font-size: 10px; color: #666; display: block; margin-top: 5px; }
-        .msg-input-area { display: flex; gap: 10px; }
-        .msg-input-area input {
+
+        /* Ô nhập tin nhắn — textarea tự giãn */
+        .msg-input-area { display: flex; gap: 10px; align-items: flex-end; }
+        .msg-input-area textarea {
             flex: 1; padding: 12px 16px; background: #1a1a1a;
             border: 1px solid #2a2a2a; border-radius: 20px;
             color: #fff; font-size: 14px; outline: none; transition: 0.3s;
+            font-family: inherit; resize: none;
+            min-height: 44px; max-height: 120px;
+            line-height: 1.4; overflow-y: auto;
         }
-        .msg-input-area input:focus { border-color: #FFC400; }
+        .msg-input-area textarea::-webkit-scrollbar { width: 4px; }
+        .msg-input-area textarea::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
+        .msg-input-area textarea:focus { border-color: #FFC400; }
         .msg-input-area button {
-            padding: 0 20px; background: #FFC400; color: #080808;
+            padding: 12px 20px; background: #FFC400; color: #080808;
             border: none; border-radius: 20px; font-weight: 700;
-            cursor: pointer; transition: 0.3s;
+            cursor: pointer; transition: 0.3s; height: 44px;
+            flex-shrink: 0;
         }
         .msg-input-area button:hover { background: #fff; color: #FFC400; }
 
+        /* ================= PROFILE MODAL ================= */
         .profile-modal { max-width: 480px; padding: 30px; }
         .profile-header {
             display: flex; align-items: center; gap: 20px;
@@ -309,7 +329,7 @@
             text-transform: uppercase; letter-spacing: 1px;
             margin-bottom: 6px; font-weight: 700;
         }
-        .profile-field .value { color: #eee; font-size: 15px; line-height: 1.5; word-break: break-word; }
+        .profile-field .value { color: #eee; font-size: 15px; line-height: 1.5; word-break: break-word; white-space: pre-wrap; }
         .profile-field .value.empty { color: #555; font-style: italic; }
 
         .profile-field input, .profile-field textarea {
@@ -337,6 +357,7 @@
         .btn-cancel { background: #2a2a2a; color: #aaa; }
         .btn-cancel:hover { background: #333; color: #fff; }
 
+        /* ================= TOAST ================= */
         .toast {
             position: fixed; top: 100px; right: 30px;
             background: #121212; border-left: 4px solid #FFC400;
@@ -370,6 +391,7 @@
             .modal { padding: 35px 25px; }
             .toast { top: 90px; right: 15px; left: 15px; max-width: none; }
             .btn-msg, .btn-profile { padding: 8px 10px; font-size: 11px; }
+            .msg-container { height: 300px; }
         }
     </style>
 </head>
@@ -560,7 +582,7 @@
                 <p style="text-align: center; color: #666; font-size: 14px; margin-top: 20px;">Đang tải tin nhắn...</p>
             </div>
             <form class="msg-input-area" onsubmit="sendMessage(event)">
-                <input type="text" id="msgInput" placeholder="Nhập tin nhắn..." required autocomplete="off">
+                <textarea id="msgInput" placeholder="Nhập tin nhắn... (Enter để gửi, Shift+Enter xuống dòng)" rows="1"></textarea>
                 <button type="submit">Gửi</button>
             </form>
         </div>
@@ -605,7 +627,7 @@
                 </div>
                 <div class="profile-field">
                     <label>Tiểu sử</label>
-                    <textarea id="editBio" rows="3" placeholder="Giới thiệu về bạn..." maxlength="200"></textarea>
+                    <textarea id="editBio" rows="3" placeholder="Giới thiệu về bạn..." maxlength="500"></textarea>
                 </div>
                 <div class="profile-field">
                     <label>Link ảnh đại diện</label>
@@ -622,10 +644,12 @@
     <div class="toast" id="toast"></div>
 
     <script>
+        /* ============ CẤU HÌNH SUPABASE ============ */
         const SUPABASE_URL = "https://fnthhoxyobcqnbsnqazy.supabase.co";
         const SUPABASE_KEY = "sb_publishable_zF5aZXKbAc054Ky2N8Wwnw_LXOq2jHt";
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        /* ============ HIỆU ỨNG CUỘN ============ */
         const sections = document.querySelectorAll('section');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -634,6 +658,7 @@
         }, { threshold: 0.15 });
         sections.forEach(s => observer.observe(s));
 
+        /* ============ QUẢN LÝ TÀI KHOẢN ============ */
         const USERS_KEY = 'angff_users';
         const SESSION_KEY = 'angff_currentUser';
         const PROFILE_KEY = 'angff_profiles';
@@ -654,6 +679,7 @@
             return 'h_' + hash.toString(36);
         }
 
+        /* ============ PROFILE LƯU TRỮ ============ */
         function getProfiles() {
             try { return JSON.parse(localStorage.getItem(PROFILE_KEY)) || {}; }
             catch { return {}; }
@@ -672,6 +698,7 @@
             saveProfiles(profiles);
         }
 
+        /* ============ MODAL AUTH ============ */
         const authModal = document.getElementById('authModal');
 
         function openAuth(tab = 'login') {
@@ -711,6 +738,7 @@
             el.classList.add('show');
         }
 
+        /* ============ ĐĂNG KÝ ============ */
         function handleRegister(event) {
             event.preventDefault();
             clearErrors();
@@ -748,6 +776,7 @@
             showToast('🎉 Đăng ký thành công! Chào mừng ' + username, 'success');
         }
 
+        /* ============ ĐĂNG NHẬP ============ */
         function handleLogin(event) {
             event.preventDefault();
             clearErrors();
@@ -768,6 +797,7 @@
             showToast('✅ Đăng nhập thành công! Chào ' + user.username, 'success');
         }
 
+        /* ============ ĐĂNG NHẬP GOOGLE ============ */
         function decodeJWT(token) {
             try {
                 const base64Url = token.split('.')[1];
@@ -806,6 +836,7 @@
             closeAuth();
         }
 
+        /* ============ SESSION ============ */
         function setSession(user) {
             localStorage.setItem(SESSION_KEY, JSON.stringify({
                 username: user.username,
@@ -850,6 +881,7 @@
             }
         }
 
+        /* ============ PROFILE ============ */
         const profileModal = document.getElementById('profileModal');
         let isEditMode = false;
 
@@ -942,6 +974,7 @@
             showToast('✅ Đã lưu hồ sơ!', 'success');
         }
 
+        /* ============ CHAT VỚI SUPABASE ============ */
         const msgModal = document.getElementById('msgModal');
         let realtimeChannel = null;
 
@@ -986,7 +1019,7 @@
                 .from('messages')
                 .select('*')
                 .order('created_at', { ascending: true })
-                .limit(50);
+                .limit(100);
 
             if (error) {
                 console.error('Lỗi tải tin nhắn:', error);
@@ -1035,8 +1068,28 @@
             return div.innerHTML;
         }
 
+        /* ============ Ô NHẬP TIN NHẮN TỰ GIÃN + ENTER ĐỂ GỬI ============ */
+        function setupMessageInput() {
+            const msgInput = document.getElementById('msgInput');
+            if (!msgInput) return;
+
+            // Tự động giãn chiều cao khi gõ
+            msgInput.addEventListener('input', () => {
+                msgInput.style.height = 'auto';
+                msgInput.style.height = Math.min(msgInput.scrollHeight, 120) + 'px';
+            });
+
+            // Enter để gửi, Shift+Enter để xuống dòng
+            msgInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage(e);
+                }
+            });
+        }
+
         async function sendMessage(event) {
-            event.preventDefault();
+            if (event) event.preventDefault();
             const input = document.getElementById('msgInput');
             const text = input.value.trim();
             if (!text) return;
@@ -1047,7 +1100,9 @@
                 return;
             }
 
+            // Reset textarea
             input.value = '';
+            input.style.height = 'auto';
 
             const profile = getProfile(session.username);
             const avatarToSend = profile.avatarUrl || session.avatar || null;
@@ -1066,6 +1121,7 @@
             }
         }
 
+        /* ============ TOAST ============ */
         const toast = document.getElementById('toast');
         function showToast(message, type = 'success') {
             toast.textContent = message;
@@ -1076,7 +1132,9 @@
             }, 3000);
         }
 
+        /* ============ KHỞI TẠO ============ */
         updateUI();
+        setupMessageInput();
     </script>
 </body>
 </html>
