@@ -102,6 +102,34 @@
         .btn:hover { background: #fff; color: #FFC400; transform: translateY(-5px) scale(1.05);
             box-shadow: 0 10px 30px rgba(255, 255, 255, 0.4); }
 
+        /* Nút 20/10 trong Hero */
+        .btn-2010-hero {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 15px 34px;
+            background: linear-gradient(135deg, #ff4d94, #ff1e6c);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 17px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 0 25px rgba(255, 77, 148, 0.6);
+            transition: all 0.4s ease;
+            animation: pulse2010 2s ease-in-out infinite;
+        }
+        .btn-2010-hero:hover {
+            background: #fff;
+            color: #ff1e6c;
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(255, 77, 148, 0.7);
+            animation: none;
+        }
+        @keyframes pulse2010 {
+            0%, 100% { box-shadow: 0 0 25px rgba(255, 77, 148, 0.6); }
+            50% { box-shadow: 0 0 45px rgba(255, 77, 148, 1); }
+        }
+
         /* ================= SECTIONS ================= */
         section { padding: 100px 8%; opacity: 0; transform: translateY(40px); transition: all 0.8s ease-out; }
         section.visible { opacity: 1; transform: translateY(0); }
@@ -280,7 +308,6 @@
         }
         .msg-time { font-size: 10px; color: #666; display: block; margin-top: 5px; }
 
-        /* Ô nhập tin nhắn — textarea tự giãn */
         .msg-input-area { display: flex; gap: 10px; align-items: flex-end; }
         .msg-input-area textarea {
             flex: 1; padding: 12px 16px; background: #1a1a1a;
@@ -392,6 +419,7 @@
             .toast { top: 90px; right: 15px; left: 15px; max-width: none; }
             .btn-msg, .btn-profile { padding: 8px 10px; font-size: 11px; }
             .msg-container { height: 300px; }
+            .btn-2010-hero { font-size: 15px; padding: 13px 28px; }
         }
     </style>
 </head>
@@ -431,6 +459,8 @@
                class="btn">
                 Vào Free Fire ngay 🚀
             </a>
+            <br>
+            <a href="20-10.html" class="btn-2010-hero">🌸 Chúc mừng 20/10 🌸</a>
         </div>
     </section>
 
@@ -602,7 +632,6 @@
                 </div>
             </div>
 
-            <!-- Chế độ XEM -->
             <div id="profileViewMode">
                 <div class="profile-field">
                     <label>Tên hiển thị</label>
@@ -617,7 +646,6 @@
                 </div>
             </div>
 
-            <!-- Chế độ SỬA -->
             <div id="profileEditMode" style="display:none;">
                 <div class="profile-field">
                     <label>Tên hiển thị</label>
@@ -1064,7 +1092,6 @@
             return div.innerHTML;
         }
 
-        /* ============ Ô NHẬP TIN NHẮN TỰ GIÃN + ENTER ĐỂ GỬI ============ */
         function setupMessageInput() {
             const msgInput = document.getElementById('msgInput');
             if (!msgInput) return;
