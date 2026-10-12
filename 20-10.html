@@ -8,26 +8,95 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     min-height: 100vh;
-    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 50%, #f48fb1 100%);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     overflow: hidden;
     position: relative;
+    background: linear-gradient(-45deg, #fce4ec, #f8bbd0, #f48fb1, #ec407a);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+  }
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 
-  /* Hiệu ứng hoa và tim rơi */
+  /* ===== HIỆU ỨNG 1: HOA VÀ TIM RƠI ===== */
   .falling {
     position: fixed;
     top: -60px;
     pointer-events: none;
-    z-index: 1;
+    z-index: 2;
     animation: fall linear forwards;
-    opacity: 0.8;
+    opacity: 0.85;
   }
   @keyframes fall {
-    0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+    0% { transform: translateY(0) rotate(0deg); opacity: 0.9; }
     100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
   }
 
+  /* ===== HIỆU ỨNG 2: TRÁI TIM BAY LƠ LỬNG ===== */
+  .floating-heart {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1;
+    font-size: 30px;
+    opacity: 0.4;
+    animation: floatUp linear infinite;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+    10% { opacity: 0.5; }
+    90% { opacity: 0.5; }
+    100% { transform: translateY(-100px) scale(1.2); opacity: 0; }
+  }
+
+  /* ===== HIỆU ỨNG 3: BƯỚM BAY ===== */
+  .butterfly {
+    position: fixed;
+    pointer-events: none;
+    z-index: 3;
+    font-size: 28px;
+    animation: butterflyFly linear infinite;
+    opacity: 0.75;
+  }
+  @keyframes butterflyFly {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(30px, -40px) rotate(10deg); }
+    50% { transform: translate(-20px, -80px) rotate(-10deg); }
+    75% { transform: translate(40px, -120px) rotate(8deg); }
+    100% { transform: translate(0, -180px) rotate(0deg); opacity: 0; }
+  }
+
+  /* ===== HIỆU ỨNG 4: LẤP LÁNH ===== */
+  .sparkle {
+    position: fixed;
+    pointer-events: none;
+    z-index: 3;
+    font-size: 16px;
+    animation: twinkle 2s ease-in-out infinite;
+    opacity: 0;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+
+  /* ===== HIỆU ỨNG 5: VÒNG SÁNG LAN TỎA ===== */
+  .pulse-ring {
+    position: fixed;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 105, 180, 0.5);
+    pointer-events: none;
+    z-index: 1;
+    animation: pulseOut 4s ease-out infinite;
+  }
+  @keyframes pulseOut {
+    0% { width: 0; height: 0; opacity: 0.8; }
+    100% { width: 600px; height: 600px; opacity: 0; margin-left: -300px; margin-top: -300px; }
+  }
+
+  /* ===== SLIDER ===== */
   .slider {
     position: relative;
     width: 100%;
@@ -58,12 +127,30 @@
   .card {
     max-width: 600px;
     width: 100%;
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.88);
     backdrop-filter: blur(15px);
     border-radius: 30px;
     padding: 50px 35px;
-    box-shadow: 0 20px 60px rgba(233, 30, 99, 0.25);
+    box-shadow: 0 20px 60px rgba(233, 30, 99, 0.3);
     border: 2px solid rgba(255, 255, 255, 0.9);
+    position: relative;
+    overflow: hidden;
+  }
+  /* Ánh sáng chạy qua thẻ */
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+    animation: shine 4s infinite;
+  }
+  @keyframes shine {
+    0% { left: -100%; }
+    50% { left: 100%; }
+    100% { left: 100%; }
   }
 
   .heart-main {
@@ -71,6 +158,7 @@
     display: inline-block;
     animation: heartbeat 1.2s ease-in-out infinite;
     margin-bottom: 20px;
+    position: relative;
   }
   @keyframes heartbeat {
     0%, 100% { transform: scale(1); }
@@ -93,12 +181,12 @@
   .star-main {
     font-size: 80px;
     display: inline-block;
-    animation: sparkle 1.5s ease-in-out infinite;
+    animation: sparkleMain 1.5s ease-in-out infinite;
     margin-bottom: 20px;
   }
-  @keyframes sparkle {
+  @keyframes sparkleMain {
     0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
-    50% { transform: scale(1.15) rotate(180deg); opacity: 0.8; }
+    50% { transform: scale(1.15) rotate(180deg); opacity: 0.85; }
   }
 
   h1 {
@@ -130,32 +218,64 @@
     margin-bottom: 30px;
   }
 
-  /* Nút bấm chuyển slide */
-  .btn-next {
-    display: inline-block;
-    padding: 15px 40px;
+  /* ===== NÚT TIẾP THEO (góc phải dưới) ===== */
+  .btn-next-float {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
     background: linear-gradient(135deg, #ec407a, #d81b60);
     color: #fff;
     border: none;
-    border-radius: 50px;
-    font-size: 16px;
+    font-size: 30px;
     font-weight: 700;
-    letter-spacing: 1px;
     cursor: pointer;
-    box-shadow: 0 8px 25px rgba(216, 27, 96, 0.35);
+    box-shadow: 0 8px 25px rgba(216, 27, 96, 0.5);
     transition: all 0.3s ease;
-    font-family: inherit;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulseBtn 2s ease-in-out infinite;
   }
-  .btn-next:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 35px rgba(216, 27, 96, 0.5);
+  .btn-next-float:hover {
+    transform: scale(1.15) rotate(10deg);
+    box-shadow: 0 12px 40px rgba(216, 27, 96, 0.7);
   }
-  .btn-next:active { transform: translateY(0); }
+  .btn-next-float:active { transform: scale(0.95); }
+  @keyframes pulseBtn {
+    0%, 100% { box-shadow: 0 8px 25px rgba(216, 27, 96, 0.5); }
+    50% { box-shadow: 0 8px 40px rgba(216, 27, 96, 0.9); }
+  }
 
-  /* Chấm điều hướng */
+  /* Tooltip nhỏ cho nút */
+  .btn-next-float::after {
+    content: 'Tiếp theo';
+    position: absolute;
+    right: 80px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(216, 27, 96, 0.95);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .btn-next-float:hover::after {
+    opacity: 1;
+  }
+
+  /* ===== DOTS ===== */
   .dots {
     position: fixed;
-    bottom: 25px;
+    bottom: 30px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -166,7 +286,7 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: rgba(216, 27, 96, 0.3);
+    background: rgba(216, 27, 96, 0.35);
     transition: all 0.3s;
   }
   .dot.active {
@@ -181,7 +301,8 @@
     .heart-main, .flower-main, .star-main { font-size: 60px; }
     .message { font-size: 16px; }
     .subtitle { font-size: 12px; letter-spacing: 3px; }
-    .btn-next { padding: 13px 30px; font-size: 14px; }
+    .btn-next-float { width: 60px; height: 60px; font-size: 26px; bottom: 20px; right: 20px; }
+    .btn-next-float::after { display: none; }
   }
 </style>
 </head>
@@ -189,18 +310,17 @@
 
   <div class="slider">
 
-    <!-- SLIDE 1: Mở đầu -->
+    <!-- SLIDE 1 -->
     <div class="slide active">
       <div class="card">
         <span class="heart-main">💖</span>
         <h1>Chúc Mừng Ngày<br>Phụ Nữ Việt Nam</h1>
         <p class="subtitle">20 / 10</p>
         <p class="message">Một ngày đặc biệt dành cho những người phụ nữ tuyệt vời 🌸</p>
-        <button class="btn-next" onclick="nextSlide()">Tiếp theo →</button>
       </div>
     </div>
 
-    <!-- SLIDE 2: Chúc các bạn nữ -->
+    <!-- SLIDE 2 -->
     <div class="slide">
       <div class="card">
         <span class="flower-main">🌷</span>
@@ -210,11 +330,10 @@
           Chúc các bạn luôn xinh đẹp, rạng rỡ,<br>
           học giỏi, thành công và luôn vui vẻ 🌸
         </p>
-        <button class="btn-next" onclick="nextSlide()">Tiếp theo →</button>
       </div>
     </div>
 
-    <!-- SLIDE 3: Chúc thầy cô -->
+    <!-- SLIDE 3 -->
     <div class="slide">
       <div class="card">
         <span class="flower-main">🌹</span>
@@ -224,25 +343,10 @@
           Chúc các cô luôn mạnh khỏe, hạnh phúc<br>
           và thành công trong sự nghiệp trồng người 💐
         </p>
-        <button class="btn-next" onclick="nextSlide()">Tiếp theo →</button>
       </div>
     </div>
 
-    <!-- SLIDE 4: Chúc mẹ, chị, em -->
-    <div class="slide">
-      <div class="card">
-        <span class="heart-main">💝</span>
-        <h1>Gửi Mẹ, Chị & Em Gái</h1>
-        <p class="subtitle">Yêu thương & Trân quý</p>
-        <p class="message">
-          Cảm ơn vì đã luôn bên cạnh và yêu thương con.<br>
-          Chúc mọi người luôn bình an và hạnh phúc 💖
-        </p>
-        <button class="btn-next" onclick="nextSlide()">Tiếp theo →</button>
-      </div>
-    </div>
-
-    <!-- SLIDE 5: Chúc tất cả phụ nữ -->
+    <!-- SLIDE 4 -->
     <div class="slide">
       <div class="card">
         <span class="star-main">✨</span>
@@ -252,17 +356,20 @@
           Chúc một nửa thế giới luôn xinh đẹp,<br>
           mạnh khỏe và hạnh phúc trọn vẹn 🌸💕
         </p>
-        <button class="btn-next" onclick="restart()">🔄 Xem lại từ đầu</button>
       </div>
     </div>
 
   </div>
+
+  <!-- Nút Next góc phải dưới -->
+  <button class="btn-next-float" id="btnNext" onclick="nextSlide()">›</button>
 
   <div class="dots" id="dots"></div>
 
 <script>
   const slides = document.querySelectorAll('.slide');
   const dotsContainer = document.getElementById('dots');
+  const btnNext = document.getElementById('btnNext');
   let currentSlide = 0;
 
   // Tạo dots
@@ -283,24 +390,34 @@
     currentSlide = index;
     slides[currentSlide].classList.add('active');
     updateDots();
-    // Bùng nổ tim khi chuyển slide
-    for (let i = 0; i < 12; i++) {
-      setTimeout(createFalling, i * 60);
+
+    // Bùng nổ hoa và tim khi chuyển slide
+    for (let i = 0; i < 20; i++) {
+      setTimeout(createFalling, i * 50);
+    }
+    for (let i = 0; i < 6; i++) {
+      setTimeout(createButterfly, i * 100);
     }
   }
 
   function nextSlide() {
     if (currentSlide < slides.length - 1) {
       goToSlide(currentSlide + 1);
+      // Đổi icon nút khi gần hết
+      if (currentSlide === slides.length - 1) {
+        btnNext.textContent = '↻';
+        btnNext.title = 'Xem lại từ đầu';
+      }
+    } else {
+      // Nếu đang ở slide cuối → quay lại đầu
+      goToSlide(0);
+      btnNext.textContent = '›';
+      btnNext.title = 'Tiếp theo';
     }
   }
 
-  function restart() {
-    goToSlide(0);
-  }
-
-  /* ===== HIỆU ỨNG HOA VÀ TIM RƠI ===== */
-  const emojis = ['❤️', '🌸', '💖', '🌹', '💕', '🌺', '💗', '🌸', '💝', '🌷', '✨', '💐'];
+  /* ===== HIỆU ỨNG 1: HOA VÀ TIM RƠI ===== */
+  const emojis = ['❤️', '🌸', '💖', '🌹', '💕', '🌺', '💗', '🌸', '💝', '🌷', '✨', '💐', '🌼'];
 
   function createFalling() {
     const el = document.createElement('div');
@@ -315,7 +432,77 @@
     setTimeout(() => el.remove(), (duration + 2) * 1000);
   }
 
+  /* ===== HIỆU ỨNG 2: TRÁI TIM BAY LƠ LỬNG ===== */
+  function createFloatingHeart() {
+    const el = document.createElement('div');
+    el.className = 'floating-heart';
+    el.textContent = ['💗', '💕', '💖', '❤️'][Math.floor(Math.random() * 4)];
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.fontSize = (Math.random() * 25 + 20) + 'px';
+    const duration = Math.random() * 8 + 10;
+    el.style.animationDuration = duration + 's';
+    el.style.animationDelay = Math.random() * 5 + 's';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), (duration + 6) * 1000);
+  }
+
+  /* ===== HIỆU ỨNG 3: BƯỚM BAY ===== */
+  function createButterfly() {
+    const el = document.createElement('div');
+    el.className = 'butterfly';
+    el.textContent = ['🦋', '🦋', '🧚‍♀️'][Math.floor(Math.random() * 3)];
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.top = (Math.random() * 60 + 40) + 'vh';
+    el.style.fontSize = (Math.random() * 15 + 22) + 'px';
+    const duration = Math.random() * 4 + 5;
+    el.style.animationDuration =( duration + 's';
+    el.stylecreate.animationDelay = Math.random() * 2 + 's';
+    document.bodyBut.appendChild(el);
+    setTimeout(() => el.remove(), (terduration + 3fly) * 1000,);
+  }
+
+  /* ===== HIỆU ỨNG 4: LẤP LÁNH ===== */
+  function createSparkle() {
+    const el = document.createElement('div');
+    el.className = 'sparkle';
+    el.textContent = ['✨', '⭐', '💫', '🌟'][Math.floor(Math.random() * 4)];
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.top = Math.random() * 100 + 'vh';
+    el.style.fontSize = (Math.random() * 15 + 12) + 'px';
+    el.style.animationDuration = (Math.random() * 1.5 + 1.5) + 's';
+    el.style.animationDelay = Math.random() * 2 + 's';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 5000);
+  }
+
+  /* ===== HIỆU ỨNG 5: VÒNG SÁNG LAN TỎA ===== */
+  function createPulseRing() {
+    const el = document.createElement('div');
+    el.className = 'pulse-ring';
+    el.style.left = Math.random() * 80 + 10 + 'vw';
+    el.style.top = Math.random() * 80 + 10 + 'vh';
+    el.style.animationDuration = (Math.random() * 2 + 3) + 's';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 6000);
+  }
+
+  /* ===== KHỞI ĐỘNG CÁC HIỆU ỨNG ===== */
+  // Hoa và tim rơi
   setInterval(createFalling, 350);
+  // Trái tim bay lơ lửng
+  setInterval(createFloatingHeart, 800);
+  // Bướm bay
+  setInterval(createButterfly, 1500);
+  // Lấp lánh
+  setInterval(createSparkle, 400);
+  // Vòng sáng lan tỏa
+  setInterval(createPulseRing, 1200);
+
+  // Tạo sẵn vài cái lúc mới vào
+  for (let i = 0; i < 15; i++) setTimeout(createFalling, i * 80);
+  for (let i = 0; i < 5; i++) setTimeout(createFloatingHeart, i * 300);
+  for (let i = 0; i < 3; i++) setTimeout i * 400);
+  for (let i = 0; i < 10; i++) setTimeout(createSparkle, i * 100);
 </script>
 </body>
 </html>
