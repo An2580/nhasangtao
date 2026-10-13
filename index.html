@@ -33,10 +33,6 @@
         .nav-right { display: flex; align-items: center; }
         nav a { color: white; text-decoration: none; margin-left: 25px; font-weight: 600;
             transition: 0.3s; position: relative; padding: 5px 0; }
-        nav a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px;
-            background: #FFC400; transition: 0.3s; box-shadow: 0 0 8px #FFC400; }
-        nav a:hover { color: #FFC400; }
-        nav a:hover::after { width: 100%; }
 
         .btn-login {
             margin-left: 25px; padding: 10px 24px;
@@ -102,7 +98,6 @@
         .btn:hover { background: #fff; color: #FFC400; transform: translateY(-5px) scale(1.05);
             box-shadow: 0 10px 30px rgba(255, 255, 255, 0.4); }
 
-        /* Nút 20/10 */
         .btn-2010-hero {
             display: inline-block;
             margin-top: 20px;
@@ -155,13 +150,12 @@
 
         .tabs {
             display: flex; background: #1a1a1a; border-radius: 12px;
-            padding: 5px; margin-bottom: 25px; position: relative;
+            padding: 5px; margin-bottom: 25px;
         }
         .tab {
             flex: 1; padding: 12px; text-align: center; cursor: pointer;
             font-weight: 700; font-size: 15px; color: #888; border: none;
             background: none; border-radius: 9px; transition: all 0.3s ease;
-            z-index: 1;
         }
         .tab.active { color: #080808; background: linear-gradient(135deg, #FFC400, #FF8C00);
             box-shadow: 0 0 15px rgba(255, 196, 0, 0.5); }
@@ -198,13 +192,11 @@
             background: #FFC400; color: #080808; border: none;
             border-radius: 12px; font-size: 16px; font-weight: 700;
             cursor: pointer; transition: all 0.3s ease;
-            letter-spacing: 0.5px;
             box-shadow: 0 0 20px rgba(255, 196, 0, 0.4);
         }
         .modal button[type="submit"]:hover {
             background: #fff; color: #FFC400;
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
         }
 
         .modal .terms { font-size: 12px; color: #666; text-align: center; margin-top: 5px; }
@@ -249,15 +241,98 @@
         .msg-bubble strong { color: #FFC400; font-size: 12px; display: block; margin-bottom: 4px; }
         .msg-bubble p {
             font-size: 15px; color: #eee; line-height: 1.4;
-            word-break: break-word;
-            white-space: pre-wrap;
-            overflow-wrap: anywhere;
+            word-break: break-word; white-space: pre-wrap; overflow-wrap: anywhere;
         }
         .msg-time { font-size: 10px; color: #666; display: block; margin-top: 5px; }
 
-        .msg-input-area { display: flex; gap: 10px; align-items: flex-end; }
+        /* ===== BADGE CHỨC DANH ===== */
+        .title-badge {
+            display: inline-block;
+            font-size: 9px;
+            font-weight: 900;
+            padding: 1px 6px;
+            border-radius: 6px;
+            margin-left: 5px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #FFC400, #FF8C00);
+            color: #080808;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            vertical-align: middle;
+            box-shadow: 0 0 6px rgba(255, 196, 0, 0.5);
+        }
+        .title-badge.dev { background: linear-gradient(135deg, #a855f7, #7c3aed); color: #fff; }
+        .title-badge.admin { background: linear-gradient(135deg, #ef4444, #b91c1c); color: #fff; }
+        .title-badge.vip { background: linear-gradient(135deg, #22c55e, #15803d); color: #fff; }
+        .title-badge.user { background: linear-gradient(135deg, #6b7280, #4b5563); color: #fff; }
+        .title-badge.mod { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: #fff; }
+
+        /* ===== @USERNAME MENTION ===== */
+        .mention {
+            color: #FFC400;
+            background: rgba(255, 196, 0, 0.15);
+            padding: 1px 6px;
+            border-radius: 6px;
+            font-weight: 700;
+            border: 1px solid rgba(255, 196, 0, 0.35);
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-block;
+        }
+        .mention:hover { background: rgba(255, 196, 0, 0.35); transform: scale(1.05); }
+        .mention-me {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border-color: rgba(34, 197, 94, 0.5);
+            animation: mentionPulse 1.5s ease-in-out infinite;
+        }
+        @keyframes mentionPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5); }
+            50% { box-shadow: 0 0 10px 2px rgba(34, 197, 94, 0.4); }
+        }
+
+        .msg-input-area { display: flex; gap: 10px; align-items: flex-end; position: relative; }
+        .msg-input-wrapper { position: relative; flex: 1; }
+
+        .mention-suggest {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            right: 0;
+            background: #1a1a1a;
+            border: 1px solid #FFC400;
+            border-radius: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 8px;
+            box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            display: none;
+        }
+        .mention-suggest.show { display: block; }
+        .mention-suggest::-webkit-scrollbar { width: 5px; }
+        .mention-suggest::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
+
+        .mention-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 14px; cursor: pointer; transition: 0.2s;
+            font-size: 14px; color: #ddd; border-bottom: 1px solid #222;
+        }
+        .mention-item:last-child { border-bottom: none; }
+        .mention-item:hover, .mention-item.active {
+            background: rgba(255, 196, 0, 0.15); color: #FFC400;
+        }
+        .mention-item .m-avatar {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: linear-gradient(135deg, #FFC400, #FF8C00);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; color: #080808; font-size: 13px;
+            overflow: hidden; flex-shrink: 0;
+        }
+        .mention-item .m-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
         .msg-input-area textarea {
-            flex: 1; padding: 12px 16px; background: #1a1a1a;
+            width: 100%; padding: 12px 16px; background: #1a1a1a;
             border: 1px solid #2a2a2a; border-radius: 20px;
             color: #fff; font-size: 14px; outline: none; transition: 0.3s;
             font-family: inherit; resize: none;
@@ -267,13 +342,12 @@
         .msg-input-area textarea::-webkit-scrollbar { width: 4px; }
         .msg-input-area textarea::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
         .msg-input-area textarea:focus { border-color: #FFC400; }
-        .msg-input-area button {
+        .msg-input-area > button {
             padding: 12px 20px; background: #FFC400; color: #080808;
             border: none; border-radius: 20px; font-weight: 700;
-            cursor: pointer; transition: 0.3s; height: 44px;
-            flex-shrink: 0;
+            cursor: pointer; transition: 0.3s; height: 44px; flex-shrink: 0;
         }
-        .msg-input-area button:hover { background: #fff; color: #FFC400; }
+        .msg-input-area > button:hover { background: #fff; color: #FFC400; }
 
         /* ================= PROFILE MODAL ================= */
         .profile-modal { max-width: 480px; padding: 30px; }
@@ -292,7 +366,12 @@
             flex-shrink: 0;
         }
         .profile-avatar-big img { width: 100%; height: 100%; object-fit: cover; }
-        .profile-info h3 { font-size: 24px; color: #fff; margin-bottom: 6px; }
+        .profile-info { flex: 1; min-width: 0; }
+        .profile-info .name-line {
+            display: flex; align-items: center; flex-wrap: wrap;
+            gap: 6px; margin-bottom: 6px;
+        }
+        .profile-info h3 { font-size: 24px; color: #fff; word-break: break-word; }
         .profile-info .email { color: #888; font-size: 14px; word-break: break-all; }
         .profile-info .join-date { color: #666; font-size: 12px; margin-top: 4px; }
 
@@ -318,11 +397,27 @@
             box-shadow: 0 0 12px rgba(255, 196, 0, 0.3);
         }
 
+        /* Gợi ý chức danh nhanh */
+        .title-presets {
+            display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;
+        }
+        .title-preset {
+            padding: 5px 12px; border-radius: 15px;
+            background: #1a1a1a; border: 1px solid #2a2a2a;
+            color: #aaa; font-size: 12px; font-weight: 700;
+            cursor: pointer; transition: 0.2s;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .title-preset:hover {
+            background: rgba(255, 196, 0, 0.15);
+            border-color: #FFC400; color: #FFC400;
+        }
+
         .profile-actions { display: flex; gap: 10px; margin-top: 20px; }
         .profile-actions button {
             flex: 1; padding: 14px; border: none;
             border-radius: 12px; font-size: 15px; font-weight: 700;
-            cursor: pointer; transition: 0.3s; letter-spacing: 0.5px;
+            cursor: pointer; transition: 0.3s;
         }
         .btn-edit { background: #FFC400; color: #080808; box-shadow: 0 0 15px rgba(255, 196, 0, 0.4); }
         .btn-edit:hover { background: #fff; color: #FFC400; }
@@ -364,6 +459,7 @@
             .btn-msg, .btn-profile { padding: 8px 10px; font-size: 11px; }
             .msg-container { height: 300px; }
             .btn-2010-hero { font-size: 15px; padding: 13px 28px; }
+            .profile-info h3 { font-size: 20px; }
         }
     </style>
 </head>
@@ -423,8 +519,8 @@
                 <h2>Đăng nhập</h2>
                 <p class="subtitle">Chào mừng trở lại với An Gờ 🔥</p>
                 <form onsubmit="handleLogin(event)">
-                    <input type="text" id="loginUser" placeholder="Tên đăng nhập hoặc Email" required autocomplete="username">
-                    <input type="password" id="loginPass" placeholder="Mật khẩu" required autocomplete="current-password">
+                    <input type="text" id="loginUser" placeholder="Tên đăng nhập hoặc Email" required>
+                    <input type="password" id="loginPass" placeholder="Mật khẩu" required>
                     <div class="error-msg" id="loginError"></div>
                     <button type="submit">Đăng nhập ngay</button>
                 </form>
@@ -452,10 +548,10 @@
                 <h2>Đăng ký</h2>
                 <p class="subtitle">Tạo tài khoản mới — mỗi người 1 tài khoản 🎮</p>
                 <form onsubmit="handleRegister(event)">
-                    <input type="text" id="regUser" placeholder="Tên đăng nhập (3-20 ký tự)" required minlength="3" maxlength="20" autocomplete="username">
-                    <input type="email" id="regEmail" placeholder="Email" required autocomplete="email">
-                    <input type="password" id="regPass" placeholder="Mật khẩu (ít nhất 6 ký tự)" required minlength="6" autocomplete="new-password">
-                    <input type="password" id="regPass2" placeholder="Nhập lại mật khẩu" required autocomplete="new-password">
+                    <input type="text" id="regUser" placeholder="Tên đăng nhập (3-20 ký tự)" required minlength="3" maxlength="20">
+                    <input type="email" id="regEmail" placeholder="Email" required>
+                    <input type="password" id="regPass" placeholder="Mật khẩu (ít nhất 6 ký tự)" required minlength="6">
+                    <input type="password" id="regPass2" placeholder="Nhập lại mật khẩu" required>
                     <div class="error-msg" id="regError"></div>
                     <button type="submit">Tạo tài khoản</button>
                     <p class="terms">Bằng cách đăng ký, bạn đồng ý với <a href="#">Điều khoản</a> của An Gờ.</p>
@@ -475,7 +571,10 @@
                 <p style="text-align: center; color: #666; font-size: 14px; margin-top: 20px;">Đang tải tin nhắn...</p>
             </div>
             <form class="msg-input-area" onsubmit="sendMessage(event)">
-                <textarea id="msgInput" placeholder="Nhập tin nhắn..." rows="1"></textarea>
+                <div class="msg-input-wrapper">
+                    <div class="mention-suggest" id="mentionSuggest"></div>
+                    <textarea id="msgInput" placeholder="Nhập tin nhắn... (gõ @ để tag)" rows="1"></textarea>
+                </div>
                 <button type="submit">Gửi</button>
             </form>
         </div>
@@ -489,7 +588,10 @@
             <div class="profile-header">
                 <div class="profile-avatar-big" id="profileAvatar">A</div>
                 <div class="profile-info">
-                    <h3 id="profileDisplayName">User</h3>
+                    <div class="name-line">
+                        <h3 id="profileDisplayName">User</h3>
+                        <span class="title-badge" id="profileTitleBadge" style="display:none;"></span>
+                    </div>
                     <div class="email" id="profileEmail">email</div>
                     <div class="join-date" id="profileJoinDate"></div>
                 </div>
@@ -499,6 +601,10 @@
                 <div class="profile-field">
                     <label>Tên hiển thị</label>
                     <div class="value" id="viewDisplayName"></div>
+                </div>
+                <div class="profile-field">
+                    <label>Chức danh</label>
+                    <div class="value" id="viewTitle"></div>
                 </div>
                 <div class="profile-field">
                     <label>Tiểu sử</label>
@@ -513,6 +619,18 @@
                 <div class="profile-field">
                     <label>Tên hiển thị</label>
                     <input type="text" id="editDisplayName" placeholder="Nhập tên hiển thị..." maxlength="50">
+                </div>
+                <div class="profile-field">
+                    <label>Chức danh</label>
+                    <input type="text" id="editTitle" placeholder="Ví dụ: ADMIN, DEV, VIP..." maxlength="15">
+                    <div class="title-presets">
+                        <button type="button" class="title-preset" onclick="setTitlePreset('ADMIN')">ADMIN</button>
+                        <button type="button" class="title-preset" onclick="setTitlePreset('DEV')">DEV</button>
+                        <button type="button" class="title-preset" onclick="setTitlePreset('MOD')">MOD</button>
+                        <button type="button" class="title-preset" onclick="setTitlePreset('VIP')">VIP</button>
+                        <button type="button" class="title-preset" onclick="setTitlePreset('MEMBER')">MEMBER</button>
+                        <button type="button" class="title-preset" onclick="setTitlePreset('')">XÓA</button>
+                    </div>
                 </div>
                 <div class="profile-field">
                     <label>Tiểu sử</label>
@@ -577,6 +695,18 @@
             saveProfiles(profiles);
         }
 
+        /* ===== XÁC ĐỊNH CLASS BADGE THEO CHỨC DANH ===== */
+        function getTitleClass(title) {
+            if (!title) return '';
+            const t = title.toUpperCase().trim();
+            if (t === 'ADMIN') return 'admin';
+            if (t === 'DEV' || t === 'DEVELOPER') return 'dev';
+            if (t === 'VIP') return 'vip';
+            if (t === 'MOD' || t === 'MODERATOR') return 'mod';
+            if (t === 'MEMBER' || t === 'USER') return 'user';
+            return '';
+        }
+
         /* ============ MODAL AUTH ============ */
         const authModal = document.getElementById('authModal');
 
@@ -617,6 +747,7 @@
             el.classList.add('show');
         }
 
+        /* ============ ĐĂNG KÝ ============ */
         function handleRegister(event) {
             event.preventDefault();
             clearErrors();
@@ -654,6 +785,7 @@
             showToast('🎉 Đăng ký thành công! Chào mừng ' + username, 'success');
         }
 
+        /* ============ ĐĂNG NHẬP ============ */
         function handleLogin(event) {
             event.preventDefault();
             clearErrors();
@@ -674,6 +806,7 @@
             showToast('✅ Đăng nhập thành công! Chào ' + user.username, 'success');
         }
 
+        /* ============ ĐĂNG NHẬP GOOGLE ============ */
         function decodeJWT(token) {
             try {
                 const base64Url = token.split('.')[1];
@@ -712,6 +845,7 @@
             closeAuth();
         }
 
+        /* ============ SESSION ============ */
         function setSession(user) {
             localStorage.setItem(SESSION_KEY, JSON.stringify({
                 username: user.username,
@@ -739,10 +873,19 @@
                 const profile = getProfile(user.username);
                 const displayName = profile.displayName || user.username;
                 const avatarUrl = profile.avatarUrl || user.avatar;
+                const title = profile.title || '';
 
                 btnLogin.style.display = 'none';
                 userBox.classList.add('active');
-                document.getElementById('userName').textContent = displayName;
+
+                // Hiển thị tên + badge
+                const nameEl = document.getElementById('userName');
+                if (title) {
+                    const cls = getTitleClass(title);
+                    nameEl.innerHTML = `${escapeHtml(displayName)}<span class="title-badge ${cls}">${escapeHtml(title)}</span>`;
+                } else {
+                    nameEl.textContent = displayName;
+                }
 
                 if (avatarUrl) {
                     userAvatar.innerHTML = `<img src="${avatarUrl}" alt="Avatar" onerror="this.parentElement.textContent='${displayName.charAt(0).toUpperCase()}'">`;
@@ -787,6 +930,7 @@
             const displayName = profile.displayName || session.username;
             const bio = profile.bio || '';
             const avatarUrl = profile.avatarUrl || session.avatar || '';
+            const title = profile.title || '';
             const createdAt = session.createdAt || new Date().toISOString();
 
             const avatarBig = document.getElementById('profileAvatar');
@@ -796,16 +940,39 @@
                 avatarBig.textContent = displayName.charAt(0).toUpperCase();
             }
 
+            // Tên + badge trong header profile
             document.getElementById('profileDisplayName').textContent = displayName;
+            const badgeEl = document.getElementById('profileTitleBadge');
+            if (title) {
+                badgeEl.textContent = title;
+                badgeEl.className = 'title-badge ' + getTitleClass(title);
+                badgeEl.style.display = 'inline-block';
+            } else {
+                badgeEl.style.display = 'none';
+            }
+
             document.getElementById('profileEmail').textContent = session.email;
             document.getElementById('profileJoinDate').textContent =
                 '📅 Tham gia: ' + new Date(createdAt).toLocaleDateString('vi-VN');
 
+            // Chế độ xem
             document.getElementById('viewDisplayName').textContent = displayName;
+
+            const viewTitle = document.getElementById('viewTitle');
+            if (title) {
+                viewTitle.innerHTML = `<span class="title-badge ${getTitleClass(title)}">${escapeHtml(title)}</span>`;
+                viewTitle.className = 'value';
+            } else {
+                viewTitle.textContent = 'Chưa có chức danh';
+                viewTitle.className = 'value empty';
+            }
+
             document.getElementById('viewBio').textContent = bio || 'Chưa có tiểu sử';
             document.getElementById('viewBio').className = 'value' + (bio ? '' : ' empty');
 
+            // Chế độ sửa
             document.getElementById('editDisplayName').value = displayName;
+            document.getElementById('editTitle').value = title;
             document.getElementById('editBio').value = bio;
             document.getElementById('editAvatarUrl').value = avatarUrl;
         }
@@ -822,9 +989,14 @@
             document.getElementById('profileEditMode').style.display = 'none';
         }
 
+        function setTitlePreset(title) {
+            document.getElementById('editTitle').value = title;
+        }
+
         function saveProfile() {
             const session = JSON.parse(localStorage.getItem(SESSION_KEY));
             const newDisplayName = document.getElementById('editDisplayName').value.trim();
+            const newTitle = document.getElementById('editTitle').value.trim().toUpperCase();
             const newBio = document.getElementById('editBio').value.trim();
             const newAvatarUrl = document.getElementById('editAvatarUrl').value.trim();
 
@@ -834,6 +1006,7 @@
             }
 
             setProfileField(session.username, 'displayName', newDisplayName);
+            setProfileField(session.username, 'title', newTitle);
             setProfileField(session.username, 'bio', newBio);
             setProfileField(session.username, 'avatarUrl', newAvatarUrl);
 
@@ -862,6 +1035,8 @@
             msgModal.classList.remove('active');
             document.body.style.overflow = '';
             stopRealtime();
+            const suggest = document.getElementById('mentionSuggest');
+            if (suggest) suggest.classList.remove('show');
         }
 
         msgModal.addEventListener('click', e => { if (e.target === msgModal) closeMsg(); });
@@ -910,6 +1085,7 @@
             container.scrollTop = container.scrollHeight;
         }
 
+        /* ===== HIỂN THỊ TIN NHẮN + @MENTION + BADGE ===== */
         function appendMessage(m) {
             const container = document.getElementById('msgContainer');
             const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
@@ -926,13 +1102,39 @@
                 ? `<img src="${m.avatar}" style="width:18px;height:18px;border-radius:50%;margin-right:5px;vertical-align:middle;display:inline-block;">`
                 : '';
 
+            // Lấy title của người gửi
+            const senderProfile = getProfile(m.username);
+            const senderTitle = senderProfile.title || '';
+            const badgeHtml = senderTitle
+                ? `<span class="title-badge ${getTitleClass(senderTitle)}">${escapeHtml(senderTitle)}</span>`
+                : '';
+
+            const textHtml = renderMentions(m.text, session ? session.username : '');
+
             bubble.innerHTML = `
-                <strong>${avatarHtml}${escapeHtml(m.username)}</strong>
-                <p>${escapeHtml(m.text)}</p>
+                <strong>${avatarHtml}${escapeHtml(m.username)}${badgeHtml}</strong>
+                <p>${textHtml}</p>
                 <span class="msg-time">${time}</span>
             `;
             container.appendChild(bubble);
             container.scrollTop = container.scrollHeight;
+        }
+
+        function renderMentions(text, currentUser) {
+            const escaped = escapeHtml(text);
+            return escaped.replace(/@([a-zA-Z0-9_]+)/g, (match, username) => {
+                const isMe = currentUser && username.toLowerCase() === currentUser.toLowerCase();
+                const cls = 'mention' + (isMe ? ' mention-me' : '');
+                return `<span class="${cls}" onclick="mentionClick('${username}')">@${username}</span>`;
+            });
+        }
+
+        function mentionClick(username) {
+            const input = document.getElementById('msgInput');
+            if (!input) return;
+            const current = input.value;
+            input.value = (current ? current + ' ' : '') + '@' + username + ' ';
+            input.focus();
         }
 
         function escapeHtml(str) {
@@ -941,6 +1143,7 @@
             return div.innerHTML;
         }
 
+        /* ===== Ô NHẬP + GỢI Ý @USERNAME ===== */
         function setupMessageInput() {
             const msgInput = document.getElementById('msgInput');
             if (!msgInput) return;
@@ -948,14 +1151,134 @@
             msgInput.addEventListener('input', () => {
                 msgInput.style.height = 'auto';
                 msgInput.style.height = Math.min(msgInput.scrollHeight, 120) + 'px';
+                handleMentionInput();
             });
 
             msgInput.addEventListener('keydown', (e) => {
+                const suggest = document.getElementById('mentionSuggest');
+                const isSuggestOpen = suggest && suggest.classList.contains('show');
+
+                if (isSuggestOpen) {
+                    const items = suggest.querySelectorAll('.mention-item');
+                    const activeIdx = Array.from(items).findIndex(i => i.classList.contains('active'));
+
+                    if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        const nextIdx = (activeIdx + 1) % items.length;
+                        items.forEach(i => i.classList.remove('active'));
+                        items[nextIdx].classList.add('active');
+                        items[nextIdx].scrollIntoView({ block: 'nearest' });
+                        return;
+                    }
+                    if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        const prevIdx = (activeIdx - 1 + items.length) % items.length;
+                        items.forEach(i => i.classList.remove('active'));
+                        items[prevIdx].classList.add('active');
+                        items[prevIdx].scrollIntoView({ block: 'nearest' });
+                        return;
+                    }
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        const active = suggest.querySelector('.mention-item.active') || items[0];
+                        if (active) active.click();
+                        return;
+                    }
+                    if (e.key === 'Escape') {
+                        suggest.classList.remove('show');
+                        return;
+                    }
+                }
+
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
                     sendMessage(e);
                 }
             });
+
+            document.addEventListener('click', (e) => {
+                const suggest = document.getElementById('mentionSuggest');
+                if (suggest && !msgInput.contains(e.target) && !suggest.contains(e.target)) {
+                    suggest.classList.remove('show');
+                }
+            });
+        }
+
+        function handleMentionInput() {
+            const msgInput = document.getElementById('msgInput');
+            const suggest = document.getElementById('mentionSuggest');
+            if (!msgInput || !suggest) return;
+
+            const value = msgInput.value;
+            const cursorPos = msgInput.selectionStart;
+            const beforeCursor = value.substring(0, cursorPos);
+            const match = beforeCursor.match(/@([a-zA-Z0-9_]*)$/);
+
+            if (!match) {
+                suggest.classList.remove('show');
+                return;
+            }
+
+            const query = match[1].toLowerCase();
+            const users = getUsers();
+            const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+
+            const filtered = users.filter(u => {
+                if (session && u.username === session.username) return false;
+                if (!query) return true;
+                return u.username.toLowerCase().includes(query);
+            }).slice(0, 8);
+
+            if (filtered.length === 0) {
+                suggest.classList.remove('show');
+                return;
+            }
+
+            suggest.innerHTML = '';
+            filtered.forEach((u, idx) => {
+                const profile = getProfile(u.username);
+                const displayName = profile.displayName || u.username;
+                const avatarUrl = profile.avatarUrl || u.avatar || '';
+                const title = profile.title || '';
+
+                const item = document.createElement('div');
+                item.className = 'mention-item' + (idx === 0 ? ' active' : '');
+                const avatarHTML = avatarUrl
+                    ? `<img src="${avatarUrl}" onerror="this.parentElement.textContent='${displayName.charAt(0).toUpperCase()}'">`
+                    : displayName.charAt(0).toUpperCase();
+                const badgeHTML = title
+                    ? ` <span class="title-badge ${getTitleClass(title)}" style="font-size:8px;">${escapeHtml(title)}</span>`
+                    : '';
+
+                item.innerHTML = `
+                    <div class="m-avatar">${avatarHTML}</div>
+                    <div>
+                        <div style="font-weight:700;">${escapeHtml(displayName)}${badgeHTML}</div>
+                        <div style="font-size:12px;color:#888;">@${escapeHtml(u.username)}</div>
+                    </div>
+                `;
+
+                item.onclick = () => {
+                    const curValue = msgInput.value;
+                    const curCursor = msgInput.selectionStart;
+                    const before = curValue.substring(0, curCursor);
+                    const after = curValue.substring(curCursor);
+
+                    const newBefore = before.replace(/@([a-zA-Z0-9_]*)$/, '@' + u.username + ' ');
+                    msgInput.value = newBefore + after;
+                    msgInput.focus();
+
+                    const newPos = newBefore.length;
+                    msgInput.setSelectionRange(newPos, newPos);
+
+                    suggest.classList.remove('show');
+                    msgInput.dispatchEvent(new Event('input'));
+                };
+
+                suggest.appendChild(item);
+            });
+
+            suggest.classList.add('show');
         }
 
         async function sendMessage(event) {
@@ -972,6 +1295,8 @@
 
             input.value = '';
             input.style.height = 'auto';
+            const suggest = document.getElementById('mentionSuggest');
+            if (suggest) suggest.classList.remove('show');
 
             const profile = getProfile(session.username);
             const avatarToSend = profile.avatarUrl || session.avatar || null;
