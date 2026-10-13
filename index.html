@@ -29,21 +29,20 @@
         }
         .logo img:hover { transform: scale(1.08); }
 
-        .nav-right { display: flex; align-items: center; }
-        nav a { color: white; text-decoration: none; margin-left: 25px; font-weight: 600;
-            transition: 0.3s; padding: 5px 0; }
+        .nav-right { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
+        nav a { color: white; text-decoration: none; margin-left: 25px; font-weight: 600; }
 
         .btn-login {
             margin-left: 25px; padding: 10px 24px;
             background: transparent; color: #FFC400;
             border: 2px solid #FFC400; border-radius: 30px;
             font-weight: 700; font-size: 15px; cursor: pointer;
-            transition: all 0.3s ease; letter-spacing: 0.5px;
+            transition: all 0.3s ease;
         }
         .btn-login:hover { background: #FFC400; color: #080808;
             box-shadow: 0 0 20px rgba(255, 196, 0, 0.7); transform: translateY(-2px); }
 
-        .user-box { display: none; align-items: center; gap: 12px; margin-left: 25px; }
+        .user-box { display: none; align-items: center; gap: 8px; margin-left: 25px; flex-wrap: wrap; }
         .user-box.active { display: flex; }
         .user-avatar {
             width: 40px; height: 40px; border-radius: 50%;
@@ -66,16 +65,33 @@
         .btn-msg {
             padding: 8px 16px; background: #FFC400; color: #080808;
             border: none; border-radius: 20px; font-size: 13px;
-            font-weight: 700; cursor: pointer; transition: 0.3s; margin-left: 5px;
+            font-weight: 700; cursor: pointer; transition: 0.3s;
         }
-        .btn-msg:hover { background: #fff; color: #FFC400; box-shadow: 0 0 15px rgba(255, 255, 255, 0.4); }
+        .btn-msg:hover { background: #fff; color: #FFC400; }
 
         .btn-profile {
             padding: 8px 16px; background: transparent; color: #FFC400;
             border: 1px solid #FFC400; border-radius: 20px; font-size: 13px;
-            font-weight: 600; cursor: pointer; transition: 0.3s; margin-left: 5px;
+            font-weight: 600; cursor: pointer; transition: 0.3s;
         }
         .btn-profile:hover { background: #FFC400; color: #080808; }
+
+        /* Nút Admin - hiện cho cả ADMIN và DEV */
+        .btn-admin {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            color: #fff; border: none; border-radius: 20px; font-size: 13px;
+            font-weight: 700; cursor: pointer; transition: 0.3s;
+            display: none;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+            animation: adminPulse 2s ease-in-out infinite;
+        }
+        .btn-admin.show { display: inline-block; }
+        .btn-admin:hover { background: #fff; color: #ef4444; animation: none; }
+        @keyframes adminPulse {
+            0%, 100% { box-shadow: 0 0 12px rgba(239, 68, 68, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.9); }
+        }
 
         /* HERO */
         .hero {
@@ -100,7 +116,7 @@
             display: inline-block; margin-top: 20px; padding: 15px 34px;
             background: linear-gradient(135deg, #ff4d94, #ff1e6c);
             color: #fff; text-decoration: none; border-radius: 30px;
-            font-weight: 700; font-size: 17px; letter-spacing: 0.5px;
+            font-weight: 700; font-size: 17px;
             box-shadow: 0 0 25px rgba(255, 77, 148, 0.6);
             transition: all 0.4s ease; animation: pulse2010 2s ease-in-out infinite;
         }
@@ -139,29 +155,26 @@
         .tab.active { color: #080808; background: linear-gradient(135deg, #FFC400, #FF8C00);
             box-shadow: 0 0 15px rgba(255, 196, 0, 0.5); }
 
-        .modal h2 { text-align: center; color: #FFC400; font-size: 26px; margin-bottom: 8px;
-            text-shadow: 0 0 15px rgba(255, 196, 0, 0.4); }
+        .modal h2 { text-align: center; color: #FFC400; font-size: 26px; margin-bottom: 8px; }
         .modal .subtitle { text-align: center; color: #888; font-size: 14px; margin-bottom: 25px; }
         .modal form { display: flex; flex-direction: column; gap: 14px; }
         .modal input {
             width: 100%; padding: 14px 18px; background: #1a1a1a;
             border: 1px solid #2a2a2a; border-radius: 12px;
-            color: #fff; font-size: 15px; transition: all 0.3s ease; outline: none;
+            color: #fff; font-size: 15px; outline: none; transition: 0.3s;
         }
-        .modal input:focus { border-color: #FFC400;
-            box-shadow: 0 0 15px rgba(255, 196, 0, 0.3); background: #1e1e1e; }
+        .modal input:focus { border-color: #FFC400; background: #1e1e1e; }
         .modal input::placeholder { color: #666; }
 
         .modal .error-msg { color: #ff4444; font-size: 13px; font-weight: 600;
-            text-align: center; min-height: 18px; margin-top: -4px;
-            opacity: 0; transition: opacity 0.3s; }
+            text-align: center; min-height: 18px; opacity: 0; transition: opacity 0.3s; }
         .modal .error-msg.show { opacity: 1; }
 
         .modal button[type="submit"] {
             margin-top: 5px; padding: 15px; background: #FFC400;
             color: #080808; border: none; border-radius: 12px;
             font-size: 16px; font-weight: 700; cursor: pointer;
-            transition: all 0.3s ease; box-shadow: 0 0 20px rgba(255, 196, 0, 0.4);
+            transition: all 0.3s ease;
         }
         .modal button[type="submit"]:hover { background: #fff; color: #FFC400; transform: translateY(-2px); }
 
@@ -189,7 +202,7 @@
         .msg-container::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
         .msg-bubble { background: #1a1a1a; border: 1px solid #2a2a2a;
             padding: 10px 14px; border-radius: 12px; max-width: 85%;
-            align-self: flex-start; position: relative; }
+            align-self: flex-start; }
         .msg-bubble.mine { background: rgba(255, 196, 0, 0.15); border-color: #FFC400; align-self: flex-end; }
         .msg-bubble strong { color: #FFC400; font-size: 12px; display: block; margin-bottom: 4px; }
         .msg-bubble p { font-size: 15px; color: #eee; line-height: 1.4;
@@ -212,9 +225,8 @@
 
         .mention { color: #FFC400; background: rgba(255, 196, 0, 0.15);
             padding: 1px 6px; border-radius: 6px; font-weight: 700;
-            border: 1px solid rgba(255, 196, 0, 0.35); cursor: pointer;
-            transition: 0.2s; display: inline-block; }
-        .mention:hover { background: rgba(255, 196, 0, 0.35); transform: scale(1.05); }
+            border: 1px solid rgba(255, 196, 0, 0.35); cursor: pointer; display: inline-block; }
+        .mention:hover { background: rgba(255, 196, 0, 0.35); }
         .mention-me { background: rgba(34, 197, 94, 0.2); color: #22c55e;
             border-color: rgba(34, 197, 94, 0.5); animation: mentionPulse 1.5s ease-in-out infinite; }
         @keyframes mentionPulse {
@@ -233,8 +245,8 @@
         .mention-suggest::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
 
         .mention-item { display: flex; align-items: center; gap: 10px;
-            padding: 10px 14px; cursor: pointer; transition: 0.2s;
-            font-size: 14px; color: #ddd; border-bottom: 1px solid #222; }
+            padding: 10px 14px; cursor: pointer; font-size: 14px;
+            color: #ddd; border-bottom: 1px solid #222; }
         .mention-item:last-child { border-bottom: none; }
         .mention-item:hover, .mention-item.active { background: rgba(255, 196, 0, 0.15); color: #FFC400; }
         .mention-item .m-avatar { width: 32px; height: 32px; border-radius: 50%;
@@ -247,13 +259,13 @@
             width: 100%; padding: 12px 16px; background: #1a1a1a;
             border: 1px solid #2a2a2a; border-radius: 20px;
             color: #fff; font-size: 14px; outline: none;
-            transition: 0.3s; font-family: inherit; resize: none;
-            min-height: 44px; max-height: 120px; line-height: 1.4; overflow-y: auto;
+            font-family: inherit; resize: none;
+            min-height: 44px; max-height: 120px; line-height: 1.4;
         }
         .msg-input-area textarea:focus { border-color: #FFC400; }
         .msg-input-area > button { padding: 12px 20px; background: #FFC400; color: #080808;
             border: none; border-radius: 20px; font-weight: 700;
-            cursor: pointer; transition: 0.3s; height: 44px; flex-shrink: 0; }
+            cursor: pointer; height: 44px; flex-shrink: 0; }
         .msg-input-area > button:hover { background: #fff; color: #FFC400; }
 
         /* PROFILE */
@@ -264,8 +276,7 @@
             background: linear-gradient(135deg, #FFC400, #FF8C00);
             display: flex; align-items: center; justify-content: center;
             font-weight: 900; color: #080808; font-size: 36px;
-            border: 3px solid #FFC400; overflow: hidden;
-            box-shadow: 0 0 20px rgba(255, 196, 0, 0.5); flex-shrink: 0; }
+            border: 3px solid #FFC400; overflow: hidden; flex-shrink: 0; }
         .profile-avatar-big img { width: 100%; height: 100%; object-fit: cover; }
         .profile-info { flex: 1; min-width: 0; }
         .profile-info .name-line { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
@@ -277,19 +288,16 @@
         .profile-field:last-of-type { border-bottom: none; }
         .profile-field label { display: block; color: #888; font-size: 12px;
             text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; font-weight: 700; }
-        .profile-field .value { color: #eee; font-size: 15px; line-height: 1.5; word-break: break-word; white-space: pre-wrap; }
+        .profile-field .value { color: #eee; font-size: 15px; line-height: 1.5; white-space: pre-wrap; }
         .profile-field .value.empty { color: #555; font-style: italic; }
 
         .profile-field input, .profile-field textarea {
             width: 100%; padding: 12px 14px; background: #1a1a1a;
             border: 1px solid #2a2a2a; border-radius: 10px;
-            color: #fff; font-size: 14px; outline: none;
-            transition: 0.3s; font-family: inherit; resize: vertical;
+            color: #fff; font-size: 14px; outline: none; font-family: inherit; resize: vertical;
         }
-        .profile-field input:focus, .profile-field textarea:focus {
-            border-color: #FFC400; box-shadow: 0 0 12px rgba(255, 196, 0, 0.3); }
+        .profile-field input:focus, .profile-field textarea:focus { border-color: #FFC400; }
 
-        /* Ô nhập bị khóa */
         .profile-field input:disabled {
             background: #0d0d0d; color: #666;
             cursor: not-allowed; border-style: dashed; opacity: 0.7;
@@ -299,8 +307,7 @@
         .title-preset { padding: 5px 12px; border-radius: 15px;
             background: #1a1a1a; border: 1px solid #2a2a2a;
             color: #aaa; font-size: 12px; font-weight: 700;
-            cursor: pointer; transition: 0.2s;
-            text-transform: uppercase; letter-spacing: 0.5px; }
+            cursor: pointer; text-transform: uppercase; }
         .title-preset:hover { background: rgba(255, 196, 0, 0.15); border-color: #FFC400; color: #FFC400; }
 
         .locked-note { display: block; margin-top: 6px; font-size: 11px;
@@ -309,21 +316,145 @@
         .profile-actions { display: flex; gap: 10px; margin-top: 20px; }
         .profile-actions button { flex: 1; padding: 14px; border: none;
             border-radius: 12px; font-size: 15px; font-weight: 700;
-            cursor: pointer; transition: 0.3s; }
-        .btn-edit { background: #FFC400; color: #080808; box-shadow: 0 0 15px rgba(255, 196, 0, 0.4); }
+            cursor: pointer; }
+        .btn-edit { background: #FFC400; color: #080808; }
         .btn-edit:hover { background: #fff; color: #FFC400; }
-        .btn-save { background: #22c55e; color: #fff; box-shadow: 0 0 15px rgba(34, 197, 94, 0.4); }
+        .btn-save { background: #22c55e; color: #fff; }
         .btn-save:hover { background: #fff; color: #22c55e; }
         .btn-cancel { background: #2a2a2a; color: #aaa; }
         .btn-cancel:hover { background: #333; color: #fff; }
 
-        .toast { position: fixed; top: 100px; right: 30px;
+        /* ===== ADMIN PANEL ===== */
+        .admin-modal {
+            max-width: 640px; padding: 30px;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            box-shadow: 0 20px 60px rgba(239, 68, 68, 0.3);
+        }
+        .admin-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding-bottom: 15px;
+            border-bottom: 1px solid #222;
+        }
+        .admin-header h2 {
+            color: #ef4444; font-size: 22px; margin: 0;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .admin-header h2::before { content: '⚙️'; }
+
+        .admin-role-info {
+            padding: 10px 14px; margin-bottom: 15px;
+            background: rgba(255, 196, 0, 0.08);
+            border: 1px solid rgba(255, 196, 0, 0.25);
+            border-radius: 10px;
+            font-size: 13px; color: #ccc;
+            line-height: 1.5;
+        }
+        .admin-role-info strong { color: #FFC400; }
+        .admin-role-info.dev-info {
+            background: rgba(168, 85, 247, 0.08);
+            border-color: rgba(168, 85, 247, 0.25);
+        }
+        .admin-role-info.dev-info strong { color: #a855f7; }
+
+        .admin-search {
+            width: 100%; padding: 12px 16px;
+            background: #1a1a1a; border: 1px solid #2a2a2a;
+            border-radius: 10px; color: #fff; font-size: 14px;
+            outline: none; margin-bottom: 15px;
+        }
+        .admin-search:focus { border-color: #ef4444; box-shadow: 0 0 12px rgba(239, 68, 68, 0.3); }
+
+        .admin-stats {
+            display: flex; gap: 10px; margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .admin-stat {
+            flex: 1; min-width: 100px; padding: 10px 14px;
+            background: #1a1a1a; border: 1px solid #2a2a2a;
+            border-radius: 10px; text-align: center;
+        }
+        .admin-stat .num {
+            font-size: 22px; font-weight: 900; color: #FFC400;
+            display: block;
+        }
+        .admin-stat .lbl {
+            font-size: 11px; color: #888;
+            text-transform: uppercase; letter-spacing: 1px;
+            margin-top: 3px; display: block;
+        }
+
+        .admin-users-list {
+            max-height: 400px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 10px;
+            padding-right: 5px;
+        }
+        .admin-users-list::-webkit-scrollbar { width: 6px; }
+        .admin-users-list::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+
+        .admin-user-item {
+            display: flex; align-items: center; gap: 12px;
+            background: #1a1a1a; padding: 12px 15px;
+            border-radius: 12px; border: 1px solid #2a2a2a;
+            transition: 0.3s;
+        }
+        .admin-user-item:hover { border-color: #ef4444; background: #1e1e1e; }
+
+        .admin-user-avatar {
+            width: 44px; height: 44px; border-radius: 50%;
+            background: linear-gradient(135deg, #FFC400, #FF8C00);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; color: #080808; font-size: 16px;
+            overflow: hidden; flex-shrink: 0;
+        }
+        .admin-user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        .admin-user-info { flex: 1; min-width: 0; }
+        .admin-user-info .name {
+            color: #fff; font-weight: 700; font-size: 14px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .admin-user-info .email {
+            color: #888; font-size: 12px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+
+        .admin-role-select {
+            padding: 9px 12px;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            outline: none;
+            transition: 0.3s;
+            font-family: inherit;
+            min-width: 130px;
+        }
+        .admin-role-select:hover { border-color: #ef4444; }
+        .admin-role-select:focus { border-color: #ef4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.3); }
+        .admin-role-select:disabled {
+            opacity: 0.5; cursor: not-allowed;
+            border-style: dashed;
+        }
+
+        .admin-empty {
+            text-align: center; color: #666;
+            padding: 30px 20px; font-size: 14px;
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed; top: 100px; right: 30px;
             background: #121212; border-left: 4px solid #FFC400;
             padding: 16px 24px; border-radius: 10px;
             color: #fff; font-weight: 600; font-size: 15px;
             box-shadow: 0 10px 30px rgba(255, 196, 0, 0.3);
             transform: translateX(400px); transition: all 0.5s ease;
-            z-index: 3000; max-width: 320px; }
+            z-index: 3000; max-width: 320px;
+        }
         .toast.show { transform: translateX(0); }
         .toast.success { border-left-color: #22c55e; }
         .toast.error { border-left-color: #ef4444; }
@@ -341,13 +472,14 @@
             .logo img { height: 40px; }
             .btn-login { margin-left: 0; padding: 8px 18px; font-size: 14px; }
             .user-name { display: none; }
-            .user-box { margin-left: 0; }
+            .user-box { margin-left: 0; gap: 4px; }
             .modal { padding: 35px 25px; }
             .toast { top: 90px; right: 15px; left: 15px; max-width: none; }
-            .btn-msg, .btn-profile { padding: 8px 10px; font-size: 11px; }
+            .btn-msg, .btn-profile, .btn-admin, .btn-logout { padding: 7px 10px; font-size: 11px; }
             .msg-container { height: 300px; }
             .btn-2010-hero { font-size: 15px; padding: 13px 28px; }
             .profile-info h3 { font-size: 20px; }
+            .admin-role-select { font-size: 11px; padding: 7px 8px; min-width: 100px; }
         }
     </style>
 </head>
@@ -370,6 +502,7 @@
                 <span class="user-name" id="userName">User</span>
                 <button class="btn-msg" onclick="openMsg()">✉️ Chat</button>
                 <button class="btn-profile" onclick="openProfile()">👤 Hồ sơ</button>
+                <button class="btn-admin" id="btnAdmin" onclick="openAdmin()">⚙️ Quản trị</button>
                 <button class="btn-logout" onclick="logout()">Đăng xuất</button>
             </div>
         </div>
@@ -533,6 +666,25 @@
         </div>
     </div>
 
+    <!-- MODAL ADMIN PANEL -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal admin-modal">
+            <div class="admin-header">
+                <h2>Bảng Quản Trị</h2>
+                <button class="modal-close" onclick="closeAdmin()" style="position: static; font-size: 24px;">×</button>
+            </div>
+
+            <div class="admin-role-info" id="adminRoleInfo"></div>
+
+            <div class="admin-stats" id="adminStats"></div>
+
+            <input type="text" class="admin-search" id="adminSearch"
+                   placeholder="🔍 Tìm kiếm theo tên hoặc email..." oninput="renderAdminUsers()">
+
+            <div class="admin-users-list" id="adminUsersList"></div>
+        </div>
+    </div>
+
     <div class="toast" id="toast"></div>
 
     <script>
@@ -591,6 +743,72 @@
             return '';
         }
 
+        /* ===== XÁC ĐỊNH QUYỀN HIỆN TẠI ===== */
+        function getCurrentUserRole() {
+            const session = localStorage.getItem(SESSION_KEY);
+            if (!session) return null;
+            const user = JSON.parse(session);
+            const profile = getProfile(user.username);
+            const t = (profile.title || '').toUpperCase().trim();
+            if (t === 'ADMIN') return 'admin';
+            if (t === 'DEV' || t === 'DEVELOPER') return 'dev';
+            return null;
+        }
+
+        function isCurrentUserAdmin() {
+            return getCurrentUserRole() === 'admin';
+        }
+
+        function canAccessAdminPanel() {
+            const role = getCurrentUserRole();
+            return role === 'admin' || role === 'dev';
+        }
+
+        /* ===== KIỂM TRA CÓ ĐƯỢC CẤP TITLE KHÔNG ===== */
+        // ADMIN: cấp được tất cả
+        // DEV: chỉ cấp MEMBER, VIP, MOD
+        function canAssignTitle(newTitle) {
+            const myRole = getCurrentUserRole();
+            if (!myRole) return false;
+            const t = (newTitle || '').toUpperCase().trim();
+
+            if (myRole === 'admin') return true; // ADMIN cấp tất cả
+            if (myRole === 'dev') {
+                // DEV chỉ cấp các quyền thấp hơn
+                return ['', 'MEMBER', 'USER', 'VIP', 'MOD', 'MODERATOR'].includes(t);
+            }
+            return false;
+        }
+
+        /* ===== KIỂM TRA CÓ ĐƯỢC ĐỔI TITLE CỦA NGƯỜI KHÁC KHÔNG ===== */
+        function canChangeUserTitle(targetUsername, newTitle) {
+            const myRole = getCurrentUserRole();
+            if (!myRole) return { ok: false, reason: 'Bạn không có quyền!' };
+
+            const session = JSON.parse(localStorage.getItem(SESSION_KEY));
+            if (targetUsername === session.username) {
+                return { ok: false, reason: '❌ Không thể tự đổi chức danh của chính mình!' };
+            }
+
+            const targetProfile = getProfile(targetUsername);
+            const targetTitle = (targetProfile.title || '').toUpperCase().trim();
+
+            // DEV không được đụng vào ADMIN khác
+            if (myRole === 'dev') {
+                if (targetTitle === 'ADMIN') {
+                    return { ok: false, reason: '❌ DEV không thể đổi chức danh của ADMIN!' };
+                }
+                if (targetTitle === 'DEV' || targetTitle === 'DEVELOPER') {
+                    return { ok: false, reason: '❌ DEV không thể đổi chức danh của DEV khác!' };
+                }
+                if (!canAssignTitle(newTitle)) {
+                    return { ok: false, reason: '❌ DEV chỉ có thể cấp MEMBER, VIP hoặc MOD!' };
+                }
+            }
+
+            return { ok: true };
+        }
+
         /* ============ MODAL AUTH ============ */
         const authModal = document.getElementById('authModal');
 
@@ -607,7 +825,9 @@
         }
         authModal.addEventListener('click', e => { if (e.target === authModal) closeAuth(); });
         document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') { closeAuth(); closeMsg(); closeProfile(); }
+            if (e.key === 'Escape') {
+                closeAuth(); closeMsg(); closeProfile(); closeAdmin();
+            }
         });
 
         function switchTab(tab) {
@@ -656,7 +876,6 @@
                 return showError('regError', '❌ Email này đã có tài khoản rồi!');
             }
 
-            // Nếu là user đầu tiên HOẶC username là 'admin' → tự động có title ADMIN
             const isFirst = users.length === 0;
             const isAdminName = username.toLowerCase() === 'admin';
             const autoTitle = (isFirst || isAdminName) ? 'ADMIN' : '';
@@ -669,10 +888,7 @@
             users.push(newUser);
             saveUsers(users);
 
-            // Lưu title vào profile
-            if (autoTitle) {
-                setProfileField(username, 'title', autoTitle);
-            }
+            if (autoTitle) setProfileField(username, 'title', autoTitle);
 
             setSession(newUser);
             closeAuth();
@@ -768,6 +984,7 @@
             const btnLogin = document.getElementById('btnLogin');
             const userBox = document.getElementById('userBox');
             const userAvatar = document.getElementById('userAvatar');
+            const btnAdmin = document.getElementById('btnAdmin');
 
             if (session) {
                 const user = JSON.parse(session);
@@ -792,10 +1009,18 @@
                 } else {
                     userAvatar.textContent = displayName.charAt(0).toUpperCase();
                 }
+
+                // Hiện nút Quản trị nếu là ADMIN hoặc DEV
+                if (canAccessAdminPanel()) {
+                    btnAdmin.classList.add('show');
+                } else {
+                    btnAdmin.classList.remove('show');
+                }
             } else {
                 btnLogin.style.display = 'inline-block';
                 userBox.classList.remove('active');
                 userAvatar.innerHTML = 'A';
+                btnAdmin.classList.remove('show');
             }
         }
 
@@ -879,11 +1104,7 @@
             document.getElementById('profileViewMode').style.display = 'none';
             document.getElementById('profileEditMode').style.display = 'block';
 
-            // Kiểm tra quyền admin
-            const session = JSON.parse(localStorage.getItem(SESSION_KEY));
-            const myProfile = getProfile(session.username);
-            const myTitle = (myProfile.title || '').toUpperCase().trim();
-            const isAdmin = myTitle === 'ADMIN';
+            const isAdmin = isCurrentUserAdmin();
 
             const titleInput = document.getElementById('editTitle');
             const presetsEl = document.getElementById('titlePresets');
@@ -921,16 +1142,12 @@
                 return;
             }
 
-            // Kiểm tra admin để đổi title
+            const isAdmin = isCurrentUserAdmin();
             const myProfile = getProfile(session.username);
-            const myTitle = (myProfile.title || '').toUpperCase().trim();
-            const isAdmin = myTitle === 'ADMIN';
-
             let newTitle;
             if (isAdmin) {
                 newTitle = document.getElementById('editTitle').value.trim().toUpperCase();
             } else {
-                // Không phải admin → giữ nguyên title cũ
                 newTitle = myProfile.title || '';
             }
 
@@ -947,6 +1164,194 @@
             renderProfile();
             cancelEditProfile();
             showToast('✅ Đã lưu hồ sơ!', 'success');
+        }
+
+        /* ============ ADMIN PANEL ============ */
+        const adminModal = document.getElementById('adminModal');
+
+        function openAdmin() {
+            if (!canAccessAdminPanel()) {
+                showToast('❌ Bạn không có quyền truy cập!', 'error');
+                return;
+            }
+            adminModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            document.getElementById('adminSearch').value = '';
+            renderAdminRoleInfo();
+            renderAdminStats();
+            renderAdminUsers();
+        }
+
+        function closeAdmin() {
+            adminModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        adminModal.addEventListener('click', e => { if (e.target === adminModal) closeAdmin(); });
+
+        function renderAdminRoleInfo() {
+            const role = getCurrentUserRole();
+            const el = document.getElementById('adminRoleInfo');
+            if (role === 'admin') {
+                el.className = 'admin-role-info';
+                el.innerHTML = '👑 Bạn đang đăng nhập với quyền <strong>ADMIN</strong> — có thể cấp mọi chức danh: MEMBER, VIP, MOD, DEV, ADMIN.';
+            } else if (role === 'dev') {
+                el.className = 'admin-role-info dev-info';
+                el.innerHTML = '💻 Bạn đang đăng nhập với quyền <strong>DEV</strong> — có thể cấp: MEMBER, VIP, MOD. Không thể cấp DEV hoặc ADMIN.';
+            }
+        }
+
+        function renderAdminStats() {
+            const users = getUsers();
+            const profiles = getProfiles();
+
+            let adminCount = 0, devCount = 0, modCount = 0, vipCount = 0, memberCount = 0, noTitleCount = 0;
+
+            users.forEach(u => {
+                const p = profiles[u.username] || {};
+                const t = (p.title || '').toUpperCase().trim();
+                if (t === 'ADMIN') adminCount++;
+                else if (t === 'DEV' || t === 'DEVELOPER') devCount++;
+                else if (t === 'MOD' || t === 'MODERATOR') modCount++;
+                else if (t === 'VIP') vipCount++;
+                else if (t === 'MEMBER' || t === 'USER') memberCount++;
+                else noTitleCount++;
+            });
+
+            const statsEl = document.getElementById('adminStats');
+            statsEl.innerHTML = `
+                <div class="admin-stat">
+                    <span class="num">${users.length}</span>
+                    <span class="lbl">Tổng user</span>
+                </div>
+                <div class="admin-stat">
+                    <span class="num" style="color:#ef4444;">${adminCount}</span>
+                    <span class="lbl">Admin</span>
+                </div>
+                <div class="admin-stat">
+                    <span class="num" style="color:#a855f7;">${devCount}</span>
+                    <span class="lbl">Dev</span>
+                </div>
+                <div class="admin-stat">
+                    <span class="num" style="color:#3b82f6;">${modCount}</span>
+                    <span class="lbl">Mod</span>
+                </div>
+                <div class="admin-stat">
+                    <span class="num" style="color:#22c55e;">${vipCount}</span>
+                    <span class="lbl">VIP</span>
+                </div>
+                <div class="admin-stat">
+                    <span class="num" style="color:#6b7280;">${noTitleCount}</span>
+                    <span class="lbl">Chưa cấp</span>
+                </div>
+            `;
+        }
+
+        function renderAdminUsers() {
+            const container = document.getElementById('adminUsersList');
+            const search = document.getElementById('adminSearch').value.trim().toLowerCase();
+            const users = getUsers();
+            const session = JSON.parse(localStorage.getItem(SESSION_KEY));
+            const myRole = getCurrentUserRole();
+
+            const filtered = users.filter(u => {
+                if (!search) return true;
+                return u.username.toLowerCase().includes(search) ||
+                       u.email.toLowerCase().includes(search);
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="admin-empty">Không tìm thấy user nào.</div>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            filtered.forEach(u => {
+                const profile = getProfile(u.username);
+                const displayName = profile.displayName || u.username;
+                const avatarUrl = profile.avatarUrl || u.avatar || '';
+                const title = (profile.title || '').toUpperCase().trim();
+                const isMe = u.username === session.username;
+
+                // Xác định có được đổi không
+                let canEdit = true;
+                let disabledReason = '';
+
+                if (isMe) {
+                    canEdit = false;
+                    disabledReason = 'Không thể tự đổi';
+                } else if (myRole === 'dev') {
+                    if (title === 'ADMIN') {
+                        canEdit = false;
+                        disabledReason = 'Không đổi được ADMIN';
+                    } else if (title === 'DEV' || title === 'DEVELOPER') {
+                        canEdit = false;
+                        disabledReason = 'Không đổi được DEV khác';
+                    }
+                }
+
+                const item = document.createElement('div');
+                item.className = 'admin-user-item';
+
+                const avatarHTML = avatarUrl
+                    ? `<img src="${avatarUrl}" alt="" onerror="this.parentElement.textContent='${displayName.charAt(0).toUpperCase()}'">`
+                    : displayName.charAt(0).toUpperCase();
+
+                const badgeHTML = title
+                    ? `<span class="title-badge ${getTitleClass(title)}">${escapeHtml(title)}</span>`
+                    : '';
+
+                // Build options theo quyền
+                let optionsHTML = `<option value="">— Không cấp —</option>`;
+                optionsHTML += `<option value="MEMBER" ${title === 'MEMBER' ? 'selected' : ''}>👤 MEMBER</option>`;
+                optionsHTML += `<option value="VIP" ${title === 'VIP' ? 'selected' : ''}>⭐ VIP</option>`;
+                optionsHTML += `<option value="MOD" ${title === 'MOD' ? 'selected' : ''}>🛡️ MOD</option>`;
+
+                if (myRole === 'admin') {
+                    optionsHTML += `<option value="DEV" ${title === 'DEV' ? 'selected' : ''}>💻 DEV</option>`;
+                    optionsHTML += `<option value="ADMIN" ${title === 'ADMIN' ? 'selected' : ''}>👑 ADMIN</option>`;
+                }
+
+                item.innerHTML = `
+                    <div class="admin-user-avatar">${avatarHTML}</div>
+                    <div class="admin-user-info">
+                        <div class="name">${escapeHtml(displayName)}${badgeHTML}${isMe ? ' <span style="color:#888;font-size:11px;">(bạn)</span>' : ''}</div>
+                        <div class="email">@${escapeHtml(u.username)} • ${escapeHtml(u.email)}</div>
+                    </div>
+                    <select class="admin-role-select" data-username="${escapeHtml(u.username)}" ${!canEdit ? 'disabled' : ''} title="${disabledReason}">
+                        ${optionsHTML}
+                    </select>
+                `;
+
+                const select = item.querySelector('.admin-role-select');
+                if (canEdit) {
+                    select.addEventListener('change', function() {
+                        changeUserTitle(u.username, this.value);
+                    });
+                }
+
+                container.appendChild(item);
+            });
+        }
+
+        function changeUserTitle(targetUsername, newTitle) {
+            const check = canChangeUserTitle(targetUsername, newTitle);
+            if (!check.ok) {
+                showToast(check.reason, 'error');
+                renderAdminUsers();
+                return;
+            }
+
+            const oldTitle = (getProfile(targetUsername).title || '').toUpperCase().trim();
+
+            setProfileField(targetUsername, 'title', newTitle);
+
+            const oldLabel = oldTitle || 'Không cấp';
+            const newLabel = newTitle || 'Không cấp';
+            showToast(`✅ Đã đổi chức danh ${targetUsername}: ${oldLabel} → ${newLabel}`, 'success');
+
+            renderAdminStats();
+            renderAdminUsers();
         }
 
         /* ============ CHAT VỚI SUPABASE ============ */
