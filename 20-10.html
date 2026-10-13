@@ -138,7 +138,7 @@
     left: 50%;
     transform: translateX(-50%) translateY(0);
     width: 340px;
-    height: 280px;
+    height: 300px;
     background: #fff5f8;
     border-radius: 12px;
     padding: 20px 22px;
@@ -160,7 +160,7 @@
   .card-inside::-webkit-scrollbar-thumb { background: #f48fb1; border-radius: 10px; }
 
   .card-title {
-    font-size: 17px;
+    font-size: 16px;
     color: #d81b60;
     font-weight: 800;
     margin-bottom: 12px;
@@ -175,21 +175,29 @@
     line-height: 1.75;
     text-align: left;
     word-wrap: break-word;
+    min-height: 150px;
   }
   .card-text strong { color: #d81b60; }
-  .card-sign {
-    margin-top: 14px;
-    text-align: right;
-    font-style: italic;
-    color: #ad1457;
-    font-size: 12.5px;
-    font-weight: 600;
+
+  /* Con trỏ nhấp nháy */
+  .cursor {
+    display: inline-block;
+    width: 7px;
+    height: 14px;
+    background: #d81b60;
+    margin-left: 2px;
+    animation: blink 0.7s steps(1) infinite;
+    vertical-align: middle;
   }
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
   .card-page {
     text-align: center;
     font-size: 11px;
     color: #f06292;
-    margin-top: 10px;
+    margin-top: 12px;
     letter-spacing: 1px;
   }
 
@@ -279,11 +287,11 @@
     }
     .card-inside {
       width: 290px;
-      height: 260px;
+      height: 280px;
       padding: 16px 18px;
     }
     .envelope.open .card-inside {
-      transform: translateX(-50%) translateY(-150px) scale(1.02);
+      transform: translateX(-50%) translateY(-155px) scale(1.02);
     }
     .card-title { font-size: 15px; }
     .card-text { font-size: 12.5px; }
@@ -354,23 +362,23 @@
     },
     {
       title: "💐 Kính Chúc Các Cô Giáo 💐",
-      text: "Chúng em xin kính chúc các cô giáo luôn <strong>mạnh khỏe, hạnh phúc, xinh đẹp</strong> và tràn đầy nhiệt huyết với sự nghiệp trồng người cao quý. <br><br>Cảm ơn các cô đã luôn tận tình dạy dỗ, quan tâm và dìu dắt chúng em trên con đường học tập, giúp chúng em trưởng thành hơn từng ngày và có thêm động lực để chinh phục những ước mơ của mình. ❤️"
+      text: "Chúng em xin kính chúc các cô giáo luôn <strong>mạnh khỏe, hạnh phúc, xinh đẹp</strong> và tràn đầy nhiệt huyết với sự nghiệp trồng người cao quý.<br><br>Cảm ơn các cô đã luôn tận tình dạy dỗ, quan tâm và dìu dắt chúng em trên con đường học tập, giúp chúng em trưởng thành hơn từng ngày và có thêm động lực để chinh phục những ước mơ của mình. ❤️"
     },
     {
       title: "🌷 Gửi Các Bạn Nữ 12A6 🌷",
-      text: "Gửi đến những bông hoa xinh đẹp của đại gia đình 12A6, chúc các bạn nữ luôn <strong>vui vẻ, tự tin, xinh xắn, học giỏi</strong> và ngày càng tỏa sáng theo cách riêng của mình. <br><br>Mong rằng các bạn sẽ luôn giữ được nụ cười rạng rỡ, có thật nhiều niềm vui, gặp nhiều may mắn và đạt được những mục tiêu mà bản thân đã đặt ra. Chúc các bạn không chỉ xinh đẹp bên ngoài mà còn luôn <strong>mạnh mẽ, bản lĩnh, yêu thương bản thân</strong> và không ngừng hoàn thiện chính mình. 🌷✨"
+      text: "Gửi đến những bông hoa xinh đẹp của đại gia đình 12A6, chúc các bạn nữ luôn <strong>vui vẻ, tự tin, xinh xắn, học giỏi</strong> và ngày càng tỏa sáng theo cách riêng của mình.<br><br>Mong rằng các bạn sẽ luôn giữ được nụ cười rạng rỡ, có thật nhiều niềm vui, gặp nhiều may mắn và đạt được những mục tiêu mà bản thân đã đặt ra. Chúc các bạn không chỉ xinh đẹp bên ngoài mà còn luôn <strong>mạnh mẽ, bản lĩnh, yêu thương bản thân</strong> và không ngừng hoàn thiện chính mình. 🌷✨"
     },
     {
       title: "✨ Thanh Xuân Lớp 12 ✨",
-      text: "Thanh xuân lớp 12 là một chặng đường thật đặc biệt, với những kỷ niệm, tiếng cười và cả những khoảnh khắc đáng nhớ bên thầy cô, bạn bè. <br><br>Hy vọng rằng mỗi thành viên của <strong>12A6</strong> sẽ luôn trân trọng khoảng thời gian này, cùng nhau tạo nên thật nhiều kỷ niệm đẹp và để những năm tháng học trò trở thành một phần thanh xuân không thể nào quên."
+      text: "Thanh xuân lớp 12 là một chặng đường thật đặc biệt, với những kỷ niệm, tiếng cười và cả những khoảnh khắc đáng nhớ bên thầy cô, bạn bè.<br><br>Hy vọng rằng mỗi thành viên của <strong>12A6</strong> sẽ luôn trân trọng khoảng thời gian này, cùng nhau tạo nên thật nhiều kỷ niệm đẹp và để những năm tháng học trò trở thành một phần thanh xuân không thể nào quên."
     },
     {
       title: "🌹 Lời Chúc Cuối 🌹",
-      text: "Tập thể lớp 12A6 xin chúc các cô giáo và tất cả các bạn nữ có một ngày 20/10 thật <strong>vui vẻ, hạnh phúc</strong>, ngập tràn hoa, quà và những lời yêu thương. <br><br>Chúc mọi người luôn được trân trọng, yêu thương và gặp thật nhiều điều tốt đẹp trong cuộc sống. Mong rằng không chỉ riêng ngày 20/10 mà cả <strong>365 ngày trong năm</strong>, các cô và các bạn nữ đều luôn rạng rỡ như những đóa hoa, sống hết mình với đam mê và luôn hạnh phúc với những gì mình lựa chọn! 💕🌺"
+      text: "Tập thể lớp 12A6 xin chúc các cô giáo và tất cả các bạn nữ có một ngày 20/10 thật <strong>vui vẻ, hạnh phúc</strong>, ngập tràn hoa, quà và những lời yêu thương.<br><br>Chúc mọi người luôn được trân trọng, yêu thương và gặp thật nhiều điều tốt đẹp trong cuộc sống. Mong rằng không chỉ riêng ngày 20/10 mà cả <strong>365 ngày trong năm</strong>, các cô và các bạn nữ đều luôn rạng rỡ như những đóa hoa, sống hết mình với đam mê và luôn hạnh phúc với những gì mình lựa chọn! 💕🌺"
     },
     {
       title: "🎉 HAPPY 20/10! 🎉",
-      text: "<strong>HAPPY VIETNAMESE WOMEN'S DAY 20/10!</strong> 🎉💗 <br><br>🌸 <em>Tập thể lớp 12A6 – Gửi ngàn lời yêu thương đến một nửa xinh đẹp của thế giới!</em> 🌸"
+      text: "<strong>HAPPY VIETNAMESE WOMEN'S DAY 20/10!</strong> 🎉💗<br><br>🌸 <em>Tập thể lớp 12A6 – Gửi ngàn lời yêu thương đến một nửa xinh đẹp của thế giới!</em> 🌸"
     }
   ];
 
@@ -378,7 +386,6 @@
   const envelope = document.getElementById('envelope');
   const hint = document.getElementById('hint');
   const btnClose = document.getElementById('btnClose');
-  const btnNext = document.getElementById('btnNext');
   const cardTitle = document.getElementById('cardTitle');
   const cardText = document.getElementById('cardText');
   const cardPage = document.getElementById('cardPage');
@@ -412,66 +419,11 @@
     setTimeout(() => { hint.style.opacity = '1'; }, 600);
   }
 
-  /* ===== GÕ CHỮ ===== */
+  /* ===== GÕ CHỮ TỪNG KÝ TỰ (giữ nguyên thẻ HTML) ===== */
   function typeText(html) {
     clearInterval(typeTimer);
-    cardText.innerHTML = '<span id="typed"></span><span class="cursor"></span>';
-    const typed = document.getElementById('typed');
 
-    // Chuyển HTML thành mảng ký tự nhưng giữ nguyên thẻ
-    // Đơn giản: dùng cách hiển thị từng "chunk" — tách theo ký tự thô nhưng render HTML
-    // Cách đơn giản nhất: dùng innerHTML tăng dần theo plain text, sau khi xong mới set HTML đầy đủ
-    // Nhưng để giữ được thẻ <strong> thì ta phải xử lý riêng.
-
-    // Cách làm: tạo trước cấu trúc bằng cách chèn dần vào innerHTML.
-    // Do phức tạp, ta sẽ dùng cách: xóa hết, mỗi lần tick thêm 1 ký tự plain text, dùng innerHTML với textContent
-    // → không giữ được <strong>
-
-    // Giải pháp: parse HTML thành mảng các token (text + tag)
-    const tokens = tokenizeHTML(html);
-    let idx = 0;
-    let buffer = '';
-
-    typeTimer = setInterval(() => {
-      if (idx < tokens.length) {
-        const token = tokens[idx];
-        if (token.type === 'tag') {
-          buffer += token.content;
-          idx++;
-        } else {
-          // Text: thêm từng ký tự
-          const chars = token.content.split('');
-          let ci = 0;
-          const innerInt = setInterval(() => {
-            if (ci < chars.length) {
-              buffer += chars[ci];
-              ci++;
-              typed.innerHTML = buffer;
-              if (ci % 5 === 0) createFalling();
-            } else {
-              clearInterval(innerInt);
-            }
-          }, 25);
-          idx++;
-          // Dừng interval ngoài để đợi inner xong
-          clearInterval(typeTimer);
-          const waitInterval = setInterval(() => {
-            if (ci >= chars.length) {
-              clearInterval(waitInterval);
-              // Tiếp tục vòng lặp ngoài
-              typeTimer = setInterval(arguments.callee, 1);
-            }
-          }, 30);
-          return;
-        }
-        typed.innerHTML = buffer;
-      } else {
-        clearInterval(typeTimer);
-      }
-    }, 5);
-  }
-
-  function tokenizeHTML(html) {
+    // Tách HTML thành các token: thẻ <...> và text
     const tokens = [];
     const regex = /(<[^>]+>)|([^<]+)/g;
     let m;
@@ -479,28 +431,45 @@
       if (m[1]) tokens.push({ type: 'tag', content: m[1] });
       else tokens.push({ type: 'text', content: m[2] });
     }
-    return tokens;
-  }
 
-  /* ===== CÁCH GÕ ĐƠN GIẢN HƠN ===== */
-  function typeTextSimple(html) {
-    clearInterval(typeTimer);
-    // Render HTML trước nhưng ẩn chữ
-    cardText.innerHTML = html + '<span class="cursor"></span>';
-    const el = cardText;
-    // Ẩn tất cả text bằng cách wrap
-    // Cách đơn giản: dùng overflow hidden và thay đổi width → không khả thi với nhiều dòng
-    // Chọn: hiện luôn sau 800ms (bỏ gõ từng ký tự để tránh lỗi)
-  }
+    // Xây dựng buffer dần dần
+    let buffer = '';
+    let tokenIndex = 0;
+    let charIndex = 0;
+    const cursor = '<span class="cursor"></span>';
 
-  /* ===== DÙNG CÁCH ĐƠN GIẢN — HIỆN DẦN TOÀN BỘ ===== */
-  function typeTextFinal(html) {
-    clearInterval(typeTimer);
-    cardText.innerHTML = html + '<span class="cursor"></span>';
-  }
+    cardText.innerHTML = cursor;
 
-  /* Override typeText bằng cách đơn giản, không lỗi */
-  typeText = typeTextFinal;
+    typeTimer = setInterval(() => {
+      if (tokenIndex >= tokens.length) {
+        clearInterval(typeTimer);
+        return;
+      }
+
+      const token = tokens[tokenIndex];
+
+      if (token.type === 'tag') {
+        // Thẻ HTML: thêm nguyên cả thẻ vào buffer (không đếm ký tự)
+        buffer += token.content;
+        tokenIndex++;
+        cardText.innerHTML = buffer + cursor;
+      } else {
+        // Text: thêm từng ký tự
+        if (charIndex < token.content.length) {
+          buffer += token.content[charIndex];
+          charIndex++;
+          cardText.innerHTML = buffer + cursor;
+
+          // Bùng nổ hoa mỗi 5 ký tự
+          if (charIndex % 5 === 0) createFalling();
+        } else {
+          // Hết đoạn text này → sang token tiếp
+          tokenIndex++;
+          charIndex = 0;
+        }
+      }
+    }, 28);
+  }
 
   function updatePage() {
     cardPage.textContent = (currentMsg + 1) + ' / ' + messages.length;
