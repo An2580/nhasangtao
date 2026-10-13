@@ -17,7 +17,7 @@
     position: relative;
   }
 
-  /* ===== HOA RƠI ===== */
+  /* HOA RƠI */
   .falling {
     position: fixed;
     top: -60px;
@@ -31,7 +31,7 @@
     100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
   }
 
-  /* ===== VÒNG TRÁI TIM BẰNG CHẤM ===== */
+  /* VÒNG TRÁI TIM */
   #heartOutline {
     position: absolute;
     width: 100%;
@@ -55,7 +55,7 @@
     50% { opacity: 1; transform: scale(1.3); }
   }
 
-  /* ===== TEXT VÒNG CUNG ===== */
+  /* TEXT VÒNG CUNG */
   .arc-text {
     position: absolute;
     top: 6%;
@@ -72,7 +72,7 @@
     padding: 0 10px;
   }
 
-  /* ===== PHONG BÌ ===== */
+  /* PHONG BÌ */
   .envelope-wrapper {
     position: relative;
     z-index: 10;
@@ -82,30 +82,20 @@
     transition: transform 0.5s;
   }
   .envelope-wrapper:hover { transform: scale(1.03); }
-
-  .envelope {
-    position: absolute;
-    inset: 0;
-  }
-
+  .envelope { position: absolute; inset: 0; }
   .envelope-back {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    bottom: 0; left: 0;
+    width: 100%; height: 100%;
     background: linear-gradient(135deg, #f8a5c2, #ec6f9e);
     border-radius: 8px;
     z-index: 1;
     box-shadow: 0 15px 40px rgba(216, 27, 96, 0.35);
   }
-
   .envelope-flap {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 0;
+    top: 0; left: 0;
+    width: 0; height: 0;
     border-left: 160px solid transparent;
     border-right: 160px solid transparent;
     border-top: 110px solid #f48fb1;
@@ -118,20 +108,17 @@
     transform: rotateX(180deg);
     z-index: 1;
   }
-
   .envelope-front {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    bottom: 0; left: 0;
+    width: 100%; height: 100%;
     background: linear-gradient(135deg, #f8a5c2, #ec6f9e);
     border-radius: 8px;
     clip-path: polygon(0 30%, 50% 65%, 100% 30%, 100% 100%, 0 100%);
     z-index: 3;
   }
 
-  /* Thiệp chứa bên trong */
+  /* THIỆP BÊN TRONG */
   .card-inside {
     position: absolute;
     bottom: 15px;
@@ -165,7 +152,6 @@
     font-weight: 800;
     margin-bottom: 12px;
     text-align: center;
-    letter-spacing: 0.5px;
     padding-bottom: 8px;
     border-bottom: 1px dashed #f8bbd0;
   }
@@ -178,8 +164,9 @@
     min-height: 150px;
   }
   .card-text strong { color: #d81b60; }
+  .card-text em { color: #ad1457; }
 
-  /* Con trỏ nhấp nháy */
+  /* CON TRỎ NHẤP NHÁY */
   .cursor {
     display: inline-block;
     width: 7px;
@@ -201,7 +188,7 @@
     letter-spacing: 1px;
   }
 
-  /* ===== GỢI Ý BẤM ===== */
+  /* GỢI Ý BẤM */
   .hint {
     position: absolute;
     bottom: -55px;
@@ -219,7 +206,7 @@
     50% { transform: translateX(-50%) translateY(-5px); opacity: 1; }
   }
 
-  /* ===== NÚT NEXT GÓC PHẢI DƯỚI ===== */
+  /* NÚT NEXT GÓC PHẢI DƯỚI */
   .btn-next-float {
     position: fixed;
     bottom: 30px;
@@ -252,7 +239,7 @@
     50% { box-shadow: 0 8px 40px rgba(216, 27, 96, 0.9); }
   }
 
-  /* ===== NÚT ĐÓNG GÓC TRÁI DƯỚI ===== */
+  /* NÚT ĐÓNG GÓC TRÁI DƯỚI */
   .btn-close-float {
     position: fixed;
     bottom: 30px;
@@ -271,10 +258,7 @@
     display: none;
     font-family: inherit;
   }
-  .btn-close-float:hover {
-    background: #d81b60;
-    color: #fff;
-  }
+  .btn-close-float:hover { background: #d81b60; color: #fff; }
   .btn-close-float.show { display: block; }
 
   @media (max-width: 600px) {
@@ -338,7 +322,6 @@
     const w = window.innerWidth;
     const h = window.innerHeight;
     const scale = Math.min(w, h) / 50;
-
     for (let i = 0; i < dotCount; i++) {
       const t = (i / dotCount) * Math.PI * 2;
       const p = heartPoint(t);
@@ -350,7 +333,6 @@
       heartOutline.appendChild(dot);
     }
   }
-
   buildHeartDots();
   window.addEventListener('resize', buildHeartDots);
 
@@ -419,56 +401,64 @@
     setTimeout(() => { hint.style.opacity = '1'; }, 600);
   }
 
-  /* ===== GÕ CHỮ TỪNG KÝ TỰ (giữ nguyên thẻ HTML) ===== */
+  /* ================================================
+     HÀM GÕ CHỮ TỪNG KÝ TỰ
+     Cách hoạt động:
+     - Chuyển chuỗi HTML thành mảng token:
+       + Thẻ HTML (<strong>, </strong>, <br>...) → 1 token
+       + Mỗi ký tự chữ → 1 token riêng
+     - Sau đó dùng setInterval để thêm từng token vào màn hình
+  ================================================ */
   function typeText(html) {
     clearInterval(typeTimer);
 
-    // Tách HTML thành các token: thẻ <...> và text
+    // Bước 1: Tách HTML thành các token
     const tokens = [];
-    const regex = /(<[^>]+>)|([^<]+)/g;
-    let m;
-    while ((m = regex.exec(html)) !== null) {
-      if (m[1]) tokens.push({ type: 'tag', content: m[1] });
-      else tokens.push({ type: 'text', content: m[2] });
+    let i = 0;
+    while (i < html.length) {
+      if (html[i] === '<') {
+        // Gặp thẻ HTML → tìm đến dấu '>' và lấy cả thẻ
+        const closeIdx = html.indexOf('>', i);
+        if (closeIdx !== -1) {
+          tokens.push(html.substring(i, closeIdx + 1));
+          i = closeIdx + 1;
+        } else {
+          tokens.push(html[i]);
+          i++;
+        }
+      } else {
+        // Ký tự thường → tách từng cái
+        tokens.push(html[i]);
+        i++;
+      }
     }
 
-    // Xây dựng buffer dần dần
+    // Bước 2: Chuẩn bị khung hiển thị
+    cardText.innerHTML = '<span id="typed"></span><span class="cursor"></span>';
+    const typedEl = document.getElementById('typed');
+
+    // Bước 3: Gõ từng token
+    let idx = 0;
     let buffer = '';
-    let tokenIndex = 0;
-    let charIndex = 0;
-    const cursor = '<span class="cursor"></span>';
+    let charCount = 0;
 
-    cardText.innerHTML = cursor;
-
-    typeTimer = setInterval(() => {
-      if (tokenIndex >= tokens.length) {
+    typeTimer = setInterval(function() {
+      if (idx >= tokens.length) {
         clearInterval(typeTimer);
         return;
       }
 
-      const token = tokens[tokenIndex];
+      const token = tokens[idx];
+      buffer += token;
+      typedEl.innerHTML = buffer;
+      idx++;
 
-      if (token.type === 'tag') {
-        // Thẻ HTML: thêm nguyên cả thẻ vào buffer (không đếm ký tự)
-        buffer += token.content;
-        tokenIndex++;
-        cardText.innerHTML = buffer + cursor;
-      } else {
-        // Text: thêm từng ký tự
-        if (charIndex < token.content.length) {
-          buffer += token.content[charIndex];
-          charIndex++;
-          cardText.innerHTML = buffer + cursor;
-
-          // Bùng nổ hoa mỗi 5 ký tự
-          if (charIndex % 5 === 0) createFalling();
-        } else {
-          // Hết đoạn text này → sang token tiếp
-          tokenIndex++;
-          charIndex = 0;
-        }
+      // Đếm ký tự chữ (bỏ qua thẻ) để bùng nổ hoa
+      if (!token.startsWith('<')) {
+        charCount++;
+        if (charCount % 8 === 0) createFalling();
       }
-    }, 28);
+    }, 30); // 30ms/token — tốc độ gõ vừa phải
   }
 
   function updatePage() {
@@ -481,13 +471,10 @@
     cardTitle.textContent = messages[currentMsg].title;
 
     if (isOpen) {
-      cardText.style.opacity = '0';
-      setTimeout(() => {
-        typeText(messages[currentMsg].text);
-        cardText.style.opacity = '1';
-        updatePage();
-        cardInside.scrollTop = 0;
-      }, 200);
+      clearInterval(typeTimer);
+      typeText(messages[currentMsg].text);
+      updatePage();
+      cardInside.scrollTop = 0;
     } else {
       openEnvelope();
     }
