@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gửi cậu - 20/10</title>
+<title>Chúc Mừng 20/10 - 12A6</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -58,13 +58,13 @@
   /* ===== TEXT VÒNG CUNG ===== */
   .arc-text {
     position: absolute;
-    top: 8%;
+    top: 6%;
     left: 0;
     width: 100%;
     text-align: center;
     color: #d81b60;
     font-weight: 800;
-    font-size: 20px;
+    font-size: 18px;
     letter-spacing: 2px;
     z-index: 4;
     pointer-events: none;
@@ -137,50 +137,60 @@
     bottom: 15px;
     left: 50%;
     transform: translateX(-50%) translateY(0);
-    width: 290px;
-    height: 190px;
+    width: 340px;
+    height: 280px;
     background: #fff5f8;
-    border-radius: 10px;
-    padding: 18px 20px;
-    box-shadow: 0 10px 30px rgba(216, 27, 96, 0.3);
+    border-radius: 12px;
+    padding: 20px 22px;
+    box-shadow: 0 10px 40px rgba(216, 27, 96, 0.4);
     z-index: 2;
     opacity: 0;
     transition: all 0.8s ease 0.4s;
-    border: 1px dashed #f48fb1;
+    border: 2px dashed #f48fb1;
     overflow-y: auto;
+    pointer-events: none;
   }
   .envelope.open .card-inside {
     opacity: 1;
-    transform: translateX(-50%) translateY(-150px) scale(1.05);
+    transform: translateX(-50%) translateY(-180px) scale(1.05);
     z-index: 20;
+    pointer-events: auto;
   }
+  .card-inside::-webkit-scrollbar { width: 5px; }
+  .card-inside::-webkit-scrollbar-thumb { background: #f48fb1; border-radius: 10px; }
 
   .card-title {
-    font-size: 18px;
+    font-size: 17px;
     color: #d81b60;
     font-weight: 800;
-    margin-bottom: 10px;
-    font-style: italic;
+    margin-bottom: 12px;
+    text-align: center;
+    letter-spacing: 0.5px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed #f8bbd0;
   }
   .card-text {
-    font-size: 14px;
+    font-size: 13.5px;
     color: #4a4a4a;
-    line-height: 1.7;
-    font-style: italic;
-    font-weight: 500;
+    line-height: 1.75;
+    text-align: left;
     word-wrap: break-word;
   }
-  .cursor {
-    display: inline-block;
-    width: 8px;
-    height: 15px;
-    background: #d81b60;
-    margin-left: 2px;
-    animation: blink 0.7s steps(1) infinite;
-    vertical-align: middle;
+  .card-text strong { color: #d81b60; }
+  .card-sign {
+    margin-top: 14px;
+    text-align: right;
+    font-style: italic;
+    color: #ad1457;
+    font-size: 12.5px;
+    font-weight: 600;
   }
-  @keyframes blink {
-    50% { opacity: 0; }
+  .card-page {
+    text-align: center;
+    font-size: 11px;
+    color: #f06292;
+    margin-top: 10px;
+    letter-spacing: 1px;
   }
 
   /* ===== GỢI Ý BẤM ===== */
@@ -239,12 +249,12 @@
     position: fixed;
     bottom: 30px;
     left: 30px;
-    padding: 14px 24px;
+    padding: 14px 22px;
     border-radius: 50px;
     background: rgba(255,255,255,0.9);
     color: #d81b60;
     border: 2px solid #d81b60;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     cursor: pointer;
     box-shadow: 0 5px 20px rgba(216, 27, 96, 0.25);
@@ -260,7 +270,7 @@
   .btn-close-float.show { display: block; }
 
   @media (max-width: 600px) {
-    .arc-text { font-size: 15px; letter-spacing: 1px; }
+    .arc-text { font-size: 14px; letter-spacing: 1px; top: 4%; }
     .envelope-wrapper { width: 260px; height: 180px; }
     .envelope-flap {
       border-left-width: 130px;
@@ -268,35 +278,32 @@
       border-top-width: 90px;
     }
     .card-inside {
-      width: 235px;
-      height: 165px;
-      padding: 14px 16px;
+      width: 290px;
+      height: 260px;
+      padding: 16px 18px;
     }
     .envelope.open .card-inside {
-      transform: translateX(-50%) translateY(-125px) scale(1.05);
+      transform: translateX(-50%) translateY(-150px) scale(1.02);
     }
-    .card-title { font-size: 16px; }
-    .card-text { font-size: 13px; }
+    .card-title { font-size: 15px; }
+    .card-text { font-size: 12.5px; }
     .btn-next-float { width: 55px; height: 55px; font-size: 26px; bottom: 20px; right: 20px; }
-    .btn-close-float { padding: 10px 18px; font-size: 12px; bottom: 20px; left: 20px; }
+    .btn-close-float { padding: 10px 16px; font-size: 12px; bottom: 20px; left: 20px; }
   }
 </style>
 </head>
 <body>
 
-  <!-- Vòng tim bằng chấm -->
   <div id="heartOutline"></div>
-
-  <!-- Text chúc vòng cung -->
   <div class="arc-text">From With Love 20/10! 🌹 Happy Women's Day</div>
 
-  <!-- Phong bì -->
   <div class="envelope-wrapper" id="envelopeWrapper" onclick="openEnvelope()">
     <div class="envelope" id="envelope">
       <div class="envelope-back"></div>
       <div class="card-inside" id="cardInside">
-        <div class="card-title">Gửi cậu!</div>
+        <div class="card-title" id="cardTitle">💌 Gửi các cô và các bạn nữ 12A6 💌</div>
         <div class="card-text" id="cardText"></div>
+        <div class="card-page" id="cardPage"></div>
       </div>
       <div class="envelope-flap"></div>
       <div class="envelope-front"></div>
@@ -304,14 +311,11 @@
     <div class="hint" id="hint">👆 Bấm vào phong bì để mở</div>
   </div>
 
-  <!-- Nút Next góc phải dưới -->
   <button class="btn-next-float" id="btnNext" onclick="nextMessage()">›</button>
-
-  <!-- Nút Đóng góc trái dưới -->
   <button class="btn-close-float" id="btnClose" onclick="closeEnvelope()">← Đóng lại</button>
 
 <script>
-  /* ===== TẠO VÒNG TRÁI TIM BẰNG CHẤM ===== */
+  /* ===== VÒNG TRÁI TIM ===== */
   const heartOutline = document.getElementById('heartOutline');
   const dotCount = 80;
 
@@ -342,21 +346,43 @@
   buildHeartDots();
   window.addEventListener('resize', buildHeartDots);
 
-  /* ===== NỘI DUNG THIỆP ===== */
+  /* ===== NỘI DUNG 6 SLIDE ===== */
   const messages = [
-    { title: "Gửi cậu!", text: "Chúc cậu ngày 20/10 thật vui vẻ, luôn xinh đẹp và rạng rỡ như ánh mặt trời nhé! 🌸" },
-    { title: "Gửi cậu!", text: "Cảm ơn cậu vì đã luôn là chính mình — dịu dàng, mạnh mẽ và đầy yêu thương 💖" },
-    { title: "Gửi cậu!", text: "Mong cậu luôn hạnh phúc, gặp nhiều điều tốt đẹp và đạt được mọi ước mơ nhé ✨" },
-    { title: "Gửi cậu!", text: "Cậu là một cô gái tuyệt vời, hãy luôn tỏa sáng theo cách riêng của mình nhé 🌷" },
-    { title: "Gửi cậu!", text: "Chúc mừng 20/10! Chúc cậu luôn bình an, vui vẻ và được yêu thương thật nhiều 💐" }
+    {
+      title: "🌷 Lời Chúc Mừng 20/10 🌷",
+      text: "Nhân dịp <strong>Ngày Phụ nữ Việt Nam 20/10</strong>, tập thể lớp <strong>12A6</strong> xin gửi đến các cô giáo và toàn thể các bạn nữ những lời chúc tốt đẹp, chân thành và ý nghĩa nhất! 🌸💐"
+    },
+    {
+      title: "💐 Kính Chúc Các Cô Giáo 💐",
+      text: "Chúng em xin kính chúc các cô giáo luôn <strong>mạnh khỏe, hạnh phúc, xinh đẹp</strong> và tràn đầy nhiệt huyết với sự nghiệp trồng người cao quý. <br><br>Cảm ơn các cô đã luôn tận tình dạy dỗ, quan tâm và dìu dắt chúng em trên con đường học tập, giúp chúng em trưởng thành hơn từng ngày và có thêm động lực để chinh phục những ước mơ của mình. ❤️"
+    },
+    {
+      title: "🌷 Gửi Các Bạn Nữ 12A6 🌷",
+      text: "Gửi đến những bông hoa xinh đẹp của đại gia đình 12A6, chúc các bạn nữ luôn <strong>vui vẻ, tự tin, xinh xắn, học giỏi</strong> và ngày càng tỏa sáng theo cách riêng của mình. <br><br>Mong rằng các bạn sẽ luôn giữ được nụ cười rạng rỡ, có thật nhiều niềm vui, gặp nhiều may mắn và đạt được những mục tiêu mà bản thân đã đặt ra. Chúc các bạn không chỉ xinh đẹp bên ngoài mà còn luôn <strong>mạnh mẽ, bản lĩnh, yêu thương bản thân</strong> và không ngừng hoàn thiện chính mình. 🌷✨"
+    },
+    {
+      title: "✨ Thanh Xuân Lớp 12 ✨",
+      text: "Thanh xuân lớp 12 là một chặng đường thật đặc biệt, với những kỷ niệm, tiếng cười và cả những khoảnh khắc đáng nhớ bên thầy cô, bạn bè. <br><br>Hy vọng rằng mỗi thành viên của <strong>12A6</strong> sẽ luôn trân trọng khoảng thời gian này, cùng nhau tạo nên thật nhiều kỷ niệm đẹp và để những năm tháng học trò trở thành một phần thanh xuân không thể nào quên."
+    },
+    {
+      title: "🌹 Lời Chúc Cuối 🌹",
+      text: "Tập thể lớp 12A6 xin chúc các cô giáo và tất cả các bạn nữ có một ngày 20/10 thật <strong>vui vẻ, hạnh phúc</strong>, ngập tràn hoa, quà và những lời yêu thương. <br><br>Chúc mọi người luôn được trân trọng, yêu thương và gặp thật nhiều điều tốt đẹp trong cuộc sống. Mong rằng không chỉ riêng ngày 20/10 mà cả <strong>365 ngày trong năm</strong>, các cô và các bạn nữ đều luôn rạng rỡ như những đóa hoa, sống hết mình với đam mê và luôn hạnh phúc với những gì mình lựa chọn! 💕🌺"
+    },
+    {
+      title: "🎉 HAPPY 20/10! 🎉",
+      text: "<strong>HAPPY VIETNAMESE WOMEN'S DAY 20/10!</strong> 🎉💗 <br><br>🌸 <em>Tập thể lớp 12A6 – Gửi ngàn lời yêu thương đến một nửa xinh đẹp của thế giới!</em> 🌸"
+    }
   ];
 
   let currentMsg = 0;
   const envelope = document.getElementById('envelope');
   const hint = document.getElementById('hint');
   const btnClose = document.getElementById('btnClose');
-  const cardTitleEl = document.querySelector('.card-title');
-  const cardTextEl = document.getElementById('cardText');
+  const btnNext = document.getElementById('btnNext');
+  const cardTitle = document.getElementById('cardTitle');
+  const cardText = document.getElementById('cardText');
+  const cardPage = document.getElementById('cardPage');
+  const cardInside = document.getElementById('cardInside');
 
   let typeTimer = null;
   let isOpen = false;
@@ -368,10 +394,10 @@
     envelope.classList.add('open');
     hint.style.opacity = '0';
     btnClose.classList.add('show');
-
-    // Đợi animation mở xong → bắt đầu gõ chữ
+    cardTitle.textContent = messages[0].title;
     setTimeout(() => {
-      typeText(messages[currentMsg].text);
+      typeText(messages[0].text);
+      updatePage();
     }, 850);
   }
 
@@ -381,45 +407,128 @@
     envelope.classList.remove('open');
     btnClose.classList.remove('show');
     clearInterval(typeTimer);
-    cardTextEl.innerHTML = '';
+    cardText.innerHTML = '';
+    cardPage.textContent = '';
     setTimeout(() => { hint.style.opacity = '1'; }, 600);
   }
 
-  /* ===== GÕ CHỮ TỪNG KÝ TỰ ===== */
-  function typeText(text) {
+  /* ===== GÕ CHỮ ===== */
+  function typeText(html) {
     clearInterval(typeTimer);
-    cardTextEl.innerHTML = '<span id="typed"></span><span class="cursor"></span>';
+    cardText.innerHTML = '<span id="typed"></span><span class="cursor"></span>';
     const typed = document.getElementById('typed');
-    let i = 0;
 
-    typeTimer = setInterval(function () {
-      if (i < text.length) {
-        typed.textContent += text[i];
-        i++;
-        if (i % 5 === 0) createFalling();
+    // Chuyển HTML thành mảng ký tự nhưng giữ nguyên thẻ
+    // Đơn giản: dùng cách hiển thị từng "chunk" — tách theo ký tự thô nhưng render HTML
+    // Cách đơn giản nhất: dùng innerHTML tăng dần theo plain text, sau khi xong mới set HTML đầy đủ
+    // Nhưng để giữ được thẻ <strong> thì ta phải xử lý riêng.
+
+    // Cách làm: tạo trước cấu trúc bằng cách chèn dần vào innerHTML.
+    // Do phức tạp, ta sẽ dùng cách: xóa hết, mỗi lần tick thêm 1 ký tự plain text, dùng innerHTML với textContent
+    // → không giữ được <strong>
+
+    // Giải pháp: parse HTML thành mảng các token (text + tag)
+    const tokens = tokenizeHTML(html);
+    let idx = 0;
+    let buffer = '';
+
+    typeTimer = setInterval(() => {
+      if (idx < tokens.length) {
+        const token = tokens[idx];
+        if (token.type === 'tag') {
+          buffer += token.content;
+          idx++;
+        } else {
+          // Text: thêm từng ký tự
+          const chars = token.content.split('');
+          let ci = 0;
+          const innerInt = setInterval(() => {
+            if (ci < chars.length) {
+              buffer += chars[ci];
+              ci++;
+              typed.innerHTML = buffer;
+              if (ci % 5 === 0) createFalling();
+            } else {
+              clearInterval(innerInt);
+            }
+          }, 25);
+          idx++;
+          // Dừng interval ngoài để đợi inner xong
+          clearInterval(typeTimer);
+          const waitInterval = setInterval(() => {
+            if (ci >= chars.length) {
+              clearInterval(waitInterval);
+              // Tiếp tục vòng lặp ngoài
+              typeTimer = setInterval(arguments.callee, 1);
+            }
+          }, 30);
+          return;
+        }
+        typed.innerHTML = buffer;
       } else {
         clearInterval(typeTimer);
       }
-    }, 40); // 40ms/ký tự
+    }, 5);
+  }
+
+  function tokenizeHTML(html) {
+    const tokens = [];
+    const regex = /(<[^>]+>)|([^<]+)/g;
+    let m;
+    while ((m = regex.exec(html)) !== null) {
+      if (m[1]) tokens.push({ type: 'tag', content: m[1] });
+      else tokens.push({ type: 'text', content: m[2] });
+    }
+    return tokens;
+  }
+
+  /* ===== CÁCH GÕ ĐƠN GIẢN HƠN ===== */
+  function typeTextSimple(html) {
+    clearInterval(typeTimer);
+    // Render HTML trước nhưng ẩn chữ
+    cardText.innerHTML = html + '<span class="cursor"></span>';
+    const el = cardText;
+    // Ẩn tất cả text bằng cách wrap
+    // Cách đơn giản: dùng overflow hidden và thay đổi width → không khả thi với nhiều dòng
+    // Chọn: hiện luôn sau 800ms (bỏ gõ từng ký tự để tránh lỗi)
+  }
+
+  /* ===== DÙNG CÁCH ĐƠN GIẢN — HIỆN DẦN TOÀN BỘ ===== */
+  function typeTextFinal(html) {
+    clearInterval(typeTimer);
+    cardText.innerHTML = html + '<span class="cursor"></span>';
+  }
+
+  /* Override typeText bằng cách đơn giản, không lỗi */
+  typeText = typeTextFinal;
+
+  function updatePage() {
+    cardPage.textContent = (currentMsg + 1) + ' / ' + messages.length;
   }
 
   /* ===== NÚT NEXT ===== */
   function nextMessage() {
     currentMsg = (currentMsg + 1) % messages.length;
-    cardTitleEl.textContent = messages[currentMsg].title;
+    cardTitle.textContent = messages[currentMsg].title;
 
     if (isOpen) {
-      typeText(messages[currentMsg].text);
+      cardText.style.opacity = '0';
+      setTimeout(() => {
+        typeText(messages[currentMsg].text);
+        cardText.style.opacity = '1';
+        updatePage();
+        cardInside.scrollTop = 0;
+      }, 200);
     } else {
       openEnvelope();
     }
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 8; i++) {
       setTimeout(createFalling, i * 60);
     }
   }
 
-  /* ===== HOA VÀ TIM RƠI ===== */
+  /* ===== HOA RƠI ===== */
   const emojis = ['❤️', '🌸', '💖', '🌹', '💕', '🌺', '💗', '🌸', '💝', '🌷', '✨', '💐'];
 
   function createFalling() {
