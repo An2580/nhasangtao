@@ -336,7 +336,6 @@
         .btn-cancel { background: #2a2a2a; color: #aaa; }
         .btn-cancel:hover { background: #333; color: #fff; }
 
-        /* ADMIN PANEL */
         .admin-modal {
             max-width: 640px; padding: 30px;
             border: 1px solid rgba(239, 68, 68, 0.4);
@@ -537,7 +536,6 @@
         © 2026 An Gờ | Free Fire Content Creator
     </footer>
 
-    <!-- MODAL AUTH -->
     <div class="modal-overlay" id="authModal">
         <div class="modal">
             <button class="modal-close" onclick="closeAuth()">×</button>
@@ -585,7 +583,6 @@
         </div>
     </div>
 
-    <!-- MODAL MESSAGES -->
     <div class="modal-overlay" id="msgModal">
         <div class="modal msg-modal">
             <div class="msg-header">
@@ -605,7 +602,6 @@
         </div>
     </div>
 
-    <!-- MODAL PROFILE -->
     <div class="modal-overlay" id="profileModal">
         <div class="modal profile-modal">
             <button class="modal-close" onclick="closeProfile()">×</button>
@@ -648,9 +644,8 @@
                 </div>
                 <div class="profile-field">
                     <label>Chức danh</label>
-                    <input type="text" id="editTitle" placeholder="Ví dụ: ADMIN, DEV, VIP..." maxlength="15">
+                    <input type="text" id="editTitle" placeholder="Ví dụ: DEV, VIP..." maxlength="15">
                     <div class="title-presets" id="titlePresets">
-                        <button type="button" class="title-preset" onclick="setTitlePreset('ADMIN')">ADMIN</button>
                         <button type="button" class="title-preset" onclick="setTitlePreset('DEV')">DEV</button>
                         <button type="button" class="title-preset" onclick="setTitlePreset('MOD')">MOD</button>
                         <button type="button" class="title-preset" onclick="setTitlePreset('VIP')">VIP</button>
@@ -675,7 +670,6 @@
         </div>
     </div>
 
-    <!-- MODAL ADMIN PANEL -->
     <div class="modal-overlay" id="adminModal">
         <div class="modal admin-modal">
             <div class="admin-header">
@@ -735,6 +729,19 @@
             saveProfiles(profiles);
         }
 
+        /* ===== KIỂM TRA ĐÃ CÓ ADMIN CHƯA ===== */
+        function findExistingAdmin() {
+            const users = getUsers();
+            return users.find(u => {
+                const p = getProfile(u.username);
+                return (p.title || '').toUpperCase().trim() === 'ADMIN';
+            });
+        }
+
+        function hasAdmin() {
+            return !!findExistingAdmin();
+        }
+
         function getTitleClass(title) {
             if (!title) return '';
             const t = title.toUpperCase().trim();
@@ -770,7 +777,13 @@
             const myRole = getCurrentUserRole();
             if (!myRole) return false;
             const t = (newTitle || '').toUpperCase().trim();
-            if (myRole === 'admin') return true;
+
+            // ADMIN cấp tất cả, TRỪ ADMIN (vì chỉ có 1 admin)
+            if (myRole === 'admin') {
+                if (t === 'ADMIN') return false; // không cho phép cấp ADMIN
+                return true;
+            }
+            // DEV chỉ cấp MEMBER, VIP, MOD
             if (myRole === 'dev') {
                 return ['', 'MEMBER', 'USER', 'VIP', 'MOD', 'MODERATOR'].includes(t);
             }
@@ -788,6 +801,12 @@
 
             const targetProfile = getProfile(targetUsername);
             const targetTitle = (targetProfile.title || '').toUpperCase().trim();
+            const newT = (newTitle || '').toUpperCase().trim();
+
+            // Không ai được cấp ADMIN (vì chỉ có 1 admin duy nhất)
+            if (newT === 'ADMIN') {
+                return { ok: false, reason: '❌ Hệ thống chỉ có 1 ADMIN duy nhất, không thể cấp thêm!' };
+            }
 
             if (myRole === 'dev') {
                 if (targetTitle === 'ADMIN') {
@@ -844,6 +863,7 @@
             el.classList.add('show');
         }
 
+        /* ===== ĐĂNG KÝ ===== */
         function handleRegister(event) {
             event.preventDefault();
             clearErrors();
@@ -868,9 +888,21 @@
                 return showError('regError', '❌ Email này đã có tài khoản rồi!');
             }
 
+            // Kiểm tra đã có admin chưa
+            const adminExists = hasAdmin();
             const isFirst = users.length === 0;
             const isAdminName = username.toLowerCase() === 'admin';
-            const autoTitle = (isFirst || isAdminName) ? 'ADMIN' : '';
+
+            // Chặn đăng ký username 'admin' nếu đã có admin
+            if (isAdminName && adminExists) {
+                return showError('regError', '❌ Hệ thống đã có ADMIN rồi! Không thể đăng ký username "admin".');
+            }
+
+            // Chỉ cấp ADMIN khi: chưa có admin VÀ (là user đầu tiên HOẶC username 'admin')
+            let autoTitle = '';
+            if (!adminExists && (isFirst || isAdminName)) {
+                autoTitle = 'ADMIN';
+            }
 
             const newUser = {
                 username, email,
@@ -886,12 +918,13 @@
             closeAuth();
 
             if (autoTitle === 'ADMIN') {
-                showToast('👑 Chào ADMIN! Bạn có toàn quyền.', 'success');
+                showToast('👑 Chào ADMIN! Bạn là admin duy nhất của hệ thống.', 'success');
             } else {
                 showToast('🎉 Đăng ký thành công! Chào mừng ' + username, 'success');
             }
         }
 
+        /* ===== ĐĂNG NHẬP ===== */
         function handleLogin(event) {
             event.preventDefault();
             clearErrors();
@@ -912,6 +945,7 @@
             showToast('✅ Đăng nhập thành công! Chào ' + user.username, 'success');
         }
 
+        /* ===== ĐĂNG NHẬP GOOGLE ===== */
         function decodeJWT(token) {
             try {
                 const base64Url = token.split('.')[1];
@@ -931,7 +965,9 @@
             let user = users.find(u => u.email.toLowerCase() === userInfo.email.toLowerCase());
 
             if (!user) {
+                const adminExists = hasAdmin();
                 const isFirst = users.length === 0;
+
                 user = {
                     username: userInfo.name || userInfo.email.split('@')[0],
                     email: userInfo.email,
@@ -942,7 +978,12 @@
                 };
                 users.push(user);
                 saveUsers(users);
-                if (isFirst) setProfileField(user.username, 'title', 'ADMIN');
+
+                // Chỉ cấp ADMIN nếu chưa có admin nào
+                if (!adminExists && isFirst) {
+                    setProfileField(user.username, 'title', 'ADMIN');
+                }
+
                 showToast('🎉 Đã tạo tài khoản qua Google! Chào ' + user.username, 'success');
             } else {
                 showToast('✅ Đăng nhập Google thành công! Chào ' + user.username, 'success');
@@ -1168,6 +1209,16 @@
             let newTitle;
             if (isAdmin) {
                 newTitle = document.getElementById('editTitle').value.trim().toUpperCase();
+                // Chặn admin tự đổi sang title khác (vẫn giữ ADMIN)
+                if (myProfile.title && myProfile.title.toUpperCase().trim() === 'ADMIN' && newTitle !== 'ADMIN') {
+                    showToast('❌ ADMIN không thể tự hạ quyền chính mình!', 'error');
+                    return;
+                }
+                // Chặn không cho đặt ADMIN nếu không phải ADMIN
+                if (newTitle === 'ADMIN' && (!myProfile.title || myProfile.title.toUpperCase().trim() !== 'ADMIN')) {
+                    showToast('❌ Hệ thống chỉ có 1 ADMIN duy nhất!', 'error');
+                    return;
+                }
             } else {
                 newTitle = myProfile.title || '';
             }
@@ -1214,10 +1265,10 @@
             const el = document.getElementById('adminRoleInfo');
             if (role === 'admin') {
                 el.className = 'admin-role-info';
-                el.innerHTML = '👑 Bạn đang đăng nhập với quyền <strong>ADMIN</strong> — có thể cấp mọi chức danh: MEMBER, VIP, MOD, DEV, ADMIN.';
+                el.innerHTML = '👑 Bạn là <strong>ADMIN duy nhất</strong> — có thể cấp: MEMBER, VIP, MOD, DEV. Hệ thống không cho phép cấp thêm ADMIN.';
             } else if (role === 'dev') {
                 el.className = 'admin-role-info dev-info';
-                el.innerHTML = '💻 Bạn đang đăng nhập với quyền <strong>DEV</strong> — có thể cấp: MEMBER, VIP, MOD. Không thể cấp DEV hoặc ADMIN.';
+                el.innerHTML = '💻 Bạn đang đăng nhập với quyền <strong>DEV</strong> — có thể cấp: MEMBER, VIP, MOD.';
             }
         }
 
@@ -1279,9 +1330,11 @@
                 if (isMe) {
                     canEdit = false;
                     disabledReason = 'Không thể tự đổi';
+                } else if (title === 'ADMIN') {
+                    canEdit = false;
+                    disabledReason = 'ADMIN duy nhất — không thể đổi';
                 } else if (myRole === 'dev') {
-                    if (title === 'ADMIN') { canEdit = false; disabledReason = 'Không đổi được ADMIN'; }
-                    else if (title === 'DEV' || title === 'DEVELOPER') { canEdit = false; disabledReason = 'Không đổi được DEV khác'; }
+                    if (title === 'DEV' || title === 'DEVELOPER') { canEdit = false; disabledReason = 'Không đổi được DEV khác'; }
                 }
 
                 const item = document.createElement('div');
@@ -1301,8 +1354,8 @@
                 optionsHTML += `<option value="MOD" ${title === 'MOD' ? 'selected' : ''}>🛡️ MOD</option>`;
                 if (myRole === 'admin') {
                     optionsHTML += `<option value="DEV" ${title === 'DEV' ? 'selected' : ''}>💻 DEV</option>`;
-                    optionsHTML += `<option value="ADMIN" ${title === 'ADMIN' ? 'selected' : ''}>👑 ADMIN</option>`;
                 }
+                // KHÔNG có option ADMIN vì chỉ có 1 admin duy nhất
 
                 item.innerHTML = `
                     <div class="admin-user-avatar">${avatarHTML}</div>
