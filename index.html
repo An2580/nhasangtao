@@ -21,12 +21,8 @@
         }
         .logo { display: flex; align-items: center; }
         .logo a { display: flex; align-items: center; }
-        .logo img {
-            height: 50px; width: auto;
-            mix-blend-mode: screen;
-            filter: drop-shadow(0 0 6px rgba(255, 196, 0, 0.6));
-            transition: transform 0.3s ease;
-        }
+        .logo img { height: 50px; width: auto; mix-blend-mode: screen;
+            filter: drop-shadow(0 0 6px rgba(255, 196, 0, 0.6)); transition: transform 0.3s ease; }
         .logo img:hover { transform: scale(1.08); }
 
         .nav-right { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
@@ -36,8 +32,7 @@
             margin-left: 25px; padding: 10px 24px;
             background: transparent; color: #FFC400;
             border: 2px solid #FFC400; border-radius: 30px;
-            font-weight: 700; font-size: 15px; cursor: pointer;
-            transition: all 0.3s ease;
+            font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.3s ease;
         }
         .btn-login:hover { background: #FFC400; color: #080808;
             box-shadow: 0 0 20px rgba(255, 196, 0, 0.7); transform: translateY(-2px); }
@@ -61,27 +56,23 @@
             font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.3s;
         }
         .btn-logout:hover { background: #FFC400; color: #080808; }
-
         .btn-msg {
             padding: 8px 16px; background: #FFC400; color: #080808;
             border: none; border-radius: 20px; font-size: 13px;
             font-weight: 700; cursor: pointer; transition: 0.3s;
         }
         .btn-msg:hover { background: #fff; color: #FFC400; }
-
         .btn-profile {
             padding: 8px 16px; background: transparent; color: #FFC400;
             border: 1px solid #FFC400; border-radius: 20px; font-size: 13px;
             font-weight: 600; cursor: pointer; transition: 0.3s;
         }
         .btn-profile:hover { background: #FFC400; color: #080808; }
-
         .btn-admin {
             padding: 8px 16px;
             background: linear-gradient(135deg, #ef4444, #b91c1c);
             color: #fff; border: none; border-radius: 20px; font-size: 13px;
-            font-weight: 700; cursor: pointer; transition: 0.3s;
-            display: none;
+            font-weight: 700; cursor: pointer; transition: 0.3s; display: none;
             box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
             animation: adminPulse 2s ease-in-out infinite;
         }
@@ -107,8 +98,7 @@
         .btn { display: inline-block; padding: 16px 36px; background: #FFC400; color: #080808;
             text-decoration: none; border-radius: 30px; font-weight: bold; font-size: 18px;
             box-shadow: 0 0 20px rgba(255, 196, 0, 0.6); transition: all 0.4s ease; cursor: pointer; }
-        .btn:hover { background: #fff; color: #FFC400; transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.4); }
+        .btn:hover { background: #fff; color: #FFC400; transform: translateY(-5px) scale(1.05); }
 
         .btn-2010-hero {
             display: inline-block; margin-top: 20px; padding: 15px 34px;
@@ -118,8 +108,7 @@
             box-shadow: 0 0 25px rgba(255, 77, 148, 0.6);
             transition: all 0.4s ease; animation: pulse2010 2s ease-in-out infinite;
         }
-        .btn-2010-hero:hover { background: #fff; color: #ff1e6c;
-            transform: translateY(-5px) scale(1.05); animation: none; }
+        .btn-2010-hero:hover { background: #fff; color: #ff1e6c; animation: none; }
         @keyframes pulse2010 {
             0%, 100% { box-shadow: 0 0 25px rgba(255, 77, 148, 0.6); }
             50% { box-shadow: 0 0 45px rgba(255, 77, 148, 1); }
@@ -170,10 +159,10 @@
         .modal button[type="submit"] {
             margin-top: 5px; padding: 15px; background: #FFC400;
             color: #080808; border: none; border-radius: 12px;
-            font-size: 16px; font-weight: 700; cursor: pointer;
-            transition: all 0.3s ease;
+            font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s ease;
         }
-        .modal button[type="submit"]:hover { background: #fff; color: #FFC400; transform: translateY(-2px); }
+        .modal button[type="submit"]:hover { background: #fff; color: #FFC400; }
+        .modal button[type="submit"]:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .modal .terms { font-size: 12px; color: #666; text-align: center; margin-top: 5px; }
         .modal .terms a { color: #FFC400; text-decoration: none; }
@@ -197,8 +186,7 @@
         .msg-container::-webkit-scrollbar { width: 6px; }
         .msg-container::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
         .msg-bubble { background: #1a1a1a; border: 1px solid #2a2a2a;
-            padding: 10px 14px; border-radius: 12px; max-width: 85%;
-            align-self: flex-start; }
+            padding: 10px 14px; border-radius: 12px; max-width: 85%; align-self: flex-start; }
         .msg-bubble.mine { background: rgba(255, 196, 0, 0.15); border-color: #FFC400; align-self: flex-end; }
         .msg-bubble strong { color: #FFC400; font-size: 12px; display: block; margin-bottom: 4px; }
         .msg-bubble p { font-size: 15px; color: #eee; line-height: 1.4;
@@ -277,22 +265,13 @@
         .profile-info .name-line { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
         .profile-info h3 { font-size: 24px; color: #fff; word-break: break-word; }
         .profile-info .username {
-            color: #FFC400;
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 5px;
-            display: inline-block;
-            background: rgba(255, 196, 0, 0.12);
-            padding: 2px 10px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 196, 0, 0.3);
-            cursor: pointer;
-            transition: 0.2s;
+            color: #FFC400; font-size: 13px; font-weight: 700;
+            margin-bottom: 5px; display: inline-block;
+            background: rgba(255, 196, 0, 0.12); padding: 2px 10px;
+            border-radius: 10px; border: 1px solid rgba(255, 196, 0, 0.3);
+            cursor: pointer; transition: 0.2s;
         }
-        .profile-info .username:hover {
-            background: rgba(255, 196, 0, 0.25);
-            transform: scale(1.05);
-        }
+        .profile-info .username:hover { background: rgba(255, 196, 0, 0.25); transform: scale(1.05); }
         .profile-info .email { color: #888; font-size: 13px; word-break: break-all; }
         .profile-info .join-date { color: #666; font-size: 12px; margin-top: 4px; }
 
@@ -309,11 +288,8 @@
             color: #fff; font-size: 14px; outline: none; font-family: inherit; resize: vertical;
         }
         .profile-field input:focus, .profile-field textarea:focus { border-color: #FFC400; }
-
-        .profile-field input:disabled {
-            background: #0d0d0d; color: #666;
-            cursor: not-allowed; border-style: dashed; opacity: 0.7;
-        }
+        .profile-field input:disabled { background: #0d0d0d; color: #666;
+            cursor: not-allowed; border-style: dashed; opacity: 0.7; }
         .title-presets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
         .title-presets.hidden { display: none; }
         .title-preset { padding: 5px 12px; border-radius: 15px;
@@ -327,8 +303,7 @@
 
         .profile-actions { display: flex; gap: 10px; margin-top: 20px; }
         .profile-actions button { flex: 1; padding: 14px; border: none;
-            border-radius: 12px; font-size: 15px; font-weight: 700;
-            cursor: pointer; }
+            border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; }
         .btn-edit { background: #FFC400; color: #080808; }
         .btn-edit:hover { background: #fff; color: #FFC400; }
         .btn-save { background: #22c55e; color: #fff; }
@@ -341,120 +316,71 @@
             border: 1px solid rgba(239, 68, 68, 0.4);
             box-shadow: 0 20px 60px rgba(239, 68, 68, 0.3);
         }
-        .admin-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px; padding-bottom: 15px;
-            border-bottom: 1px solid #222;
-        }
-        .admin-header h2 {
-            color: #ef4444; font-size: 22px; margin: 0;
-            display: flex; align-items: center; gap: 8px;
-        }
+        .admin-header { display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #222; }
+        .admin-header h2 { color: #ef4444; font-size: 22px; margin: 0;
+            display: flex; align-items: center; gap: 8px; }
         .admin-header h2::before { content: '⚙️'; }
-
         .admin-role-info {
             padding: 10px 14px; margin-bottom: 15px;
             background: rgba(255, 196, 0, 0.08);
             border: 1px solid rgba(255, 196, 0, 0.25);
-            border-radius: 10px;
-            font-size: 13px; color: #ccc;
-            line-height: 1.5;
+            border-radius: 10px; font-size: 13px; color: #ccc; line-height: 1.5;
         }
         .admin-role-info strong { color: #FFC400; }
-        .admin-role-info.dev-info {
-            background: rgba(168, 85, 247, 0.08);
-            border-color: rgba(168, 85, 247, 0.25);
-        }
+        .admin-role-info.dev-info { background: rgba(168, 85, 247, 0.08);
+            border-color: rgba(168, 85, 247, 0.25); }
         .admin-role-info.dev-info strong { color: #a855f7; }
-
         .admin-search {
-            width: 100%; padding: 12px 16px;
+            width: 100%; padding: 12px 16px; background: #1a1a1a;
+            border: 1px solid #2a2a2a; border-radius: 10px;
+            color: #fff; font-size: 14px; outline: none; margin-bottom: 15px;
+        }
+        .admin-search:focus { border-color: #ef4444; }
+        .admin-stats { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .admin-stat { flex: 1; min-width: 100px; padding: 10px 14px;
             background: #1a1a1a; border: 1px solid #2a2a2a;
-            border-radius: 10px; color: #fff; font-size: 14px;
-            outline: none; margin-bottom: 15px;
-        }
-        .admin-search:focus { border-color: #ef4444; box-shadow: 0 0 12px rgba(239, 68, 68, 0.3); }
+            border-radius: 10px; text-align: center; }
+        .admin-stat .num { font-size: 22px; font-weight: 900; color: #FFC400; display: block; }
+        .admin-stat .lbl { font-size: 11px; color: #888;
+            text-transform: uppercase; letter-spacing: 1px; margin-top: 3px; display: block; }
 
-        .admin-stats {
-            display: flex; gap: 10px; margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-        .admin-stat {
-            flex: 1; min-width: 100px; padding: 10px 14px;
-            background: #1a1a1a; border: 1px solid #2a2a2a;
-            border-radius: 10px; text-align: center;
-        }
-        .admin-stat .num {
-            font-size: 22px; font-weight: 900; color: #FFC400;
-            display: block;
-        }
-        .admin-stat .lbl {
-            font-size: 11px; color: #888;
-            text-transform: uppercase; letter-spacing: 1px;
-            margin-top: 3px; display: block;
-        }
-
-        .admin-users-list {
-            max-height: 400px; overflow-y: auto;
-            display: flex; flex-direction: column; gap: 10px;
-            padding-right: 5px;
-        }
+        .admin-users-list { max-height: 400px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 10px; padding-right: 5px; }
         .admin-users-list::-webkit-scrollbar { width: 6px; }
         .admin-users-list::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
 
         .admin-user-item {
             display: flex; align-items: center; gap: 12px;
             background: #1a1a1a; padding: 12px 15px;
-            border-radius: 12px; border: 1px solid #2a2a2a;
-            transition: 0.3s;
+            border-radius: 12px; border: 1px solid #2a2a2a; transition: 0.3s;
         }
         .admin-user-item:hover { border-color: #ef4444; background: #1e1e1e; }
-
-        .admin-user-avatar {
-            width: 44px; height: 44px; border-radius: 50%;
+        .admin-user-avatar { width: 44px; height: 44px; border-radius: 50%;
             background: linear-gradient(135deg, #FFC400, #FF8C00);
             display: flex; align-items: center; justify-content: center;
             font-weight: 900; color: #080808; font-size: 16px;
-            overflow: hidden; flex-shrink: 0;
-        }
+            overflow: hidden; flex-shrink: 0; }
         .admin-user-avatar img { width: 100%; height: 100%; object-fit: cover; }
-
         .admin-user-info { flex: 1; min-width: 0; }
-        .admin-user-info .name {
-            color: #fff; font-weight: 700; font-size: 14px;
+        .admin-user-info .name { color: #fff; font-weight: 700; font-size: 14px;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            display: flex; align-items: center; gap: 6px;
-        }
-        .admin-user-info .email {
-            color: #888; font-size: 12px;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
+            display: flex; align-items: center; gap: 6px; }
+        .admin-user-info .email { color: #888; font-size: 12px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         .admin-role-select {
-            padding: 9px 12px;
-            background: #111;
-            border: 1px solid #333;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            outline: none;
-            transition: 0.3s;
-            font-family: inherit;
-            min-width: 130px;
+            padding: 9px 12px; background: #111;
+            border: 1px solid #333; border-radius: 8px;
+            color: #fff; font-size: 13px; font-weight: 700;
+            cursor: pointer; outline: none; transition: 0.3s;
+            font-family: inherit; min-width: 130px;
         }
         .admin-role-select:hover { border-color: #ef4444; }
-        .admin-role-select:focus { border-color: #ef4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.3); }
-        .admin-role-select:disabled {
-            opacity: 0.5; cursor: not-allowed;
-            border-style: dashed;
-        }
+        .admin-role-select:focus { border-color: #ef4444; }
+        .admin-role-select:disabled { opacity: 0.5; cursor: not-allowed; border-style: dashed; }
 
-        .admin-empty {
-            text-align: center; color: #666;
-            padding: 30px 20px; font-size: 14px;
-        }
+        .admin-empty { text-align: center; color: #666; padding: 30px 20px; font-size: 14px; }
 
         .toast {
             position: fixed; top: 100px; right: 30px;
@@ -502,11 +428,8 @@
             </a>
         </div>
         <div class="nav-right">
-            <nav>
-                <a href="#home">Trang chủ</a>
-            </nav>
+            <nav><a href="#home">Trang chủ</a></nav>
             <button class="btn-login" id="btnLogin" onclick="openAuth('login')">🔐 Đăng nhập</button>
-
             <div class="user-box" id="userBox">
                 <div class="user-avatar" id="userAvatar" onclick="openProfile()">A</div>
                 <span class="user-name" id="userName">User</span>
@@ -524,18 +447,15 @@
             <p>🔥 Nhà sáng tạo nội dung Free Fire 🔥</p>
             <a href="freefire://"
                onclick="setTimeout(() => { window.location.href = 'https://ff.garena.vn/'; }, 1000);"
-               class="btn">
-                Vào Free Fire ngay 🚀
-            </a>
+               class="btn">Vào Free Fire ngay 🚀</a>
             <br>
             <a href="20-10.html" class="btn-2010-hero">🌸 Chúc mừng 20/10 🌸</a>
         </div>
     </section>
 
-    <footer>
-        © 2026 An Gờ | Free Fire Content Creator
-    </footer>
+    <footer>© 2026 An Gờ | Free Fire Content Creator</footer>
 
+    <!-- MODAL AUTH -->
     <div class="modal-overlay" id="authModal">
         <div class="modal">
             <button class="modal-close" onclick="closeAuth()">×</button>
@@ -551,19 +471,17 @@
                     <input type="text" id="loginUser" placeholder="Tên đăng nhập hoặc Email" required>
                     <input type="password" id="loginPass" placeholder="Mật khẩu" required>
                     <div class="error-msg" id="loginError"></div>
-                    <button type="submit">Đăng nhập ngay</button>
+                    <button type="submit" id="btnLoginSubmit">Đăng nhập ngay</button>
                 </form>
                 <div class="divider">HOẶC</div>
                 <div class="google-btn-container">
                     <div id="g_id_onload"
                          data-client_id="314304357165-3tf6oeaanb0p77dhb91l59m11594da9b.apps.googleusercontent.com"
                          data-callback="handleGoogleLogin"
-                         data-auto_prompt="false">
-                    </div>
-                    <div class="g_id_signin"
-                         data-type="standard" data-size="large" data-theme="outline"
-                         data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left">
-                    </div>
+                         data-auto_prompt="false"></div>
+                    <div class="g_id_signin" data-type="standard" data-size="large"
+                         data-theme="outline" data-text="sign_in_with"
+                         data-shape="rectangular" data-logo_alignment="left"></div>
                 </div>
             </div>
 
@@ -576,13 +494,14 @@
                     <input type="password" id="regPass" placeholder="Mật khẩu (ít nhất 6 ký tự)" required minlength="6">
                     <input type="password" id="regPass2" placeholder="Nhập lại mật khẩu" required>
                     <div class="error-msg" id="regError"></div>
-                    <button type="submit">Tạo tài khoản</button>
-                    <p class="terms">Bằng cách đăng ký, bạn đồng ý với <a href="#">Điều khoản</a> của An Gờ.</p>
+                    <button type="submit" id="btnRegSubmit">Tạo tài khoản</button>
+                    <p class="terms">Bằng cách đăng ký, bạn đồng ý với <a href="#">Điều khoản</a>.</p>
                 </form>
             </div>
         </div>
     </div>
 
+    <!-- MODAL MESSAGES -->
     <div class="modal-overlay" id="msgModal">
         <div class="modal msg-modal">
             <div class="msg-header">
@@ -602,10 +521,10 @@
         </div>
     </div>
 
+    <!-- MODAL PROFILE -->
     <div class="modal-overlay" id="profileModal">
         <div class="modal profile-modal">
             <button class="modal-close" onclick="closeProfile()">×</button>
-
             <div class="profile-header">
                 <div class="profile-avatar-big" id="profileAvatar">A</div>
                 <div class="profile-info">
@@ -613,37 +532,25 @@
                         <h3 id="profileDisplayName">User</h3>
                         <span class="title-badge" id="profileTitleBadge" style="display:none;"></span>
                     </div>
-                    <div class="username" id="profileUsername" onclick="copyUsername()" title="Bấm để sao chép @username">@user</div>
+                    <div class="username" id="profileUsername" onclick="copyUsername()" title="Bấm để sao chép">@user</div>
                     <div class="email" id="profileEmail">email</div>
                     <div class="join-date" id="profileJoinDate"></div>
                 </div>
             </div>
 
             <div id="profileViewMode">
-                <div class="profile-field">
-                    <label>Tên hiển thị</label>
-                    <div class="value" id="viewDisplayName"></div>
-                </div>
-                <div class="profile-field">
-                    <label>Chức danh</label>
-                    <div class="value" id="viewTitle"></div>
-                </div>
-                <div class="profile-field">
-                    <label>Tiểu sử</label>
-                    <div class="value" id="viewBio"></div>
-                </div>
+                <div class="profile-field"><label>Tên hiển thị</label><div class="value" id="viewDisplayName"></div></div>
+                <div class="profile-field"><label>Chức danh</label><div class="value" id="viewTitle"></div></div>
+                <div class="profile-field"><label>Tiểu sử</label><div class="value" id="viewBio"></div></div>
                 <div class="profile-actions">
                     <button class="btn-edit" onclick="enableEditProfile()">✏️ Chỉnh sửa</button>
                 </div>
             </div>
 
             <div id="profileEditMode" style="display:none;">
-                <div class="profile-field">
-                    <label>Tên hiển thị</label>
-                    <input type="text" id="editDisplayName" placeholder="Nhập tên hiển thị..." maxlength="50">
-                </div>
-                <div class="profile-field">
-                    <label>Chức danh</label>
+                <div class="profile-field"><label>Tên hiển thị</label>
+                    <input type="text" id="editDisplayName" placeholder="Nhập tên hiển thị..." maxlength="50"></div>
+                <div class="profile-field"><label>Chức danh</label>
                     <input type="text" id="editTitle" placeholder="Ví dụ: DEV, VIP..." maxlength="15">
                     <div class="title-presets" id="titlePresets">
                         <button type="button" class="title-preset" onclick="setTitlePreset('DEV')">DEV</button>
@@ -652,16 +559,11 @@
                         <button type="button" class="title-preset" onclick="setTitlePreset('MEMBER')">MEMBER</button>
                         <button type="button" class="title-preset" onclick="setTitlePreset('')">XÓA</button>
                     </div>
-                    <span class="locked-note" id="titleLockedNote" style="display:none;">🔒 Chỉ ADMIN mới có thể đổi chức danh</span>
-                </div>
-                <div class="profile-field">
-                    <label>Tiểu sử</label>
-                    <textarea id="editBio" rows="3" placeholder="Giới thiệu về bạn..." maxlength="500"></textarea>
-                </div>
-                <div class="profile-field">
-                    <label>Link ảnh đại diện</label>
-                    <input type="url" id="editAvatarUrl" placeholder="https://...">
-                </div>
+                    <span class="locked-note" id="titleLockedNote" style="display:none;">🔒 Chỉ ADMIN mới có thể đổi chức danh</span></div>
+                <div class="profile-field"><label>Tiểu sử</label>
+                    <textarea id="editBio" rows="3" placeholder="Giới thiệu về bạn..." maxlength="500"></textarea></div>
+                <div class="profile-field"><label>Link ảnh đại diện</label>
+                    <input type="url" id="editAvatarUrl" placeholder="https://..."></div>
                 <div class="profile-actions">
                     <button class="btn-cancel" onclick="cancelEditProfile()">Hủy</button>
                     <button class="btn-save" onclick="saveProfile()">💾 Lưu</button>
@@ -670,6 +572,7 @@
         </div>
     </div>
 
+    <!-- MODAL ADMIN -->
     <div class="modal-overlay" id="adminModal">
         <div class="modal admin-modal">
             <div class="admin-header">
@@ -687,21 +590,18 @@
     <div class="toast" id="toast"></div>
 
     <script>
+        /* ============ CẤU HÌNH SUPABASE ============ */
         const SUPABASE_URL = "https://fnthhoxyobcqnbsnqazy.supabase.co";
         const SUPABASE_KEY = "sb_publishable_zF5aZXKbAc054Ky2N8Wwnw_LXOq2jHt";
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const USERS_KEY = 'angff_users';
-        const SESSION_KEY = 'angff_currentUser';
-        const PROFILE_KEY = 'angff_profiles';
+        /* ============ BIẾN TOÀN CỤC ============ */
+        const SESSION_KEY = 'angff_session'; // Chỉ lưu username + email + avatar
+        let USERS_CACHE = []; // Mảng user từ Supabase
+        let PROFILES_CACHE = {}; // Map username -> profile
+        let realtimeChannel = null;
 
-        function getUsers() {
-            try { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; }
-            catch { return []; }
-        }
-        function saveUsers(users) {
-            localStorage.setItem(USERS_KEY, JSON.stringify(users));
-        }
+        /* ============ HELPER ============ */
         function hashPass(pass) {
             let hash = 0;
             for (let i = 0; i < pass.length; i++) {
@@ -709,37 +609,6 @@
                 hash |= 0;
             }
             return 'h_' + hash.toString(36);
-        }
-
-        function getProfiles() {
-            try { return JSON.parse(localStorage.getItem(PROFILE_KEY)) || {}; }
-            catch { return {}; }
-        }
-        function saveProfiles(profiles) {
-            localStorage.setItem(PROFILE_KEY, JSON.stringify(profiles));
-        }
-        function getProfile(username) {
-            const profiles = getProfiles();
-            return profiles[username] || {};
-        }
-        function setProfileField(username, field, value) {
-            const profiles = getProfiles();
-            if (!profiles[username]) profiles[username] = {};
-            profiles[username][field] = value;
-            saveProfiles(profiles);
-        }
-
-        /* ===== KIỂM TRA ĐÃ CÓ ADMIN CHƯA ===== */
-        function findExistingAdmin() {
-            const users = getUsers();
-            return users.find(u => {
-                const p = getProfile(u.username);
-                return (p.title || '').toUpperCase().trim() === 'ADMIN';
-            });
-        }
-
-        function hasAdmin() {
-            return !!findExistingAdmin();
         }
 
         function getTitleClass(title) {
@@ -753,11 +622,50 @@
             return '';
         }
 
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function getProfile(username) {
+            return PROFILES_CACHE[username] || {};
+        }
+
+        /* ============ TẢI USERS TỪ SUPABASE ============ */
+        async function loadUsersFromServer() {
+            const { data, error } = await supabaseClient
+                .from('users')
+                .select('*')
+                .order('created_at', { ascending: true });
+
+            if (error) {
+                console.error('Lỗi tải users:', error);
+                return;
+            }
+
+            USERS_CACHE = data || [];
+            PROFILES_CACHE = {};
+            USERS_CACHE.forEach(u => {
+                PROFILES_CACHE[u.username] = {
+                    title: u.title || '',
+                    displayName: u.display_name || u.username,
+                    bio: u.bio || '',
+                    avatarUrl: u.avatar_url || ''
+                };
+            });
+        }
+
+        /* ============ QUYỀN ============ */
+        function getSession() {
+            const s = localStorage.getItem(SESSION_KEY);
+            return s ? JSON.parse(s) : null;
+        }
+
         function getCurrentUserRole() {
-            const session = localStorage.getItem(SESSION_KEY);
+            const session = getSession();
             if (!session) return null;
-            const user = JSON.parse(session);
-            const profile = getProfile(user.username);
+            const profile = getProfile(session.username);
             const t = (profile.title || '').toUpperCase().trim();
             if (t === 'ADMIN') return 'admin';
             if (t === 'DEV' || t === 'DEVELOPER') return 'dev';
@@ -777,13 +685,10 @@
             const myRole = getCurrentUserRole();
             if (!myRole) return false;
             const t = (newTitle || '').toUpperCase().trim();
-
-            // ADMIN cấp tất cả, TRỪ ADMIN (vì chỉ có 1 admin)
             if (myRole === 'admin') {
-                if (t === 'ADMIN') return false; // không cho phép cấp ADMIN
+                if (t === 'ADMIN') return false;
                 return true;
             }
-            // DEV chỉ cấp MEMBER, VIP, MOD
             if (myRole === 'dev') {
                 return ['', 'MEMBER', 'USER', 'VIP', 'MOD', 'MODERATOR'].includes(t);
             }
@@ -794,7 +699,7 @@
             const myRole = getCurrentUserRole();
             if (!myRole) return { ok: false, reason: 'Bạn không có quyền!' };
 
-            const session = JSON.parse(localStorage.getItem(SESSION_KEY));
+            const session = getSession();
             if (targetUsername === session.username) {
                 return { ok: false, reason: '❌ Không thể tự đổi chức danh của chính mình!' };
             }
@@ -803,68 +708,20 @@
             const targetTitle = (targetProfile.title || '').toUpperCase().trim();
             const newT = (newTitle || '').toUpperCase().trim();
 
-            // Không ai được cấp ADMIN (vì chỉ có 1 admin duy nhất)
             if (newT === 'ADMIN') {
-                return { ok: false, reason: '❌ Hệ thống chỉ có 1 ADMIN duy nhất, không thể cấp thêm!' };
+                return { ok: false, reason: '❌ Hệ thống chỉ có 1 ADMIN duy nhất!' };
             }
 
             if (myRole === 'dev') {
-                if (targetTitle === 'ADMIN') {
-                    return { ok: false, reason: '❌ DEV không thể đổi chức danh của ADMIN!' };
-                }
-                if (targetTitle === 'DEV' || targetTitle === 'DEVELOPER') {
-                    return { ok: false, reason: '❌ DEV không thể đổi chức danh của DEV khác!' };
-                }
-                if (!canAssignTitle(newTitle)) {
-                    return { ok: false, reason: '❌ DEV chỉ có thể cấp MEMBER, VIP hoặc MOD!' };
-                }
+                if (targetTitle === 'ADMIN') return { ok: false, reason: '❌ DEV không thể đổi chức danh của ADMIN!' };
+                if (targetTitle === 'DEV' || targetTitle === 'DEVELOPER') return { ok: false, reason: '❌ DEV không thể đổi chức danh của DEV khác!' };
+                if (!canAssignTitle(newTitle)) return { ok: false, reason: '❌ DEV chỉ có thể cấp MEMBER, VIP hoặc MOD!' };
             }
             return { ok: true };
         }
 
-        const authModal = document.getElementById('authModal');
-
-        function openAuth(tab = 'login') {
-            authModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            switchTab(tab);
-            clearErrors();
-            document.querySelectorAll('#authModal input').forEach(i => i.value = '');
-        }
-        function closeAuth() {
-            authModal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-        authModal.addEventListener('click', e => { if (e.target === authModal) closeAuth(); });
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') {
-                closeAuth(); closeMsg(); closeProfile(); closeAdmin();
-            }
-        });
-
-        function switchTab(tab) {
-            document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
-            document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
-            document.getElementById('panelLogin').classList.toggle('active', tab === 'login');
-            document.getElementById('panelRegister').classList.toggle('active', tab === 'register');
-            clearErrors();
-        }
-
-        function clearErrors() {
-            ['loginError', 'regError'].forEach(id => {
-                const el = document.getElementById(id);
-                el.textContent = '';
-                el.classList.remove('show');
-            });
-        }
-        function showError(id, msg) {
-            const el = document.getElementById(id);
-            el.textContent = msg;
-            el.classList.add('show');
-        }
-
-        /* ===== ĐĂNG KÝ ===== */
-        function handleRegister(event) {
+        /* ============ ĐĂNG KÝ ============ */
+        async function handleRegister(event) {
             event.preventDefault();
             clearErrors();
 
@@ -872,6 +729,7 @@
             const email = document.getElementById('regEmail').value.trim().toLowerCase();
             const pass = document.getElementById('regPass').value;
             const pass2 = document.getElementById('regPass2').value;
+            const btn = document.getElementById('btnRegSubmit');
 
             if (!/^[a-zA-Z0-9_]+$/.test(username)) {
                 return showError('regError', '❌ Tên đăng nhập chỉ gồm chữ, số và dấu _');
@@ -880,72 +738,128 @@
                 return showError('regError', '❌ Mật khẩu nhập lại không khớp!');
             }
 
-            const users = getUsers();
-            if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+            btn.disabled = true;
+            btn.textContent = 'Đang tạo tài khoản...';
+
+            // Tải lại users mới nhất
+            await loadUsersFromServer();
+
+            // Kiểm tra trùng
+            if (USERS_CACHE.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+                btn.disabled = false;
+                btn.textContent = 'Tạo tài khoản';
                 return showError('regError', '❌ Tên đăng nhập đã được sử dụng!');
             }
-            if (users.some(u => u.email.toLowerCase() === email)) {
+            if (USERS_CACHE.some(u => u.email.toLowerCase() === email)) {
+                btn.disabled = false;
+                btn.textContent = 'Tạo tài khoản';
                 return showError('regError', '❌ Email này đã có tài khoản rồi!');
             }
 
             // Kiểm tra đã có admin chưa
-            const adminExists = hasAdmin();
-            const isFirst = users.length === 0;
+            const adminExists = USERS_CACHE.some(u => (u.title || '').toUpperCase().trim() === 'ADMIN');
+            const isFirst = USERS_CACHE.length === 0;
             const isAdminName = username.toLowerCase() === 'admin';
 
-            // Chặn đăng ký username 'admin' nếu đã có admin
             if (isAdminName && adminExists) {
+                btn.disabled = false;
+                btn.textContent = 'Tạo tài khoản';
                 return showError('regError', '❌ Hệ thống đã có ADMIN rồi! Không thể đăng ký username "admin".');
             }
 
-            // Chỉ cấp ADMIN khi: chưa có admin VÀ (là user đầu tiên HOẶC username 'admin')
             let autoTitle = '';
             if (!adminExists && (isFirst || isAdminName)) {
                 autoTitle = 'ADMIN';
             }
 
-            const newUser = {
-                username, email,
-                password: hashPass(pass),
+            // Insert vào Supabase
+            const { error } = await supabaseClient
+                .from('users')
+                .insert([{
+                    username: username,
+                    email: email,
+                    password: hashPass(pass),
+                    title: autoTitle,
+                    display_name: username,
+                    bio: '',
+                    avatar_url: ''
+                }]);
+
+            btn.disabled = false;
+            btn.textContent = 'Tạo tài khoản';
+
+            if (error) {
+                console.error('Lỗi đăng ký:', error);
+                if (error.message.includes('only_one_admin')) {
+                    return showError('regError', '❌ Hệ thống chỉ có 1 ADMIN duy nhất!');
+                }
+                return showError('regError', '❌ Lỗi: ' + error.message);
+            }
+
+            // Tải lại cache
+            await loadUsersFromServer();
+
+            // Đăng nhập luôn
+            setSession({
+                username: username,
+                email: email,
+                avatar: null,
                 createdAt: new Date().toISOString()
-            };
-            users.push(newUser);
-            saveUsers(users);
-
-            if (autoTitle) setProfileField(username, 'title', autoTitle);
-
-            setSession(newUser);
+            });
             closeAuth();
 
             if (autoTitle === 'ADMIN') {
-                showToast('👑 Chào ADMIN! Bạn là admin duy nhất của hệ thống.', 'success');
+                showToast('👑 Chào ADMIN! Bạn là admin duy nhất.', 'success');
             } else {
                 showToast('🎉 Đăng ký thành công! Chào mừng ' + username, 'success');
             }
         }
 
-        /* ===== ĐĂNG NHẬP ===== */
-        function handleLogin(event) {
+        /* ============ ĐĂNG NHẬP ============ */
+        async function handleLogin(event) {
             event.preventDefault();
             clearErrors();
 
             const input = document.getElementById('loginUser').value.trim().toLowerCase();
             const pass = document.getElementById('loginPass').value;
+            const btn = document.getElementById('btnLoginSubmit');
 
-            const users = getUsers();
-            const user = users.find(u =>
-                u.username.toLowerCase() === input || u.email.toLowerCase() === input
-            );
+            btn.disabled = true;
+            btn.textContent = 'Đang đăng nhập...';
 
-            if (!user) return showError('loginError', '❌ Không tìm thấy tài khoản này!');
-            if (user.password !== hashPass(pass)) return showError('loginError', '❌ Mật khẩu không đúng!');
+            const { data, error } = await supabaseClient
+                .from('users')
+                .select('*')
+                .or(`username.ilike.${input},email.ilike.${input}`)
+                .limit(1);
 
-            setSession(user);
+            btn.disabled = false;
+            btn.textContent = 'Đăng nhập ngay';
+
+            if (error) {
+                return showError('loginError', '❌ Lỗi kết nối server!');
+            }
+            if (!data || data.length === 0) {
+                return showError('loginError', '❌ Không tìm thấy tài khoản này!');
+            }
+
+            const user = data[0];
+            if (user.password !== hashPass(pass)) {
+                return showError('loginError', '❌ Mật khẩu không đúng!');
+            }
+
+            await loadUsersFromServer();
+            setSession({
+                username: user.username,
+                email: user.email,
+                avatar: user.avatar_url || null,
+                createdAt: user.created_at
+            });
             closeAuth();
             showToast('✅ Đăng nhập thành công! Chào ' + user.username, 'success');
         }
 
-        /* ===== ĐĂNG NHẬP GOOGLE ===== */
+        /* ============ GOOGLE LOGIN ============ */
         function decodeJWT(token) {
             try {
                 const base64Url = token.split('.')[1];
@@ -957,70 +871,86 @@
             } catch (e) { return null; }
         }
 
-        function handleGoogleLogin(response) {
+        async function handleGoogleLogin(response) {
             const userInfo = decodeJWT(response.credential);
             if (!userInfo) return showToast('❌ Lỗi xác thực Google!', 'error');
 
-            const users = getUsers();
-            let user = users.find(u => u.email.toLowerCase() === userInfo.email.toLowerCase());
+            await loadUsersFromServer();
+
+            let user = USERS_CACHE.find(u => u.email.toLowerCase() === userInfo.email.toLowerCase());
 
             if (!user) {
-                const adminExists = hasAdmin();
-                const isFirst = users.length === 0;
-
-                user = {
-                    username: userInfo.name || userInfo.email.split('@')[0],
-                    email: userInfo.email,
-                    password: null,
-                    googleId: userInfo.sub,
-                    avatar: userInfo.picture,
-                    createdAt: new Date().toISOString()
-                };
-                users.push(user);
-                saveUsers(users);
-
-                // Chỉ cấp ADMIN nếu chưa có admin nào
-                if (!adminExists && isFirst) {
-                    setProfileField(user.username, 'title', 'ADMIN');
+                const adminExists = USERS_CACHE.some(u => (u.title || '').toUpperCase().trim() === 'ADMIN');
+                const isFirst = USERS_CACHE.length === 0;
+                let username = userInfo.name || userInfo.email.split('@')[0];
+                // Đảm bảo username không trùng
+                let baseUsername = username;
+                let suffix = 1;
+                while (USERS_CACHE.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+                    username = baseUsername + suffix;
+                    suffix++;
                 }
 
-                showToast('🎉 Đã tạo tài khoản qua Google! Chào ' + user.username, 'success');
+                const autoTitle = (!adminExists && isFirst) ? 'ADMIN' : '';
+
+                const { error } = await supabaseClient
+                    .from('users')
+                    .insert([{
+                        username: username,
+                        email: userInfo.email,
+                        password: null,
+                        title: autoTitle,
+                        display_name: username,
+                        bio: '',
+                        avatar_url: userInfo.picture || '',
+                        google_id: userInfo.sub
+                    }]);
+
+                if (error) {
+                    console.error('Lỗi tạo tài khoản Google:', error);
+                    return showToast('❌ Không tạo được tài khoản!', 'error');
+                }
+
+                await loadUsersFromServer();
+                user = USERS_CACHE.find(u => u.email.toLowerCase() === userInfo.email.toLowerCase());
+                showToast('🎉 Đã tạo tài khoản qua Google!', 'success');
             } else {
-                showToast('✅ Đăng nhập Google thành công! Chào ' + user.username, 'success');
+                showToast('✅ Đăng nhập Google thành công!', 'success');
             }
 
-            setSession(user);
+            setSession({
+                username: user.username,
+                email: user.email,
+                avatar: user.avatar_url || null,
+                createdAt: user.created_at
+            });
             closeAuth();
         }
 
+        /* ============ SESSION ============ */
         function setSession(user) {
-            localStorage.setItem(SESSION_KEY, JSON.stringify({
-                username: user.username,
-                email: user.email,
-                avatar: user.avatar || null,
-                createdAt: user.createdAt || new Date().toISOString()
-            }));
+            localStorage.setItem(SESSION_KEY, JSON.stringify(user));
             updateUI();
         }
 
-        function logout() {
+        async function logout() {
             localStorage.removeItem(SESSION_KEY);
             updateUI();
             showToast('👋 Đã đăng xuất!', 'success');
         }
 
+        /* ============ UPDATE UI ============ */
         function updateUI() {
-            const session = localStorage.getItem(SESSION_KEY);
+            const session = getSession();
             const btnLogin = document.getElementById('btnLogin');
             const userBox = document.getElementById('userBox');
             const userAvatar = document.getElementById('userAvatar');
             const btnAdmin = document.getElementById('btnAdmin');
 
             if (session) {
-                const user = JSON.parse(session);
-                const profile = getProfile(user.username);
-                const displayName = profile.displayName || user.username;
-                const avatarUrl = profile.avatarUrl || user.avatar;
+                const profile = getProfile(session.username);
+                const displayName = profile.displayName || session.username;
+                const avatarUrl = profile.avatarUrl || session.avatar;
                 const title = profile.title || '';
 
                 btnLogin.style.display = 'none';
@@ -1053,11 +983,52 @@
             }
         }
 
+        /* ============ MODAL AUTH ============ */
+        const authModal = document.getElementById('authModal');
+
+        function openAuth(tab = 'login') {
+            authModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            switchTab(tab);
+            clearErrors();
+            document.querySelectorAll('#authModal input').forEach(i => i.value = '');
+        }
+        function closeAuth() {
+            authModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        authModal.addEventListener('click', e => { if (e.target === authModal) closeAuth(); });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') { closeAuth(); closeMsg(); closeProfile(); closeAdmin(); }
+        });
+
+        function switchTab(tab) {
+            document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+            document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+            document.getElementById('panelLogin').classList.toggle('active', tab === 'login');
+            document.getElementById('panelRegister').classList.toggle('active', tab === 'register');
+            clearErrors();
+        }
+
+        function clearErrors() {
+            ['loginError', 'regError'].forEach(id => {
+                const el = document.getElementById(id);
+                el.textContent = '';
+                el.classList.remove('show');
+            });
+        }
+        function showError(id, msg) {
+            const el = document.getElementById(id);
+            el.textContent = msg;
+            el.classList.add('show');
+        }
+
+        /* ============ PROFILE ============ */
         const profileModal = document.getElementById('profileModal');
         let isEditMode = false;
 
         function openProfile() {
-            const session = localStorage.getItem(SESSION_KEY);
+            const session = getSession();
             if (!session) {
                 showToast('❌ Bạn cần đăng nhập!', 'error');
                 return;
@@ -1078,7 +1049,7 @@
         profileModal.addEventListener('click', e => { if (e.target === profileModal) closeProfile(); });
 
         function renderProfile() {
-            const session = JSON.parse(localStorage.getItem(SESSION_KEY));
+            const session = getSession();
             const profile = getProfile(session.username);
             const displayName = profile.displayName || session.username;
             const bio = profile.bio || '';
@@ -1130,17 +1101,14 @@
         }
 
         function copyUsername() {
-            const session = localStorage.getItem(SESSION_KEY);
+            const session = getSession();
             if (!session) return;
-            const user = JSON.parse(session);
-            const username = '@' + user.username;
+            const username = '@' + session.username;
 
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(username).then(() => {
                     showToast('📋 Đã sao chép: ' + username, 'success');
-                }).catch(() => {
-                    fallbackCopy(username);
-                });
+                }).catch(() => fallbackCopy(username));
             } else {
                 fallbackCopy(username);
             }
@@ -1193,8 +1161,8 @@
             document.getElementById('editTitle').value = title;
         }
 
-        function saveProfile() {
-            const session = JSON.parse(localStorage.getItem(SESSION_KEY));
+        async function saveProfile() {
+            const session = getSession();
             const newDisplayName = document.getElementById('editDisplayName').value.trim();
             const newBio = document.getElementById('editBio').value.trim();
             const newAvatarUrl = document.getElementById('editAvatarUrl').value.trim();
@@ -1209,12 +1177,10 @@
             let newTitle;
             if (isAdmin) {
                 newTitle = document.getElementById('editTitle').value.trim().toUpperCase();
-                // Chặn admin tự đổi sang title khác (vẫn giữ ADMIN)
                 if (myProfile.title && myProfile.title.toUpperCase().trim() === 'ADMIN' && newTitle !== 'ADMIN') {
                     showToast('❌ ADMIN không thể tự hạ quyền chính mình!', 'error');
                     return;
                 }
-                // Chặn không cho đặt ADMIN nếu không phải ADMIN
                 if (newTitle === 'ADMIN' && (!myProfile.title || myProfile.title.toUpperCase().trim() !== 'ADMIN')) {
                     showToast('❌ Hệ thống chỉ có 1 ADMIN duy nhất!', 'error');
                     return;
@@ -1223,14 +1189,28 @@
                 newTitle = myProfile.title || '';
             }
 
-            setProfileField(session.username, 'displayName', newDisplayName);
-            setProfileField(session.username, 'title', newTitle);
-            setProfileField(session.username, 'bio', newBio);
-            setProfileField(session.username, 'avatarUrl', newAvatarUrl);
+            const { error } = await supabaseClient
+                .from('users')
+                .update({
+                    display_name: newDisplayName,
+                    title: newTitle,
+                    bio: newBio,
+                    avatar_url: newAvatarUrl
+                })
+                .eq('username', session.username);
 
+            if (error) {
+                console.error('Lỗi lưu profile:', error);
+                showToast('❌ Không lưu được!', 'error');
+                return;
+            }
+
+            // Cập nhật session
             const newSession = { ...session };
             if (newAvatarUrl) newSession.avatar = newAvatarUrl;
             localStorage.setItem(SESSION_KEY, JSON.stringify(newSession));
+
+            await loadUsersFromServer();
 
             updateUI();
             renderProfile();
@@ -1238,9 +1218,10 @@
             showToast('✅ Đã lưu hồ sơ!', 'success');
         }
 
+        /* ============ ADMIN PANEL ============ */
         const adminModal = document.getElementById('adminModal');
 
-        function openAdmin() {
+        async function openAdmin() {
             if (!canAccessAdminPanel()) {
                 showToast('❌ Bạn không có quyền truy cập!', 'error');
                 return;
@@ -1248,6 +1229,7 @@
             adminModal.classList.add('active');
             document.body.style.overflow = 'hidden';
             document.getElementById('adminSearch').value = '';
+            await loadUsersFromServer();
             renderAdminRoleInfo();
             renderAdminStats();
             renderAdminUsers();
@@ -1273,13 +1255,10 @@
         }
 
         function renderAdminStats() {
-            const users = getUsers();
-            const profiles = getProfiles();
             let adminCount = 0, devCount = 0, modCount = 0, vipCount = 0, memberCount = 0, noTitleCount = 0;
 
-            users.forEach(u => {
-                const p = profiles[u.username] || {};
-                const t = (p.title || '').toUpperCase().trim();
+            USERS_CACHE.forEach(u => {
+                const t = (u.title || '').toUpperCase().trim();
                 if (t === 'ADMIN') adminCount++;
                 else if (t === 'DEV' || t === 'DEVELOPER') devCount++;
                 else if (t === 'MOD' || t === 'MODERATOR') modCount++;
@@ -1288,9 +1267,8 @@
                 else noTitleCount++;
             });
 
-            const statsEl = document.getElementById('adminStats');
-            statsEl.innerHTML = `
-                <div class="admin-stat"><span class="num">${users.length}</span><span class="lbl">Tổng user</span></div>
+            document.getElementById('adminStats').innerHTML = `
+                <div class="admin-stat"><span class="num">${USERS_CACHE.length}</span><span class="lbl">Tổng user</span></div>
                 <div class="admin-stat"><span class="num" style="color:#ef4444;">${adminCount}</span><span class="lbl">Admin</span></div>
                 <div class="admin-stat"><span class="num" style="color:#a855f7;">${devCount}</span><span class="lbl">Dev</span></div>
                 <div class="admin-stat"><span class="num" style="color:#3b82f6;">${modCount}</span><span class="lbl">Mod</span></div>
@@ -1302,11 +1280,10 @@
         function renderAdminUsers() {
             const container = document.getElementById('adminUsersList');
             const search = document.getElementById('adminSearch').value.trim().toLowerCase();
-            const users = getUsers();
-            const session = JSON.parse(localStorage.getItem(SESSION_KEY));
+            const session = getSession();
             const myRole = getCurrentUserRole();
 
-            const filtered = users.filter(u => {
+            const filtered = USERS_CACHE.filter(u => {
                 if (!search) return true;
                 return u.username.toLowerCase().includes(search) ||
                        u.email.toLowerCase().includes(search);
@@ -1321,8 +1298,8 @@
             filtered.forEach(u => {
                 const profile = getProfile(u.username);
                 const displayName = profile.displayName || u.username;
-                const avatarUrl = profile.avatarUrl || u.avatar || '';
-                const title = (profile.title || '').toUpperCase().trim();
+                const avatarUrl = profile.avatarUrl || u.avatar_url || '';
+                const title = (u.title || '').toUpperCase().trim();
                 const isMe = u.username === session.username;
 
                 let canEdit = true;
@@ -1355,7 +1332,6 @@
                 if (myRole === 'admin') {
                     optionsHTML += `<option value="DEV" ${title === 'DEV' ? 'selected' : ''}>💻 DEV</option>`;
                 }
-                // KHÔNG có option ADMIN vì chỉ có 1 admin duy nhất
 
                 item.innerHTML = `
                     <div class="admin-user-avatar">${avatarHTML}</div>
@@ -1379,7 +1355,7 @@
             });
         }
 
-        function changeUserTitle(targetUsername, newTitle) {
+        async function changeUserTitle(targetUsername, newTitle) {
             const check = canChangeUserTitle(targetUsername, newTitle);
             if (!check.ok) {
                 showToast(check.reason, 'error');
@@ -1388,7 +1364,24 @@
             }
 
             const oldTitle = (getProfile(targetUsername).title || '').toUpperCase().trim();
-            setProfileField(targetUsername, 'title', newTitle);
+
+            const { error } = await supabaseClient
+                .from('users')
+                .update({ title: newTitle })
+                .eq('username', targetUsername);
+
+            if (error) {
+                console.error('Lỗi đổi title:', error);
+                if (error.message.includes('only_one_admin')) {
+                    showToast('❌ Hệ thống chỉ có 1 ADMIN duy nhất!', 'error');
+                } else {
+                    showToast('❌ Không đổi được!', 'error');
+                }
+                renderAdminUsers();
+                return;
+            }
+
+            await loadUsersFromServer();
 
             const oldLabel = oldTitle || 'Không cấp';
             const newLabel = newTitle || 'Không cấp';
@@ -1398,8 +1391,8 @@
             renderAdminUsers();
         }
 
+        /* ============ CHAT ============ */
         const msgModal = document.getElementById('msgModal');
-        let realtimeChannel = null;
 
         function openMsg() {
             msgModal.classList.add('active');
@@ -1463,7 +1456,7 @@
 
         function appendMessage(m) {
             const container = document.getElementById('msgContainer');
-            const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+            const session = getSession();
             const isMine = session && m.username === session.username;
 
             const empty = container.querySelector('p');
@@ -1509,12 +1502,6 @@
             const current = input.value;
             input.value = (current ? current + ' ' : '') + '@' + username + ' ';
             input.focus();
-        }
-
-        function escapeHtml(str) {
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
         }
 
         function setupMessageInput() {
@@ -1593,10 +1580,9 @@
             }
 
             const query = match[1].toLowerCase();
-            const users = getUsers();
-            const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+            const session = getSession();
 
-            const filtered = users.filter(u => {
+            const filtered = USERS_CACHE.filter(u => {
                 if (session && u.username === session.username) return false;
                 if (!query) return true;
                 return u.username.toLowerCase().includes(query);
@@ -1611,8 +1597,8 @@
             filtered.forEach((u, idx) => {
                 const profile = getProfile(u.username);
                 const displayName = profile.displayName || u.username;
-                const avatarUrl = profile.avatarUrl || u.avatar || '';
-                const title = profile.title || '';
+                const avatarUrl = profile.avatarUrl || u.avatar_url || '';
+                const title = u.title || '';
 
                 const item = document.createElement('div');
                 item.className = 'mention-item' + (idx === 0 ? ' active' : '');
@@ -1660,7 +1646,7 @@
             const text = input.value.trim();
             if (!text) return;
 
-            const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+            const session = getSession();
             if (!session) {
                 showToast('❌ Bạn cần đăng nhập để gửi tin nhắn!', 'error');
                 return;
@@ -1688,6 +1674,7 @@
             }
         }
 
+        /* ============ TOAST ============ */
         const toast = document.getElementById('toast');
         function showToast(message, type = 'success') {
             toast.textContent = message;
@@ -1698,8 +1685,13 @@
             }, 3000);
         }
 
-        updateUI();
-        setupMessageInput();
+        /* ============ KHỞI TẠO ============ */
+        async function init() {
+            await loadUsersFromServer();
+            updateUI();
+            setupMessageInput();
+        }
+        init();
     </script>
 </body>
 </html>
