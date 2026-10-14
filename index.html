@@ -76,7 +76,6 @@
         }
         .btn-profile:hover { background: #FFC400; color: #080808; }
 
-        /* Nút Admin - hiện cho cả ADMIN và DEV */
         .btn-admin {
             padding: 8px 16px;
             background: linear-gradient(135deg, #ef4444, #b91c1c);
@@ -93,7 +92,6 @@
             50% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.9); }
         }
 
-        /* HERO */
         .hero {
             min-height: 100vh; display: flex; justify-content: center; align-items: center;
             text-align: center; padding: 100px 20px; position: relative;
@@ -127,7 +125,6 @@
             50% { box-shadow: 0 0 45px rgba(255, 77, 148, 1); }
         }
 
-        /* MODAL */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center;
@@ -191,7 +188,6 @@
         .divider::after { margin-left: 10px; }
         .google-btn-container { display: flex; justify-content: center; margin-top: 10px; }
 
-        /* MESSAGES */
         .msg-modal { max-width: 520px; padding: 25px; }
         .msg-header { display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #222; }
@@ -268,7 +264,6 @@
             cursor: pointer; height: 44px; flex-shrink: 0; }
         .msg-input-area > button:hover { background: #fff; color: #FFC400; }
 
-        /* PROFILE */
         .profile-modal { max-width: 480px; padding: 30px; }
         .profile-header { display: flex; align-items: center; gap: 20px;
             padding-bottom: 20px; border-bottom: 1px solid #222; margin-bottom: 20px; }
@@ -279,9 +274,26 @@
             border: 3px solid #FFC400; overflow: hidden; flex-shrink: 0; }
         .profile-avatar-big img { width: 100%; height: 100%; object-fit: cover; }
         .profile-info { flex: 1; min-width: 0; }
-        .profile-info .name-line { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+        .profile-info .name-line { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
         .profile-info h3 { font-size: 24px; color: #fff; word-break: break-word; }
-        .profile-info .email { color: #888; font-size: 14px; word-break: break-all; }
+        .profile-info .username {
+            color: #FFC400;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            display: inline-block;
+            background: rgba(255, 196, 0, 0.12);
+            padding: 2px 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 196, 0, 0.3);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .profile-info .username:hover {
+            background: rgba(255, 196, 0, 0.25);
+            transform: scale(1.05);
+        }
+        .profile-info .email { color: #888; font-size: 13px; word-break: break-all; }
         .profile-info .join-date { color: #666; font-size: 12px; margin-top: 4px; }
 
         .profile-field { padding: 14px 0; border-bottom: 1px solid #1a1a1a; }
@@ -324,7 +336,7 @@
         .btn-cancel { background: #2a2a2a; color: #aaa; }
         .btn-cancel:hover { background: #333; color: #fff; }
 
-        /* ===== ADMIN PANEL ===== */
+        /* ADMIN PANEL */
         .admin-modal {
             max-width: 640px; padding: 30px;
             border: 1px solid rgba(239, 68, 68, 0.4);
@@ -445,7 +457,6 @@
             padding: 30px 20px; font-size: 14px;
         }
 
-        /* TOAST */
         .toast {
             position: fixed; top: 100px; right: 30px;
             background: #121212; border-left: 4px solid #FFC400;
@@ -530,7 +541,6 @@
     <div class="modal-overlay" id="authModal">
         <div class="modal">
             <button class="modal-close" onclick="closeAuth()">×</button>
-
             <div class="tabs">
                 <button class="tab active" id="tabLogin" onclick="switchTab('login')">Đăng nhập</button>
                 <button class="tab" id="tabRegister" onclick="switchTab('register')">Đăng ký</button>
@@ -545,9 +555,7 @@
                     <div class="error-msg" id="loginError"></div>
                     <button type="submit">Đăng nhập ngay</button>
                 </form>
-
                 <div class="divider">HOẶC</div>
-
                 <div class="google-btn-container">
                     <div id="g_id_onload"
                          data-client_id="314304357165-3tf6oeaanb0p77dhb91l59m11594da9b.apps.googleusercontent.com"
@@ -609,6 +617,7 @@
                         <h3 id="profileDisplayName">User</h3>
                         <span class="title-badge" id="profileTitleBadge" style="display:none;"></span>
                     </div>
+                    <div class="username" id="profileUsername" onclick="copyUsername()" title="Bấm để sao chép @username">@user</div>
                     <div class="email" id="profileEmail">email</div>
                     <div class="join-date" id="profileJoinDate"></div>
                 </div>
@@ -673,14 +682,10 @@
                 <h2>Bảng Quản Trị</h2>
                 <button class="modal-close" onclick="closeAdmin()" style="position: static; font-size: 24px;">×</button>
             </div>
-
             <div class="admin-role-info" id="adminRoleInfo"></div>
-
             <div class="admin-stats" id="adminStats"></div>
-
             <input type="text" class="admin-search" id="adminSearch"
                    placeholder="🔍 Tìm kiếm theo tên hoặc email..." oninput="renderAdminUsers()">
-
             <div class="admin-users-list" id="adminUsersList"></div>
         </div>
     </div>
@@ -688,12 +693,10 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        /* ============ CẤU HÌNH SUPABASE ============ */
         const SUPABASE_URL = "https://fnthhoxyobcqnbsnqazy.supabase.co";
         const SUPABASE_KEY = "sb_publishable_zF5aZXKbAc054Ky2N8Wwnw_LXOq2jHt";
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        /* ============ QUẢN LÝ TÀI KHOẢN ============ */
         const USERS_KEY = 'angff_users';
         const SESSION_KEY = 'angff_currentUser';
         const PROFILE_KEY = 'angff_profiles';
@@ -743,7 +746,6 @@
             return '';
         }
 
-        /* ===== XÁC ĐỊNH QUYỀN HIỆN TẠI ===== */
         function getCurrentUserRole() {
             const session = localStorage.getItem(SESSION_KEY);
             if (!session) return null;
@@ -764,23 +766,17 @@
             return role === 'admin' || role === 'dev';
         }
 
-        /* ===== KIỂM TRA CÓ ĐƯỢC CẤP TITLE KHÔNG ===== */
-        // ADMIN: cấp được tất cả
-        // DEV: chỉ cấp MEMBER, VIP, MOD
         function canAssignTitle(newTitle) {
             const myRole = getCurrentUserRole();
             if (!myRole) return false;
             const t = (newTitle || '').toUpperCase().trim();
-
-            if (myRole === 'admin') return true; // ADMIN cấp tất cả
+            if (myRole === 'admin') return true;
             if (myRole === 'dev') {
-                // DEV chỉ cấp các quyền thấp hơn
                 return ['', 'MEMBER', 'USER', 'VIP', 'MOD', 'MODERATOR'].includes(t);
             }
             return false;
         }
 
-        /* ===== KIỂM TRA CÓ ĐƯỢC ĐỔI TITLE CỦA NGƯỜI KHÁC KHÔNG ===== */
         function canChangeUserTitle(targetUsername, newTitle) {
             const myRole = getCurrentUserRole();
             if (!myRole) return { ok: false, reason: 'Bạn không có quyền!' };
@@ -793,7 +789,6 @@
             const targetProfile = getProfile(targetUsername);
             const targetTitle = (targetProfile.title || '').toUpperCase().trim();
 
-            // DEV không được đụng vào ADMIN khác
             if (myRole === 'dev') {
                 if (targetTitle === 'ADMIN') {
                     return { ok: false, reason: '❌ DEV không thể đổi chức danh của ADMIN!' };
@@ -805,11 +800,9 @@
                     return { ok: false, reason: '❌ DEV chỉ có thể cấp MEMBER, VIP hoặc MOD!' };
                 }
             }
-
             return { ok: true };
         }
 
-        /* ============ MODAL AUTH ============ */
         const authModal = document.getElementById('authModal');
 
         function openAuth(tab = 'login') {
@@ -851,7 +844,6 @@
             el.classList.add('show');
         }
 
-        /* ============ ĐĂNG KÝ ============ */
         function handleRegister(event) {
             event.preventDefault();
             clearErrors();
@@ -900,7 +892,6 @@
             }
         }
 
-        /* ============ ĐĂNG NHẬP ============ */
         function handleLogin(event) {
             event.preventDefault();
             clearErrors();
@@ -921,7 +912,6 @@
             showToast('✅ Đăng nhập thành công! Chào ' + user.username, 'success');
         }
 
-        /* ============ ĐĂNG NHẬP GOOGLE ============ */
         function decodeJWT(token) {
             try {
                 const base64Url = token.split('.')[1];
@@ -962,7 +952,6 @@
             closeAuth();
         }
 
-        /* ============ SESSION ============ */
         function setSession(user) {
             localStorage.setItem(SESSION_KEY, JSON.stringify({
                 username: user.username,
@@ -1010,7 +999,6 @@
                     userAvatar.textContent = displayName.charAt(0).toUpperCase();
                 }
 
-                // Hiện nút Quản trị nếu là ADMIN hoặc DEV
                 if (canAccessAdminPanel()) {
                     btnAdmin.classList.add('show');
                 } else {
@@ -1024,7 +1012,6 @@
             }
         }
 
-        /* ============ PROFILE ============ */
         const profileModal = document.getElementById('profileModal');
         let isEditMode = false;
 
@@ -1066,6 +1053,8 @@
             }
 
             document.getElementById('profileDisplayName').textContent = displayName;
+            document.getElementById('profileUsername').textContent = '@' + session.username;
+
             const badgeEl = document.getElementById('profileTitleBadge');
             if (title) {
                 badgeEl.textContent = title;
@@ -1099,13 +1088,45 @@
             document.getElementById('editAvatarUrl').value = avatarUrl;
         }
 
+        function copyUsername() {
+            const session = localStorage.getItem(SESSION_KEY);
+            if (!session) return;
+            const user = JSON.parse(session);
+            const username = '@' + user.username;
+
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(username).then(() => {
+                    showToast('📋 Đã sao chép: ' + username, 'success');
+                }).catch(() => {
+                    fallbackCopy(username);
+                });
+            } else {
+                fallbackCopy(username);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('📋 Đã sao chép: ' + text, 'success');
+            } catch (err) {
+                showToast('❌ Không sao chép được', 'error');
+            }
+            document.body.removeChild(textarea);
+        }
+
         function enableEditProfile() {
             isEditMode = true;
             document.getElementById('profileViewMode').style.display = 'none';
             document.getElementById('profileEditMode').style.display = 'block';
 
             const isAdmin = isCurrentUserAdmin();
-
             const titleInput = document.getElementById('editTitle');
             const presetsEl = document.getElementById('titlePresets');
             const lockedNote = document.getElementById('titleLockedNote');
@@ -1166,7 +1187,6 @@
             showToast('✅ Đã lưu hồ sơ!', 'success');
         }
 
-        /* ============ ADMIN PANEL ============ */
         const adminModal = document.getElementById('adminModal');
 
         function openAdmin() {
@@ -1204,7 +1224,6 @@
         function renderAdminStats() {
             const users = getUsers();
             const profiles = getProfiles();
-
             let adminCount = 0, devCount = 0, modCount = 0, vipCount = 0, memberCount = 0, noTitleCount = 0;
 
             users.forEach(u => {
@@ -1220,30 +1239,12 @@
 
             const statsEl = document.getElementById('adminStats');
             statsEl.innerHTML = `
-                <div class="admin-stat">
-                    <span class="num">${users.length}</span>
-                    <span class="lbl">Tổng user</span>
-                </div>
-                <div class="admin-stat">
-                    <span class="num" style="color:#ef4444;">${adminCount}</span>
-                    <span class="lbl">Admin</span>
-                </div>
-                <div class="admin-stat">
-                    <span class="num" style="color:#a855f7;">${devCount}</span>
-                    <span class="lbl">Dev</span>
-                </div>
-                <div class="admin-stat">
-                    <span class="num" style="color:#3b82f6;">${modCount}</span>
-                    <span class="lbl">Mod</span>
-                </div>
-                <div class="admin-stat">
-                    <span class="num" style="color:#22c55e;">${vipCount}</span>
-                    <span class="lbl">VIP</span>
-                </div>
-                <div class="admin-stat">
-                    <span class="num" style="color:#6b7280;">${noTitleCount}</span>
-                    <span class="lbl">Chưa cấp</span>
-                </div>
+                <div class="admin-stat"><span class="num">${users.length}</span><span class="lbl">Tổng user</span></div>
+                <div class="admin-stat"><span class="num" style="color:#ef4444;">${adminCount}</span><span class="lbl">Admin</span></div>
+                <div class="admin-stat"><span class="num" style="color:#a855f7;">${devCount}</span><span class="lbl">Dev</span></div>
+                <div class="admin-stat"><span class="num" style="color:#3b82f6;">${modCount}</span><span class="lbl">Mod</span></div>
+                <div class="admin-stat"><span class="num" style="color:#22c55e;">${vipCount}</span><span class="lbl">VIP</span></div>
+                <div class="admin-stat"><span class="num" style="color:#6b7280;">${noTitleCount}</span><span class="lbl">Chưa cấp</span></div>
             `;
         }
 
@@ -1273,21 +1274,14 @@
                 const title = (profile.title || '').toUpperCase().trim();
                 const isMe = u.username === session.username;
 
-                // Xác định có được đổi không
                 let canEdit = true;
                 let disabledReason = '';
-
                 if (isMe) {
                     canEdit = false;
                     disabledReason = 'Không thể tự đổi';
                 } else if (myRole === 'dev') {
-                    if (title === 'ADMIN') {
-                        canEdit = false;
-                        disabledReason = 'Không đổi được ADMIN';
-                    } else if (title === 'DEV' || title === 'DEVELOPER') {
-                        canEdit = false;
-                        disabledReason = 'Không đổi được DEV khác';
-                    }
+                    if (title === 'ADMIN') { canEdit = false; disabledReason = 'Không đổi được ADMIN'; }
+                    else if (title === 'DEV' || title === 'DEVELOPER') { canEdit = false; disabledReason = 'Không đổi được DEV khác'; }
                 }
 
                 const item = document.createElement('div');
@@ -1301,12 +1295,10 @@
                     ? `<span class="title-badge ${getTitleClass(title)}">${escapeHtml(title)}</span>`
                     : '';
 
-                // Build options theo quyền
                 let optionsHTML = `<option value="">— Không cấp —</option>`;
                 optionsHTML += `<option value="MEMBER" ${title === 'MEMBER' ? 'selected' : ''}>👤 MEMBER</option>`;
                 optionsHTML += `<option value="VIP" ${title === 'VIP' ? 'selected' : ''}>⭐ VIP</option>`;
                 optionsHTML += `<option value="MOD" ${title === 'MOD' ? 'selected' : ''}>🛡️ MOD</option>`;
-
                 if (myRole === 'admin') {
                     optionsHTML += `<option value="DEV" ${title === 'DEV' ? 'selected' : ''}>💻 DEV</option>`;
                     optionsHTML += `<option value="ADMIN" ${title === 'ADMIN' ? 'selected' : ''}>👑 ADMIN</option>`;
@@ -1343,7 +1335,6 @@
             }
 
             const oldTitle = (getProfile(targetUsername).title || '').toUpperCase().trim();
-
             setProfileField(targetUsername, 'title', newTitle);
 
             const oldLabel = oldTitle || 'Không cấp';
@@ -1354,7 +1345,6 @@
             renderAdminUsers();
         }
 
-        /* ============ CHAT VỚI SUPABASE ============ */
         const msgModal = document.getElementById('msgModal');
         let realtimeChannel = null;
 
@@ -1645,7 +1635,6 @@
             }
         }
 
-        /* ============ TOAST ============ */
         const toast = document.getElementById('toast');
         function showToast(message, type = 'success') {
             toast.textContent = message;
@@ -1656,7 +1645,6 @@
             }, 3000);
         }
 
-        /* ============ KHỞI TẠO ============ */
         updateUI();
         setupMessageInput();
     </script>
