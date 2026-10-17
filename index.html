@@ -504,9 +504,9 @@
             <br>
             <a href="20-10.html" class="btn-2010-hero">🌸 Chúc mừng 20/10 🌸</a>
             
-            <!-- NÚT 20/11 -->
+            <!-- NÚT 20/11 ĐÃ THÊM LOGIC KIỂM TRA ĐĂNG NHẬP -->
             <div class="btn-2011-wrapper">
-                <a href="20-11.html" class="btn-2011-hero locked" id="btn2011">🍎 Chúc mừng ngày Nhà giáo Việt Nam 20/11 🍎</a>
+                <a href="20-11.html" class="btn-2011-hero locked" id="btn2011" onclick="handle2011Click(event)">🍎 Chúc mừng ngày Nhà giáo Việt Nam 20/11 🍎</a>
                 <div class="countdown" id="countdown2011">Đang tải...</div>
             </div>
 
@@ -1735,6 +1735,26 @@
             toast._timer = setTimeout(() => {
                 toast.classList.remove('show');
             }, 3000);
+        }
+
+        /* ============ XỬ LÝ CLICK NÚT 20/11 ============ */
+        function handle2011Click(event) {
+            const btn = event.currentTarget;
+
+            // Nếu nút đang bị khóa thì không làm gì (đề phòng)
+            if (btn.classList.contains('locked')) {
+                event.preventDefault();
+                return;
+            }
+
+            const session = getSession();
+            if (!session) {
+                // Chưa đăng nhập -> chặn điều hướng, hiện thông báo & mở form
+                event.preventDefault();
+                showToast('🔒 Vui lòng đăng nhập để xem lời chúc 20/11!', 'error');
+                openAuth('login');
+            }
+            // Đã đăng nhập -> không preventDefault -> tự động chuyển sang trang 20-11.html
         }
 
         /* ============ COUNTDOWN 20/11 ============ */
