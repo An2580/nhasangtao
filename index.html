@@ -139,14 +139,17 @@
             color: #1d4ed8;
             transform: translateY(-5px) scale(1.05);
         }
-        /* Trạng thái khóa (làm mờ) */
+        
+        /* Trạng thái khóa (mờ nhưng vẫn rõ chữ) */
         .btn-2011-hero.locked {
-            filter: blur(4px);
-            pointer-events: none;
+            opacity: 0.65;           /* Giảm độ trong suốt vừa phải để đọc rõ chữ */
+            filter: grayscale(80%);  /* Chuyển sang màu xám */
+            pointer-events: none;    /* Không cho bấm */
             user-select: none;
-            opacity: 0.5;
             box-shadow: none;
+            cursor: not-allowed;
         }
+
         /* Đồng hồ đếm ngược */
         .countdown {
             margin-top: 10px;
@@ -1739,19 +1742,17 @@
             const btn = document.getElementById('btn2011');
             const cd = document.getElementById('countdown2011');
 
-            // Đặt thời gian đích: 20/11 năm hiện tại
             const now = new Date();
             let targetYear = now.getFullYear();
             let targetDate = new Date(`November 20, ${targetYear} 00:00:00`);
 
-            // Nếu đã qua ngày 20/11 năm nay thì mở khóa luôn
             if (now > targetDate) {
                 btn.classList.remove('locked');
                 cd.classList.add('hidden');
                 return;
             }
 
-            btn.classList.add('locked'); // Khóa nút
+            btn.classList.add('locked');
 
             setInterval(() => {
                 const current = new Date();
@@ -1777,7 +1778,7 @@
             await loadUsersFromServer();
             updateUI();
             setupMessageInput();
-            startCountdown2011(); // Gọi hàm đếm ngược
+            startCountdown2011();
         }
         init();
     </script>
