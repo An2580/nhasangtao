@@ -364,7 +364,7 @@
         .btn-cancel:hover { background: #333; color: #fff; }
 
         .admin-modal {
-            max-width: 640px; padding: 30px;
+            max-width: 680px; padding: 30px;
             border: 1px solid rgba(239, 68, 68, 0.4);
             box-shadow: 0 20px 60px rgba(239, 68, 68, 0.3);
         }
@@ -406,6 +406,7 @@
             display: flex; align-items: center; gap: 12px;
             background: #1a1a1a; padding: 12px 15px;
             border-radius: 12px; border: 1px solid #2a2a2a; transition: 0.3s;
+            flex-wrap: wrap;
         }
         .admin-user-item:hover { border-color: #ef4444; background: #1e1e1e; }
         .admin-user-avatar { width: 44px; height: 44px; border-radius: 50%;
@@ -414,23 +415,42 @@
             font-weight: 900; color: #080808; font-size: 16px;
             overflow: hidden; flex-shrink: 0; }
         .admin-user-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .admin-user-info { flex: 1; min-width: 0; }
+        .admin-user-info { flex: 1; min-width: 140px; }
         .admin-user-info .name { color: #fff; font-weight: 700; font-size: 14px;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
             display: flex; align-items: center; gap: 6px; }
         .admin-user-info .email { color: #888; font-size: 12px;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+        .admin-actions-wrapper {
+            display: flex; align-items: center; gap: 15px; flex-wrap: wrap; margin-top: 5px;
+        }
+        
         .admin-role-select {
             padding: 9px 12px; background: #111;
             border: 1px solid #333; border-radius: 8px;
             color: #fff; font-size: 13px; font-weight: 700;
             cursor: pointer; outline: none; transition: 0.3s;
-            font-family: inherit; min-width: 130px;
+            font-family: inherit; min-width: 120px;
         }
         .admin-role-select:hover { border-color: #ef4444; }
         .admin-role-select:focus { border-color: #ef4444; }
         .admin-role-select:disabled { opacity: 0.5; cursor: not-allowed; border-style: dashed; }
+
+        /* Toggle switch cho preview 20/11 */
+        .toggle-preview {
+            display: flex; align-items: center; gap: 6px;
+            cursor: pointer; background: rgba(59, 130, 246, 0.1);
+            padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(59, 130, 246, 0.3);
+            transition: 0.3s;
+        }
+        .toggle-preview:hover { background: rgba(59, 130, 246, 0.2); }
+        .toggle-preview input[type="checkbox"] {
+            width: 16px; height: 16px; cursor: pointer; accent-color: #3b82f6;
+        }
+        .toggle-preview label {
+            font-size: 12px; color: #93c5fd; font-weight: 600; cursor: pointer; user-select: none;
+        }
 
         .admin-empty { text-align: center; color: #666; padding: 30px 20px; font-size: 14px; }
 
@@ -719,7 +739,8 @@
                     title: u.title || '',
                     displayName: u.display_name || u.username,
                     bio: u.bio || '',
-                    avatarUrl: u.avatar_url || ''
+                    avatarUrl: u.avatar_url || '',
+                    canPreview2011: u.can_preview_2011 || false // THÊM DÒNG NÀY
                 };
             });
         }
@@ -1042,6 +1063,7 @@
                 userAvatar.innerHTML = 'A';
                 btnAdmin.classList.remove('show');
             }
+            startCountdown2011(); // Cập nhật lại nút 20/11 khi user thay đổi
         }
 
         /* ============ MODAL AUTH ============ */
@@ -1361,6 +1383,7 @@
                 const avatarUrl = profile.avatarUrl || u.avatar_url || '';
                 const title = (u.title || '').toUpperCase().trim();
                 const isMe = u.username === session.username;
+                const canPreview = u.can_preview_2011 || false; // Lấy từ data gốc
 
                 let canEdit = true;
                 let disabledReason = '';
@@ -1393,15 +1416,28 @@
                     optionsHTML += `<option value="DEV" ${title === 'DEV' ? 'selected' : ''}>💻 DEV</option>`;
                 }
 
+                // Tạo ô checkbox cấp quyền xem trước 20/11
+                const previewToggleHTML = (!isMe && title !== 'ADMIN')
+                    ? `
+                    <div class="toggle-preview" title="Cấp quyền xem trước 20/11 (bỏ qua đếm ngược)">
+                        <input type="checkbox" id="prev_${u.username}" ${canPreview ? 'checked' : ''} 
+                               onchange="togglePreview2011('${u.username}', this.checked)">
+                        <label for="prev_${u.username}">Xem trước 20/11</label>
+                    </div>
+                    ` : '';
+
                 item.innerHTML = `
                     <div class="admin-user-avatar">${avatarHTML}</div>
                     <div class="admin-user-info">
                         <div class="name">${escapeHtml(displayName)}${badgeHTML}${isMe ? ' <span style="color:#888;font-size:11px;">(bạn)</span>' : ''}</div>
                         <div class="email">@${escapeHtml(u.username)} • ${escapeHtml(u.email)}</div>
                     </div>
-                    <select class="admin-role-select" data-username="${escapeHtml(u.username)}" ${!canEdit ? 'disabled' : ''} title="${disabledReason}">
-                        ${optionsHTML}
-                    </select>
+                    <div class="admin-actions-wrapper">
+                        <select class="admin-role-select" data-username="${escapeHtml(u.username)}" ${!canEdit ? 'disabled' : ''} title="${disabledReason}">
+                            ${optionsHTML}
+                        </select>
+                        ${previewToggleHTML}
+                    </div>
                 `;
 
                 const select = item.querySelector('.admin-role-select');
@@ -1449,6 +1485,26 @@
 
             renderAdminStats();
             renderAdminUsers();
+        }
+
+        /* ============ CẤP QUYỀN XEM TRƯỚC 20/11 ============ */
+        async function togglePreview2011(targetUsername, isChecked) {
+            const { error } = await supabaseClient
+                .from('users')
+                .update({ can_preview_2011: isChecked })
+                .eq('username', targetUsername);
+
+            if (error) {
+                console.error('Lỗi cấp quyền xem trước:', error);
+                showToast('❌ Lỗi cấp quyền!', 'error');
+                return;
+            }
+
+            await loadUsersFromServer();
+            showToast(`✅ Đã ${isChecked ? 'bật' : 'tắt'} quyền xem trước 20/11 cho ${targetUsername}`, 'success');
+            
+            // Cập nhật lại trạng thái nút 20/11 nếu người đang đăng nhập là targetUsername
+            startCountdown2011();
         }
 
         /* ============ CHAT ============ */
@@ -1777,27 +1833,53 @@
         }
 
         /* ============ COUNTDOWN 20/11 ============ */
+        let countdownInterval = null;
+
         function startCountdown2011() {
             const btn = document.getElementById('btn2011');
             const cd = document.getElementById('countdown2011');
+            if (!btn || !cd) return;
+
+            clearInterval(countdownInterval);
 
             const now = new Date();
             let targetYear = now.getFullYear();
             let targetDate = new Date(`November 20, ${targetYear} 00:00:00`);
 
-            if (now > targetDate) {
+            // Kiểm tra xem user hiện tại có quyền xem trước không
+            const session = getSession();
+            let hasPreview = false;
+            if (session) {
+                const profile = getProfile(session.username);
+                const role = getCurrentUserRole();
+                hasPreview = profile.canPreview2011 || role === 'admin' || role === 'dev';
+            }
+
+            // Nếu đã qua ngày 20/11 HOẶC có quyền xem trước -> Mở khóa ngay
+            if (now > targetDate || hasPreview) {
                 btn.classList.remove('locked');
                 cd.classList.add('hidden');
+                if (hasPreview && now <= targetDate) {
+                    cd.textContent = "Đã mở khóa xem trước!";
+                    cd.classList.remove('hidden');
+                    cd.style.color = "#22c55e";
+                    cd.style.borderColor = "rgba(34, 197, 94, 0.3)";
+                }
                 return;
             }
 
+            // Nếu chưa tới ngày và không có quyền -> Hiển thị đếm ngược
             btn.classList.add('locked');
+            cd.classList.remove('hidden');
+            cd.style.color = "";
+            cd.style.borderColor = "";
 
-            setInterval(() => {
+            countdownInterval = setInterval(() => {
                 const current = new Date();
                 const diff = targetDate - current;
 
                 if (diff <= 0) {
+                    clearInterval(countdownInterval);
                     btn.classList.remove('locked');
                     cd.classList.add('hidden');
                     return;
