@@ -114,6 +114,56 @@
             50% { box-shadow: 0 0 45px rgba(255, 77, 148, 1); }
         }
 
+        /* ================= NÚT 20/11 & ĐẾM NGƯỢC ================= */
+        .btn-2011-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 15px;
+            position: relative;
+        }
+        .btn-2011-hero {
+            display: inline-block;
+            padding: 15px 34px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8); /* Màu xanh dương */
+            color: #fff;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 17px;
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.6);
+            transition: all 0.4s ease;
+        }
+        .btn-2011-hero:hover:not(.locked) {
+            background: #fff;
+            color: #1d4ed8;
+            transform: translateY(-5px) scale(1.05);
+        }
+        /* Trạng thái khóa (làm mờ) */
+        .btn-2011-hero.locked {
+            filter: blur(4px);
+            pointer-events: none;
+            user-select: none;
+            opacity: 0.5;
+            box-shadow: none;
+        }
+        /* Đồng hồ đếm ngược */
+        .countdown {
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #93c5fd;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+            font-family: monospace;
+            transition: opacity 0.5s;
+            background: rgba(0,0,0,0.6);
+            padding: 5px 15px;
+            border-radius: 15px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        .countdown.hidden { opacity: 0; pointer-events: none; }
+
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center;
@@ -413,7 +463,7 @@
             .toast { top: 90px; right: 15px; left: 15px; max-width: none; }
             .btn-msg, .btn-profile, .btn-admin, .btn-logout { padding: 7px 10px; font-size: 11px; }
             .msg-container { height: 300px; }
-            .btn-2010-hero { font-size: 15px; padding: 13px 28px; }
+            .btn-2010-hero, .btn-2011-hero { font-size: 15px; padding: 13px 28px; }
             .profile-info h3 { font-size: 20px; }
             .admin-role-select { font-size: 11px; padding: 7px 8px; min-width: 100px; }
         }
@@ -450,6 +500,13 @@
                class="btn">Vào Free Fire ngay 🚀</a>
             <br>
             <a href="20-10.html" class="btn-2010-hero">🌸 Chúc mừng 20/10 🌸</a>
+            
+            <!-- NÚT 20/11 -->
+            <div class="btn-2011-wrapper">
+                <a href="20-11.html" class="btn-2011-hero locked" id="btn2011">🍎 Chúc mừng ngày Nhà giáo Việt Nam 20/11 🍎</a>
+                <div class="countdown" id="countdown2011">Đang tải...</div>
+            </div>
+
         </div>
     </section>
 
@@ -596,9 +653,9 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         /* ============ BIẾN TOÀN CỤC ============ */
-        const SESSION_KEY = 'angff_session'; // Chỉ lưu username + email + avatar
-        let USERS_CACHE = []; // Mảng user từ Supabase
-        let PROFILES_CACHE = {}; // Map username -> profile
+        const SESSION_KEY = 'angff_session';
+        let USERS_CACHE = [];
+        let PROFILES_CACHE = {};
         let realtimeChannel = null;
 
         /* ============ HELPER ============ */
@@ -741,10 +798,8 @@
             btn.disabled = true;
             btn.textContent = 'Đang tạo tài khoản...';
 
-            // Tải lại users mới nhất
             await loadUsersFromServer();
 
-            // Kiểm tra trùng
             if (USERS_CACHE.some(u => u.username.toLowerCase() === username.toLowerCase())) {
                 btn.disabled = false;
                 btn.textContent = 'Tạo tài khoản';
@@ -756,7 +811,6 @@
                 return showError('regError', '❌ Email này đã có tài khoản rồi!');
             }
 
-            // Kiểm tra đã có admin chưa
             const adminExists = USERS_CACHE.some(u => (u.title || '').toUpperCase().trim() === 'ADMIN');
             const isFirst = USERS_CACHE.length === 0;
             const isAdminName = username.toLowerCase() === 'admin';
@@ -772,7 +826,6 @@
                 autoTitle = 'ADMIN';
             }
 
-            // Insert vào Supabase
             const { error } = await supabaseClient
                 .from('users')
                 .insert([{
@@ -796,10 +849,8 @@
                 return showError('regError', '❌ Lỗi: ' + error.message);
             }
 
-            // Tải lại cache
             await loadUsersFromServer();
 
-            // Đăng nhập luôn
             setSession({
                 username: username,
                 email: email,
@@ -883,7 +934,6 @@
                 const adminExists = USERS_CACHE.some(u => (u.title || '').toUpperCase().trim() === 'ADMIN');
                 const isFirst = USERS_CACHE.length === 0;
                 let username = userInfo.name || userInfo.email.split('@')[0];
-                // Đảm bảo username không trùng
                 let baseUsername = username;
                 let suffix = 1;
                 while (USERS_CACHE.some(u => u.username.toLowerCase() === username.toLowerCase())) {
@@ -1205,7 +1255,6 @@
                 return;
             }
 
-            // Cập nhật session
             const newSession = { ...session };
             if (newAvatarUrl) newSession.avatar = newAvatarUrl;
             localStorage.setItem(SESSION_KEY, JSON.stringify(newSession));
@@ -1685,11 +1734,50 @@
             }, 3000);
         }
 
+        /* ============ COUNTDOWN 20/11 ============ */
+        function startCountdown2011() {
+            const btn = document.getElementById('btn2011');
+            const cd = document.getElementById('countdown2011');
+
+            // Đặt thời gian đích: 20/11 năm hiện tại
+            const now = new Date();
+            let targetYear = now.getFullYear();
+            let targetDate = new Date(`November 20, ${targetYear} 00:00:00`);
+
+            // Nếu đã qua ngày 20/11 năm nay thì mở khóa luôn
+            if (now > targetDate) {
+                btn.classList.remove('locked');
+                cd.classList.add('hidden');
+                return;
+            }
+
+            btn.classList.add('locked'); // Khóa nút
+
+            setInterval(() => {
+                const current = new Date();
+                const diff = targetDate - current;
+
+                if (diff <= 0) {
+                    btn.classList.remove('locked');
+                    cd.classList.add('hidden');
+                    return;
+                }
+
+                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const m = Math.floor((diff / 1000 / 60) % 60);
+                const s = Math.floor((diff / 1000) % 60);
+
+                cd.textContent = `Mở khóa sau: ${d} ngày ${h < 10 ? '0'+h : h}:${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+            }, 1000);
+        }
+
         /* ============ KHỞI TẠO ============ */
         async function init() {
             await loadUsersFromServer();
             updateUI();
             setupMessageInput();
+            startCountdown2011(); // Gọi hàm đếm ngược
         }
         init();
     </script>
