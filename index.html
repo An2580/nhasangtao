@@ -117,52 +117,34 @@
 
         /* ================= NÚT 20/11 & ĐẾM NGƯỢC ================= */
         .btn-2011-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 15px;
-            position: relative;
+            display: flex; flex-direction: column; align-items: center;
+            margin-top: 15px; position: relative;
         }
         .btn-2011-hero {
-            display: inline-block;
-            padding: 15px 34px;
+            display: inline-block; padding: 15px 34px;
             background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            color: #fff;
-            text-decoration: none;
-            border-radius: 30px;
-            font-weight: 700;
-            font-size: 17px;
+            color: #fff; text-decoration: none; border-radius: 30px;
+            font-weight: 700; font-size: 17px;
             box-shadow: 0 0 25px rgba(59, 130, 246, 0.6);
             transition: all 0.4s ease;
         }
         .btn-2011-hero:hover:not(.locked) {
-            background: #fff;
-            color: #1d4ed8;
-            transform: translateY(-5px) scale(1.05);
+            background: #fff; color: #1d4ed8; transform: translateY(-5px) scale(1.05);
         }
         
         .btn-2011-hero.locked {
-            opacity: 0.65;
-            filter: grayscale(80%);
-            pointer-events: none;
-            user-select: none;
-            box-shadow: none;
-            cursor: not-allowed;
+            opacity: 0.65; filter: grayscale(80%);
+            pointer-events: none; user-select: none;
+            box-shadow: none; cursor: not-allowed;
         }
 
         .countdown {
-            margin-top: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #93c5fd;
-            letter-spacing: 1px;
+            margin-top: 10px; font-size: 14px; font-weight: 600;
+            color: #93c5fd; letter-spacing: 1px;
             text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
-            font-family: monospace;
-            transition: opacity 0.5s;
-            background: rgba(0,0,0,0.6);
-            padding: 5px 15px;
-            border-radius: 15px;
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            font-family: monospace; transition: opacity 0.5s;
+            background: rgba(0,0,0,0.6); padding: 5px 15px;
+            border-radius: 15px; border: 1px solid rgba(59, 130, 246, 0.3);
         }
         .countdown.hidden { opacity: 0; pointer-events: none; }
 
@@ -198,8 +180,8 @@
         .modal form { display: flex; flex-direction: column; gap: 14px; }
         .modal input {
             width: 100%; padding: 14px 18px; background: #1a1a1a;
-            border: 1px solid #2a2a2a; border-radius: 12px;
-            color: #fff; font-size: 15px; outline: none; transition: 0.3s;
+:            border:  1px solid #2a2a2a; border-radius: 12px;
+            color: #fff; font-size15px; outline: none; transition: 0.3s;
         }
         .modal input:focus { border-color: #FFC400; background: #1e1e1e; }
         .modal input::placeholder { color: #666; }
@@ -688,6 +670,7 @@
         let USERS_CACHE = [];
         let PROFILES_CACHE = {};
         let realtimeChannel = null;
+        let countdownInterval = null;
 
         /* ============ HELPER ============ */
         function hashPass(pass) {
@@ -740,7 +723,7 @@
                     displayName: u.display_name || u.username,
                     bio: u.bio || '',
                     avatarUrl: u.avatar_url || '',
-                    canPreview2011: u.can_preview_2011 || false // THÊM DÒNG NÀY
+                    canPreview2011: u.can_preview_2011 === true
                 };
             });
         }
@@ -1063,7 +1046,9 @@
                 userAvatar.innerHTML = 'A';
                 btnAdmin.classList.remove('show');
             }
-            startCountdown2011(); // Cập nhật lại nút 20/11 khi user thay đổi
+            
+            // Cập nhật lại trạng thái nút 20/11
+            startCountdown2011();
         }
 
         /* ============ MODAL AUTH ============ */
@@ -1329,10 +1314,10 @@
             const el = document.getElementById('adminRoleInfo');
             if (role === 'admin') {
                 el.className = 'admin-role-info';
-                el.innerHTML = '👑 Bạn là <strong>ADMIN duy nhất</strong> — có thể cấp: MEMBER, VIP, MOD, DEV. Hệ thống không cho phép cấp thêm ADMIN.';
+                el.innerHTML = '👑 Bạn là <strong>ADMIN duy nhất</strong> — có thể cấp: MEMBER, VIP, MOD, DEV và quyền Xem trước 20/11.';
             } else if (role === 'dev') {
                 el.className = 'admin-role-info dev-info';
-                el.innerHTML = '💻 Bạn đang đăng nhập với quyền <strong>DEV</strong> — có thể cấp: MEMBER, VIP, MOD.';
+                el.innerHTML = '💻 Bạn đang đăng nhập với quyền <strong>DEV</strong> — có thể cấp: MEMBER, VIP, MOD và quyền Xem trước 20/11.';
             }
         }
 
@@ -1383,7 +1368,9 @@
                 const avatarUrl = profile.avatarUrl || u.avatar_url || '';
                 const title = (u.title || '').toUpperCase().trim();
                 const isMe = u.username === session.username;
-                const canPreview = u.can_preview_2011 || false; // Lấy từ data gốc
+                
+                // Lấy trực tiếp từ dữ liệu mới nhất của Supabase
+                const canPreview = u.can_preview_2011 === true; 
 
                 let canEdit = true;
                 let disabledReason = '';
@@ -1500,10 +1487,12 @@
                 return;
             }
 
+            // Tải lại data từ server ngay lập tức
             await loadUsersFromServer();
+            
             showToast(`✅ Đã ${isChecked ? 'bật' : 'tắt'} quyền xem trước 20/11 cho ${targetUsername}`, 'success');
             
-            // Cập nhật lại trạng thái nút 20/11 nếu người đang đăng nhập là targetUsername
+            // Cập nhật lại trạng thái nút
             startCountdown2011();
         }
 
@@ -1801,40 +1790,32 @@
             }, 3000);
         }
 
-        /* ============ XỬ LÝ CLICK NÚT (CHUNG CHO CẢ 3 NÚT) ============ */
+        /* ============ XỬ LÝ CLICK NÚT ============ */
         function checkLoginAndAction(event, action) {
             const btn = event.currentTarget;
 
-            // 1. Nếu nút đang bị khóa (như nút 20/11 chưa tới ngày) thì chặn
             if (btn.classList.contains('locked')) {
                 event.preventDefault();
                 return false;
             }
 
-            // 2. Kiểm tra đăng nhập
             const session = getSession();
             if (!session) {
-                // Chưa đăng nhập
                 event.preventDefault();
                 showToast('🔒 Vui lòng đăng nhập để sử dụng tính năng này!', 'error');
                 openAuth('login');
                 return false;
             }
 
-            // 3. Đã đăng nhập -> Xử lý theo hành động
             if (action === 'app') {
-                // Mở app Free Fire (delay 1s để không bị chặn popup)
                 setTimeout(() => { window.location.href = 'https://ff.garena.vn/'; }, 1000);
-                return true; // Cho phép href="freefire://" chạy
+                return true;
             }
 
-            // Nếu là URL (như 20-10.html hay 20-11.html) thì để mặc định chạy
             return true;
         }
 
-        /* ============ COUNTDOWN 20/11 ============ */
-        let countdownInterval = null;
-
+        /* ============ COUNTDOWN & QUYỀN 20/11 ============ */
         function startCountdown2011() {
             const btn = document.getElementById('btn2011');
             const cd = document.getElementById('countdown2011');
@@ -1846,21 +1827,24 @@
             let targetYear = now.getFullYear();
             let targetDate = new Date(`November 20, ${targetYear} 00:00:00`);
 
-            // Kiểm tra xem user hiện tại có quyền xem trước không
             const session = getSession();
             let hasPreview = false;
+            
             if (session) {
                 const profile = getProfile(session.username);
                 const role = getCurrentUserRole();
-                hasPreview = profile.canPreview2011 || role === 'admin' || role === 'dev';
+                
+                // Điều kiện: Admin, Dev HOẶC được tích ô xem trước
+                hasPreview = (profile.canPreview2011 === true) || role === 'admin' || role === 'dev';
             }
 
-            // Nếu đã qua ngày 20/11 HOẶC có quyền xem trước -> Mở khóa ngay
+            // Nếu đã qua ngày 20/11 HOẶC có quyền xem trước
             if (now > targetDate || hasPreview) {
                 btn.classList.remove('locked');
                 cd.classList.add('hidden');
+                
                 if (hasPreview && now <= targetDate) {
-                    cd.textContent = "Đã mở khóa xem trước!";
+                    cd.textContent = "🔓 Đã mở khóa xem trước!";
                     cd.classList.remove('hidden');
                     cd.style.color = "#22c55e";
                     cd.style.borderColor = "rgba(34, 197, 94, 0.3)";
@@ -1868,7 +1852,7 @@
                 return;
             }
 
-            // Nếu chưa tới ngày và không có quyền -> Hiển thị đếm ngược
+            // Nếu không có quyền -> Khóa và đếm ngược
             btn.classList.add('locked');
             cd.classList.remove('hidden');
             cd.style.color = "";
@@ -1900,6 +1884,13 @@
             updateUI();
             setupMessageInput();
             startCountdown2011();
+            
+            // TỰ ĐỘNG ĐỒNG BỘ MỖI 10 GIÂY
+            // (Giúp cập nhật quyền bị tắt/bật từ xa mà không cần F5)
+            setInterval(async () => {
+                await loadUsersFromServer();
+                updateUI();
+            }, 10000);
         }
         init();
     </script>
