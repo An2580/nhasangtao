@@ -12,6 +12,7 @@
         html { scroll-behavior: smooth; scroll-padding-top: 80px; }
         body { background: #080808; color: white; overflow-x: hidden; }
 
+        /* ================= HEADER ================= */
         header {
             position: fixed; top: 0; left: 0; width: 100%; padding: 12px 8%;
             background: rgba(8, 8, 8, 0.9); backdrop-filter: blur(12px);
@@ -68,7 +69,6 @@
             font-weight: 600; cursor: pointer; transition: 0.3s;
         }
         .btn-profile:hover { background: #FFC400; color: #080808; }
-        
         .btn-admin {
             padding: 8px 16px;
             background: linear-gradient(135deg, #ef4444, #b91c1c);
@@ -84,6 +84,7 @@
             50% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.9); }
         }
 
+        /* ================= HERO ================= */
         .hero {
             min-height: 100vh; display: flex; justify-content: center; align-items: center;
             text-align: center; padding: 100px 20px; position: relative;
@@ -149,6 +150,7 @@
         }
         .countdown.hidden { opacity: 0; pointer-events: none; }
 
+        /* ================= MODAL ================= */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center;
@@ -212,6 +214,7 @@
         .divider::after { margin-left: 10px; }
         .google-btn-container { display: flex; justify-content: center; margin-top: 10px; }
 
+        /* ================= MESSAGES ================= */
         .msg-modal { max-width: 520px; padding: 25px; }
         .msg-header { display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #222; }
@@ -287,6 +290,7 @@
             cursor: pointer; height: 44px; flex-shrink: 0; }
         .msg-input-area > button:hover { background: #fff; color: #FFC400; }
 
+        /* ================= PROFILE ================= */
         .profile-modal { max-width: 480px; padding: 30px; }
         .profile-header { display: flex; align-items: center; gap: 20px;
             padding-bottom: 20px; border-bottom: 1px solid #222; margin-bottom: 20px; }
@@ -346,6 +350,7 @@
         .btn-cancel { background: #2a2a2a; color: #aaa; }
         .btn-cancel:hover { background: #333; color: #fff; }
 
+        /* ================= TOAST ================= */
         .toast {
             position: fixed; top: 100px; right: 30px;
             background: #121212; border-left: 4px solid #FFC400;
@@ -365,6 +370,45 @@
 
         footer { padding: 30px; text-align: center; background: #040404; color: #666; border-top: 1px solid #FFC400; }
 
+        /* ================= AI CHAT WIDGET ================= */
+        .ai-chat-btn {
+            position: fixed; bottom: 30px; right: 30px;
+            width: 65px; height: 65px; border-radius: 50%;
+            background: linear-gradient(135deg, #10a37f, #0d8a6a);
+            display: flex; justify-content: center; align-items: center;
+            font-size: 32px; color: white; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(16, 163, 127, 0.5);
+            z-index: 9999; transition: all 0.3s ease;
+            animation: floatAIBtn 3s ease-in-out infinite;
+        }
+        .ai-chat-btn:hover { transform: scale(1.1) translateY(-5px); box-shadow: 0 8px 25px rgba(16, 163, 127, 0.8); }
+        @keyframes floatAIBtn { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        .ai-chat-box {
+            position: fixed; bottom: 100px; right: 30px;
+            width: 350px; height: 450px; background: #111;
+            border: 1px solid rgba(16, 163, 127, 0.4);
+            border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            display: none; flex-direction: column; z-index: 9998;
+            overflow: hidden; animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .ai-header { background: rgba(16, 163, 127, 0.1); padding: 15px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; }
+        .ai-header h3 { color: #10a37f; font-size: 16px; margin: 0; }
+        .ai-close { background: none; border: none; color: #888; font-size: 20px; cursor: pointer; }
+        
+        .ai-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .ai-msg { padding: 10px 14px; border-radius: 12px; font-size: 14px; line-height: 1.5; max-width: 85%; }
+        .ai-msg.bot { background: #1a1a1a; color: #eee; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .ai-msg.user { background: #10a37f; color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .ai-msg.loading { color: #888; font-style: italic; }
+
+        .ai-input-area { padding: 15px; border-top: 1px solid #222; display: flex; gap: 10px; }
+        .ai-input-area input { flex: 1; padding: 10px 15px; border-radius: 20px; background: #1a1a1a; border: 1px solid #333; color: white; outline: none; }
+        .ai-input-area input:focus { border-color: #10a37f; }
+        .ai-input-area button { padding: 10px 15px; background: #10a37f; color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; }
+
         @media (max-width: 700px) {
             .hero-content h1 { font-size: 50px; }
             .hero-content p { font-size: 16px; white-space: normal; animation: none; border: none; }
@@ -379,6 +423,8 @@
             .msg-container { height: 300px; }
             .btn-2010-hero, .btn-2011-hero { font-size: 15px; padding: 13px 28px; }
             .profile-info h3 { font-size: 20px; }
+            .ai-chat-btn { width: 55px; height: 55px; font-size: 26px; bottom: 20px; right: 20px; }
+            .ai-chat-box { width: calc(100% - 40px); right: 20px; bottom: 90px; height: 400px; }
         }
     </style>
 </head>
@@ -398,7 +444,6 @@
                 <span class="user-name" id="userName">User</span>
                 <button class="btn-msg" onclick="openMsg()">✉️ Chat</button>
                 <button class="btn-profile" onclick="openProfile()">👤 Hồ sơ</button>
-                <!-- NÚT QUẢN TRỊ ĐÃ ĐƯỢC CHUYỂN HƯỚNG SANG ADMIN.HTML -->
                 <button class="btn-admin" id="btnAdmin" onclick="window.location.href='admin.html'">⚙️ Quản trị</button>
                 <button class="btn-logout" onclick="logout()">Đăng xuất</button>
             </div>
@@ -431,6 +476,23 @@
     </section>
 
     <footer>© 2026 An Gờ | Free Fire Content Creator</footer>
+
+    <!-- NÚT AI & KHUNG CHAT AI -->
+    <div class="ai-chat-btn" onclick="toggleAIChat()">🤖</div>
+    
+    <div class="ai-chat-box" id="aiChatBox">
+        <div class="ai-header">
+            <h3>🤖 Trợ lý AI An Gờ</h3>
+            <button class="ai-close" onclick="toggleAIChat()">×</button>
+        </div>
+        <div class="ai-messages" id="aiMessages">
+            <div class="ai-msg bot">Chào bạn! Mình là AI được tích hợp trên web An Gờ. Bạn cần hỏi gì về Free Fire hay về trang web này không?</div>
+        </div>
+        <div class="ai-input-area">
+            <input type="text" id="aiInput" placeholder="Nhập câu hỏi..." onkeypress="if(event.key === 'Enter') sendToAI()">
+            <button onclick="sendToAI()">Gửi</button>
+        </div>
+    </div>
 
     <!-- MODAL AUTH -->
     <div class="modal-overlay" id="authModal">
@@ -1475,11 +1537,9 @@
                 const profile = getProfile(session.username);
                 const role = getCurrentUserRole();
                 
-                // Điều kiện: Admin, Dev HOẶC được tích ô xem trước
                 hasPreview = (profile.canPreview2011 === true) || role === 'admin' || role === 'dev';
             }
 
-            // Nếu đã qua ngày 20/11 HOẶC có quyền xem trước
             if (now > targetDate || hasPreview) {
                 btn.classList.remove('locked');
                 cd.classList.add('hidden');
@@ -1493,7 +1553,6 @@
                 return;
             }
 
-            // Nếu không có quyền -> Khóa và đếm ngược
             btn.classList.add('locked');
             cd.classList.remove('hidden');
             cd.style.color = "";
@@ -1526,13 +1585,73 @@
             setupMessageInput();
             startCountdown2011();
             
-            // TỰ ĐỘNG ĐỒNG BỘ MỖI 10 GIÂY
             setInterval(async () => {
                 await loadUsersFromServer();
                 updateUI();
             }, 10000);
         }
         init();
+
+        /* ============ XỬ LÝ AI CHAT ============ */
+        function toggleAIChat() {
+            const box = document.getElementById('aiChatBox');
+            if (box.style.display === 'flex') {
+                box.style.display = 'none';
+            } else {
+                box.style.display = 'flex';
+                document.getElementById('aiInput').focus();
+            }
+        }
+
+        async function sendToAI() {
+            const input = document.getElementById('aiInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            appendAIMsg(text, 'user');
+            input.value = '';
+            const loadingId = appendAIMsg('Đang suy nghĩ...', 'bot loading');
+
+            // API KEY CỦA BẠN ĐÃ ĐƯỢC DÁN VÀO ĐÂY
+            const API_KEY = "AQ.Ab8RN6IKligo7HKWrUPGgZapuBWWATiUWbWXAbzzGQb55tu72w"; 
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: text }] }]
+                    })
+                });
+
+                const data = await response.json();
+                document.getElementById(loadingId).remove();
+
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    const botReply = data.candidates[0].content.parts[0].text;
+                    appendAIMsg(botReply, 'bot');
+                } else {
+                    appendAIMsg('❌ Có lỗi xảy ra hoặc AI bị quá tải. Bạn thử lại sau nhé!', 'bot');
+                }
+
+            } catch (error) {
+                document.getElementById(loadingId).remove();
+                appendAIMsg('❌ Không thể kết nối đến AI. Vui lòng kiểm tra mạng!', 'bot');
+                console.error(error);
+            }
+        }
+
+        function appendAIMsg(text, type) {
+            const container = document.getElementById('aiMessages');
+            const div = document.createElement('div');
+            div.className = `ai-msg ${type}`;
+            div.id = 'msg_' + Date.now();
+            div.innerHTML = text.replace(/\n/g, '<br>');
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+            return div.id;
+        }
     </script>
 </body>
 </html>
