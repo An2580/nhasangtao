@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | An Gờ</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #0a0a0a; color: white; display: flex; min-height: 100vh; }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px; background: #111; border-right: 1px solid #222;
+            display: flex; flex-direction: column; padding: 20px 0;
+            position: fixed; height: 100vh; z-index: 10;
+        }
+        .sidebar-logo { padding: 0 20px 20px; border-bottom: 1px solid #222; text-align: center; }
+        .sidebar-logo img { height: 40px; filter: drop-shadow(0 0 6px rgba(255, 196, 0, 0.6)); }
+        .sidebar-logo span { display: block; color: #FFC400; font-weight: bold; font-size: 18px; margin-top: 10px; }
+        
+        .nav-item {
+            padding: 15px 20px; color: #aaa; text-decoration: none; font-weight: 600;
+            display: flex; align-items: center; gap: 10px; transition: 0.3s; cursor: pointer;
+        }
+        .nav-item:hover, .nav-item.active { background: rgba(255, 196, 0, 0.1); color: #FFC400; border-left: 3px solid #FFC400; }
+        
+        .sidebar-bottom { margin-top: auto; padding: 20px; border-top: 1px solid #222; }
+        .btn-logout {
+            width: 100%; padding: 12px; background: transparent; color: #ef4444;
+            border: 1px solid #ef4444; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .btn-logout:hover { background: #ef4444; color: white; }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px; flex: 1; padding: 30px; width: calc(100% - 260px);
+        }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header h1 { font-size: 28px; color: #fff; }
+        .header .user-info { display: flex; align-items: center; gap: 10px; background: #1a1a1a; padding: 8px 15px; border-radius: 20px; border: 1px solid #333; }
+        .header .user-info img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
+
+        /* Stats */
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: #111; border: 1px solid #222; border-radius: 15px; padding: 20px; text-align: center; }
+        .stat-card .num { font-size: 28px; font-weight: 900; color: #FFC400; }
+        .stat-card .lbl { font-size: 13px; color: #888; margin-top: 5px; }
+
+        /* User Table/List */
+        .panel { background: #111; border: 1px solid #222; border-radius: 15px; padding: 20px; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .panel-header h2 { font-size: 20px; color: #FFC400; }
+        
+        .search-box {
+            padding: 10px 15px; background: #1a1a1a; border: 1px solid #333;
+            border-radius: 10px; color: white; width: 250px; outline: none;
+        }
+        .search-box:focus { border-color: #FFC400; }
+
+        .user-list { display: flex; flex-direction: column; gap: 15px; }
+        .user-item {
+            display: flex; align-items: center; gap: 15px; background: #1a1a1a;
+            padding: 15px; border-radius: 12px; border: 1px solid #2a2a2a; flex-wrap: wrap;
+        }
+        .user-item:hover { border-color: #444; }
+        .u-avatar { width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #FFC400, #FF8C00); display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; overflow: hidden; flex-shrink: 0; }
+        .u-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .u-info { flex: 1; min-width: 200px; }
+        .u-info .u-name { font-weight: bold; font-size: 16px; display: flex; align-items: center; gap: 8px; }
+        .u-info .u-email { color: #888; font-size: 13px; margin-top: 4px; }
+        
+        .title-badge {
+            display: inline-block; font-size: 10px; font-weight: 900; padding: 2px 8px; border-radius: 6px; text-transform: uppercase;
+        }
+        .title-badge.admin { background: #ef4444; color: #fff; }
+        .title-badge.dev { background: #a855f7; color: #fff; }
+        .title-badge.vip { background: #22c55e; color: #fff; }
+        .title-badge.mod { background: #3b82f6; color: #fff; }
+        .title-badge.member, .title-badge.user { background: #6b7280; color: #fff; }
+
+        .u-actions { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+        
+        .select-role {
+            padding: 10px 15px; background: #0a0a0a; border: 1px solid #333;
+            border-radius: 10px; color: white; font-weight: bold; cursor: pointer; outline: none;
+        }
+        .select-role:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .toggle-preview {
+            display: flex; align-items: center; gap: 8px; cursor: pointer;
+            background: rgba(59, 130, 246, 0.1); padding: 10px 15px; border-radius: 10px; border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        .toggle-preview input { width: 18px; height: 18px; accent-color: #3b82f6; cursor: pointer; }
+        .toggle-preview label { font-size: 13px; color: #93c5fd; font-weight: bold; cursor: pointer; user-select: none; }
+
+        /* Toast */
+        .toast {
+            position: fixed; top: 20px; right: 20px; background: #111; border-left: 4px solid #FFC400;
+            padding: 15px 25px; border-radius: 10px; color: white; font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); transform: translateX(150%); transition: 0.5s; z-index: 1000;
+        }
+        .toast.show { transform: translateX(0); }
+        .toast.success { border-left-color: #22c55e; }
+        .toast.error { border-left-color: #ef4444; }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; align-items: center; justify-content: space-between; padding: 10px 20px; }
+            .sidebar-logo { padding: 0; border: none; display: flex; align-items: center; gap: 10px; }
+            .sidebar-logo span { margin: 0; font-size: 16px; }
+            .sidebar-logo img { height: 30px; }
+            .sidebar nav { display: none; }
+            .sidebar-bottom { margin: 0; padding: 0; border: none; }
+            .main-content { margin-left: 0; width: 100%; padding: 20px; }
+            .panel-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .search-box { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="https://cdn.vn.garenanow.com/web/ddt/ffugc/images/logo.png" alt="FF">
+            <span>Admin Panel</span>
+        </div>
+        <nav style="margin-top: 20px;">
+            <a href="#" class="nav-item active">📊 Quản lý Thành viên</a>
+            <a href="index.html" class="nav-item">🏠 Về Trang chủ</a>
+        </nav>
+        <div class="sidebar-bottom">
+            <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Bảng Điều Khiển</h1>
+            <div class="user-info" id="headerUser"></div>
+        </div>
+
+        <div class="stats" id="statsContainer"></div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <h2>Danh sách Thành viên</h2>
+                <input type="text" class="search-box" id="searchInput" placeholder="🔍 Tìm tên hoặc email..." oninput="renderUsers()">
+            </div>
+            <div class="user-list" id="userList"></div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const SUPABASE_URL = "https://fnthhoxyobcqnbsnqazy.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_zF5aZXKbAc054Ky2N8Wwnw_LXOq2jHt";
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const SESSION_KEY = 'angff_session';
+
+        let USERS_CACHE = [];
+        let PROFILES_CACHE = {};
+
+        function getSession() {
+            const s = localStorage.getItem(SESSION_KEY);
+            return s ? JSON.parse(s) : null;
+        }
+
+        function getTitleClass(title) {
+            if (!title) return '';
+            const t = title.toUpperCase().trim();
+            if (t === 'ADMIN') return 'admin';
+            if (t === 'DEV' || t === 'DEVELOPER') return 'dev';
+            if (t === 'VIP') return 'vip';
+            if (t === 'MOD' || t === 'MODERATOR') return 'mod';
+            return 'member';
+        }
+
+        function getProfile(username) { return PROFILES_CACHE[username] || {}; }
+        function escapeHtml(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+
+        // Xác thực quyền Admin
+        function checkAuth() {
+            const session = getSession();
+            if (!session) {
+                window.location.href = 'index.html';
+                return false;
+            }
+            const profile = PROFILES_CACHE[session.username];
+            const role = (profile?.title || '').toUpperCase().trim();
+            if (role !== 'ADMIN' && role !== 'DEV') {
+                alert('Bạn không có quyền truy cập trang này!');
+                window.location.href = 'index.html';
+                return false;
+            }
+
+            // Hiển thị user đang đăng nhập
+            const avatar = profile.avatarUrl || session.avatar || '';
+            const avatarHTML = avatar ? `<img src="${avatar}">` : `<span style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:#FFC400;border-radius:50%;color:#000;font-weight:bold;">${session.username.charAt(0).toUpperCase()}</span>`;
+            document.getElementById('headerUser').innerHTML = `
+                ${avatarHTML}
+                <span style="font-weight:bold;">${session.username}</span>
+                <span class="title-badge ${getTitleClass(role)}">${role}</span>
+            `;
+            return true;
+        }
+
+        async function loadData() {
+            const { data, error } = await supabaseClient.from('users').select('*').order('created_at', { ascending: true });
+            if (error) { console.error(error); return; }
+            
+            USERS_CACHE = data || [];
+            PROFILES_CACHE = {};
+            USERS_CACHE.forEach(u => {
+                PROFILES_CACHE[u.username] = {
+                    title: u.title || '',
+                    displayName: u.display_name || u.username,
+                    avatarUrl: u.avatar_url || '',
+                    canPreview2011: u.can_preview_2011 === true
+                };
+            });
+
+            if (checkAuth()) {
+                renderStats();
+                renderUsers();
+            }
+        }
+
+        function renderStats() {
+            let admin=0, dev=0, mod=0, vip=0, member=0;
+            USERS_CACHE.forEach(u => {
+                const t = (u.title || '').toUpperCase().trim();
+                if(t==='ADMIN') admin++;
+                else if(t==='DEV') dev++;
+                else if(t==='MOD') mod++;
+                else if(t==='VIP') vip++;
+                else member++;
+            });
+            document.getElementById('statsContainer').innerHTML = `
+                <div class="stat-card"><div class="num">${USERS_CACHE.length}</div><div class="lbl">Tổng User</div></div>
+                <div class="stat-card"><div class="num" style="color:#ef4444">${admin}</div><div class="lbl">Admin</div></div>
+                <div class="stat-card"><div class="num" style="color:#a855f7">${dev}</div><div class="lbl">Dev</div></div>
+                <div class="stat-card"><div class="num" style="color:#3b82f6">${mod}</div><div class="lbl">Mod</div></div>
+                <div class="stat-card"><div class="num" style="color:#22c55e">${vip}</div><div class="lbl">VIP</div></div>
+            `;
+        }
+
+        function renderUsers() {
+            const container = document.getElementById('userList');
+            const search = document.getElementById('searchInput').value.toLowerCase().trim();
+            const session = getSession();
+            const myRole = (getProfile(session.username)?.title || '').toUpperCase().trim();
+
+            const filtered = USERS_CACHE.filter(u => !search || u.username.toLowerCase().includes(search) || u.email.toLowerCase().includes(search));
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<p style="text-align:center; color:#666; padding:20px;">Không tìm thấy user nào.</p>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            filtered.forEach(u => {
+                const p = getProfile(u.username);
+                const title = (u.title || '').toUpperCase().trim();
+                const isMe = u.username === session.username;
+                const canPreview = u.can_preview_2011 === true;
+
+                let canEdit = true;
+                let reason = '';
+                if (isMe) { canEdit = false; reason = 'Không thể tự đổi quyền'; }
+                else if (title === 'ADMIN') { canEdit = false; reason = 'Không thể đổi quyền Admin gốc'; }
+                else if (myRole === 'DEV') {
+                    if (title === 'DEV') { canEdit = false; reason = 'Dev không thể đổi quyền Dev khác'; }
+                }
+
+                const avatarHTML = p.avatarUrl ? `<img src="${p.avatarUrl}" onerror="this.parentElement.textContent='${u.username.charAt(0).toUpperCase()}'">` : u.username.charAt(0).toUpperCase();
+                const badgeHTML = title ? `<span class="title-badge ${getTitleClass(title)}">${title}</span>` : `<span class="title-badge member">CHƯA CẤP</span>`;
+
+                let options = `<option value="">— Không cấp —</option>
+                               <option value="MEMBER" ${title==='MEMBER'?'selected':''}>MEMBER</option>
+                               <option value="VIP" ${title==='VIP'?'selected':''}>VIP</option>
+                               <option value="MOD" ${title==='MOD'?'selected':''}>MOD</option>`;
+                if (myRole === 'ADMIN') {
+                    options += `<option value="DEV" ${title==='DEV'?'selected':''}>DEV</option>`;
+                }
+
+                const previewToggle = (!isMe && title !== 'ADMIN') ? `
+                    <div class="toggle-preview" title="Cấp quyền xem trước 20/11">
+                        <input type="checkbox" id="prev_${u.username}" ${canPreview ? 'checked' : ''} onchange="togglePreview('${u.username}', this.checked)">
+                        <label for="prev_${u.username}">Xem trước 20/11</label>
+                    </div>
+                ` : '';
+
+                container.innerHTML += `
+                    <div class="user-item">
+                        <div class="u-avatar">${avatarHTML}</div>
+                        <div class="u-info">
+                            <div class="u-name">${escapeHtml(p.displayName)} ${badgeHTML} ${isMe ? '<span style="color:#888;font-size:12px;">(Bạn)</span>' : ''}</div>
+                            <div class="u-email">@${escapeHtml(u.username)} • ${escapeHtml(u.email)}</div>
+                        </div>
+                        <div class="u-actions">
+                            <select class="select-role" ${!canEdit ? 'disabled title="'+reason+'"' : ''} onchange="changeRole('${u.username}', this.value)">
+                                ${options}
+                            </select>
+                            ${previewToggle}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        async function changeRole(username, newRole) {
+            const { error } = await supabaseClient.from('users').update({ title: newRole }).eq('username', username);
+            if (error) { showToast('❌ Lỗi đổi quyền!', 'error'); return; }
+            showToast('✅ Đã cập nhật quyền!', 'success');
+            await loadData();
+        }
+
+        async function togglePreview(username, isChecked) {
+            const { error } = await supabaseClient.from('users').update({ can_preview_2011: isChecked }).eq('username', username);
+            if (error) { showToast('❌ Lỗi cấp quyền!', 'error'); return; }
+            showToast(`✅ Đã ${isChecked ? 'bật' : 'tắt'} quyền xem trước 20/11!`, 'success');
+            await loadData();
+        }
+
+        function logout() {
+            localStorage.removeItem(SESSION_KEY);
+            window.location.href = 'index.html';
+        }
+
+        const toast = document.getElementById('toast');
+        function showToast(msg, type) {
+            toast.textContent = msg;
+            toast.className = 'toast show ' + type;
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Tự động tải lại data mỗi 10s
+        loadData();
+        setInterval(loadData, 10000);
+    </script>
+</body>
+</html>
