@@ -423,7 +423,7 @@
                 <div class="user-avatar" id="userAvatar" onclick="openProfile()">A</div>
                 <span class="user-name" id="userName">User</span>
                 <!-- Nút Đổi Tên Thành Thông Báo -->
-                <button class="btn-msg" onclick="openMsg()">🔔 Thông báo</button>
+                <button class="btn-msg" onclick="openMsg()">📢 Thông báo</button>
                 <!-- Nút Nhắn Tin Riêng -->
                 <button class="btn-pm" onclick="openPmList()">💬 Tin nhắn riêng</button>
                 
@@ -511,16 +511,16 @@
     <div class="modal-overlay" id="msgModal">
         <div class="modal msg-modal">
             <div class="msg-header">
-                <h2>🔔 Thông báo cộng đồng</h2>
+                <h2>📢 Thông báo từ BQT</h2>
                 <button class="modal-close" onclick="closeMsg()" style="position: static; font-size: 24px;">×</button>
             </div>
             <div class="msg-container" id="msgContainer">
                 <p style="text-align: center; color: #666; font-size: 14px; margin-top: 20px;">Đang tải thông báo...</p>
             </div>
-            <form class="msg-input-area" onsubmit="sendMessage(event)">
+            <form class="msg-input-area" id="msgForm" onsubmit="sendMessage(event)">
                 <div class="msg-input-wrapper">
                     <div class="mention-suggest" id="mentionSuggest"></div>
-                    <textarea id="msgInput" placeholder="Nhập tin nhắn... (gõ @ để tag)" rows="1"></textarea>
+                    <textarea id="msgInput" placeholder="Nhập thông báo..." rows="1"></textarea>
                 </div>
                 <button type="submit">Gửi</button>
             </form>
@@ -1203,10 +1203,20 @@
 
         /* ============ THÔNG BÁO (CHAT CỘNG ĐỒNG) ============ */
         const msgModal = document.getElementById('msgModal');
+        const msgForm = document.getElementById('msgForm');
 
         function openMsg() {
             msgModal.classList.add('active');
             document.body.style.overflow = 'hidden';
+            
+            // CHỈ ADMIN VÀ DEV MỚI ĐƯỢC THẤY Ô NHẬP
+            const role = getCurrentUserRole();
+            if (role === 'admin' || role === 'dev') {
+                msgForm.style.display = 'flex';
+            } else {
+                msgForm.style.display = 'none';
+            }
+
             loadMessages();
             startRealtime();
         }
@@ -1457,6 +1467,14 @@
 
         async function sendMessage(event) {
             if (event) event.preventDefault();
+            
+            // KIỂM TRA QUYỀN GỬI
+            const role = getCurrentUserRole();
+            if (role !== 'admin' && role !== 'dev') {
+                showToast('❌ Chỉ Admin và Dev mới có quyền gửi thông báo!', 'error');
+                return;
+            }
+
             const input = document.getElementById('msgInput');
             const text = input.value.trim();
             if (!text) return;
