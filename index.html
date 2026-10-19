@@ -230,6 +230,10 @@
         .msg-bubble p { font-size: 15px; color: #eee; line-height: 1.4;
             word-break: break-word; white-space: pre-wrap; overflow-wrap: anywhere; }
         .msg-time { font-size: 10px; color: #666; display: block; margin-top: 5px; }
+        
+        /* Nhấn vào tên để mở chat riêng */
+        .clickable-name { cursor: pointer; transition: 0.2s; text-decoration: underline; text-underline-offset: 3px; }
+        .clickable-name:hover { color: #fff; text-shadow: 0 0 10px #FFC400; }
 
         .title-badge {
             display: inline-block; font-size: 9px; font-weight: 900;
@@ -482,7 +486,7 @@
         </div>
     </div>
 
-    <!-- MODAL MESSAGES -->
+    <!-- MODAL MESSAGES (CỘNG ĐỒNG) -->
     <div class="modal-overlay" id="msgModal">
         <div class="modal msg-modal">
             <div class="msg-header">
@@ -497,6 +501,23 @@
                     <div class="mention-suggest" id="mentionSuggest"></div>
                     <textarea id="msgInput" placeholder="Nhập tin nhắn... (gõ @ để tag)" rows="1"></textarea>
                 </div>
+                <button type="submit">Gửi</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL PRIVATE MESSAGES (TIN NHẮN RIÊNG) -->
+    <div class="modal-overlay" id="pmModal">
+        <div class="modal msg-modal">
+            <div class="msg-header">
+                <h2 id="pmHeaderTitle">💬 Chat riêng</h2>
+                <button class="modal-close" onclick="closePrivateChat()" style="position: static; font-size: 24px;">×</button>
+            </div>
+            <div class="msg-container" id="pmContainer">
+                <p style="text-align: center; color: #666; font-size: 14px; margin-top: 20px;">Đang tải tin nhắn...</p>
+            </div>
+            <form class="msg-input-area" onsubmit="sendPrivateMessage(event)">
+                <textarea id="pmInput" placeholder="Nhập tin nhắn riêng..." rows="1"></textarea>
                 <button type="submit">Gửi</button>
             </form>
         </div>
@@ -567,6 +588,10 @@
         let PROFILES_CACHE = {};
         let realtimeChannel = null;
         let countdownInterval = null;
+
+        // Biến cho Chat Riêng
+        let pmRealtimeChannel = null;
+        let currentPmTarget = null;
 
         /* ============ HELPER ============ */
         function hashPass(pass) {
@@ -923,7 +948,7 @@
         }
         authModal.addEventListener('click', e => { if (e.target === authModal) closeAuth(); });
         document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') { closeAuth(); closeMsg(); closeProfile(); }
+            if (e.key === 'Escape') { closeAuth(); closeMsg(); closeProfile(); closePrivateChat(); }
         });
 
         function switchTab(tab) {
@@ -1141,7 +1166,7 @@
             showToast('✅ Đã lưu hồ sơ!', 'success');
         }
 
-        /* ============ CHAT ============ */
+        /* ============ CHAT CỘNG ĐỒNG ============ */
         const msgModal = document.getElementById('msgModal');
 
         function openMsg() {
@@ -1227,9 +1252,14 @@
                 : '';
 
             const textHtml = renderMentions(m.text, session ? session.username : '');
+            
+            // Tên người gửi có thể click để chat riêng (nếu không phải là mình)
+            const nameHtml = isMine 
+                ? escapeHtml(m.username) 
+                : `<span class="clickable-name" onclick="openPrivateChat('${m.username}')" title="Nhắn tin riêng cho ${m.username}">${escapeHtml(m.username)}</span>`;
 
             bubble.innerHTML = `
-                <strong>${avatarHtml}${escapeHtml(m.username)}${badgeHtml}</strong>
+                <strong>${avatarHtml}${nameHtml}${badgeHtml}</strong>
                 <p>${textHtml}</p>
                 <span class="msg-time">${time}</span>
             `;
@@ -1420,6 +1450,158 @@
 
             if (error) {
                 console.error('Lỗi gửi tin nhắn:', error);
+                showToast('❌ Không gửi được tin nhắn!', 'error');
+            }
+        }
+
+        /* ============ TIN NHẮN RIÊNG (PRIVATE MESSAGE) ============ */
+        const pmModal = document.getElementById('pmModal');
+
+        function openPrivateChat(targetUsername) {
+            const session = getSession();
+            if (!session) {
+                showToast('❌ Bạn cần đăng nhập!', 'error');
+                return;
+            }
+            if (session.username === targetUsername) {
+                showToast('❌ Không thể tự nhắn tin cho chính mình!', 'error');
+                return;
+            }
+
+            currentPmTarget = targetUsername;
+            document.getElementById('pmHeaderTitle').innerHTML = `💬 Chat với <span style="color:#FFC400">@${escapeHtml(targetUsername)}</span>`;
+            
+            pmModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            loadPrivateMessages();
+            startPmRealtime();
+        }
+
+        function closePrivateChat() {
+            pmModal.classList.remove('active');
+            document.body.style.overflow = '';
+            currentPmTarget = null;
+            stopPmRealtime();
+        }
+
+        pmModal.addEventListener('click', e => { if (e.target === pmModal) closePrivateChat(); });
+
+        function startPmRealtime() {
+            if (pmRealtimeChannel) return;
+            const session = getSession();
+            if (!session) return;
+
+            pmRealtimeChannel = supabaseClient
+                .channel('public:private_messages')
+                .on('postgres_changes',
+                    { event: 'INSERT', schema: 'public', table: 'private_messages' },
+                    payload => {
+                        const m = payload.new;
+                        // Kiểm tra xem tin nhắn có thuộc phiên chat hiện tại không
+                        if (
+                            (m.sender_username === session.username && m.receiver_username === currentPmTarget) ||
+                            (m.sender_username === currentPmTarget && m.receiver_username === session.username)
+                        ) {
+                            appendPrivateMessage(m);
+                        }
+                    }
+                )
+                .subscribe();
+        }
+
+        function stopPmRealtime() {
+            if (pmRealtimeChannel) {
+                supabaseClient.removeChannel(pmRealtimeChannel);
+                pmRealtimeChannel = null;
+            }
+        }
+
+        async function loadPrivateMessages() {
+            const session = getSession();
+            if (!session || !currentPmTarget) return;
+
+            const container = document.getElementById('pmContainer');
+            container.innerHTML = `<p style="text-align: center; color: #666; font-size: 14px; margin-top: 20px;">Đang tải tin nhắn...</p>`;
+
+            // Lấy tin nhắn giữa 2 người
+            const { data, error } = await supabaseClient
+                .from('private_messages')
+                .select('*')
+                .or(`and(sender_username.eq.${session.username},receiver_username.eq.${currentPmTarget}),and(sender_username.eq.${currentPmTarget},receiver_username.eq.${session.username})`)
+                .order('created_at', { ascending: true })
+                .limit(100);
+
+            if (error) {
+                console.error(error);
+                container.innerHTML = `<p style="text-align: center; color: #ef4444; font-size: 14px; margin-top: 20px;">❌ Lỗi tải tin nhắn riêng.</p>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            if (data.length === 0) {
+                container.innerHTML = `<p style="text-align: center; color: #666; font-size: 14px; margin-top: 20px;">Chưa có tin nhắn nào. Hãy bắt đầu trò chuyện!</p>`;
+                return;
+            }
+
+            data.forEach(m => appendPrivateMessage(m));
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function appendPrivateMessage(m) {
+            const container = document.getElementById('pmContainer');
+            const session = getSession();
+            const isMine = session && m.sender_username === session.username;
+
+            const empty = container.querySelector('p');
+            if (empty && empty.textContent.includes('Chưa có')) empty.remove();
+
+            const bubble = document.createElement('div');
+            bubble.className = 'msg-bubble' + (isMine ? ' mine' : '');
+
+            const time = new Date(m.created_at).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+            
+            // Lấy avatar người gửi
+            const senderProfile = getProfile(m.sender_username);
+            const senderAvatar = senderProfile.avatarUrl || '';
+            const avatarHtml = senderAvatar
+                ? `<img src="${senderAvatar}" style="width:18px;height:18px;border-radius:50%;margin-right:5px;vertical-align:middle;display:inline-block;">`
+                : '';
+
+            bubble.innerHTML = `
+                <strong>${avatarHtml}${escapeHtml(m.sender_username)}</strong>
+                <p>${escapeHtml(m.text)}</p>
+                <span class="msg-time">${time}</span>
+            `;
+            container.appendChild(bubble);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function sendPrivateMessage(event) {
+            if (event) event.preventDefault();
+            const input = document.getElementById('pmInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const session = getSession();
+            if (!session || !currentPmTarget) {
+                showToast('❌ Lỗi phiên chat!', 'error');
+                return;
+            }
+
+            input.value = '';
+            input.style.height = 'auto';
+
+            const { error } = await supabaseClient
+                .from('private_messages')
+                .insert([{
+                    sender_username: session.username,
+                    receiver_username: currentPmTarget,
+                    text: text
+                }]);
+
+            if (error) {
+                console.error('Lỗi gửi tin nhắn riêng:', error);
                 showToast('❌ Không gửi được tin nhắn!', 'error');
             }
         }
