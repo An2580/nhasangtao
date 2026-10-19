@@ -258,9 +258,17 @@
         .title-badge.user { background: linear-gradient(135deg, #6b7280, #4b5563); color: #fff; }
         .title-badge.mod { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: #fff; }
 
-        .mention { color: #FFC400; background: rgba(255, 196, 0, 0.15);
-            padding: 1px 6px; border-radius: 6px; font-weight: 700;
-            border: 1px solid rgba(255, 196, 0, 0.35); cursor: pointer; display: inline-block; }
+        /* SỬA LỖI HIỂN THỊ @ MENTION */
+        .mention { 
+            color: #FFC400; 
+            background: rgba(255, 196, 0, 0.15);
+            padding: 0 4px; 
+            border-radius: 4px; 
+            font-weight: 700;
+            border: 1px solid rgba(255, 196, 0, 0.35); 
+            display: inline; /* Fix lỗi bị đẩy xuống dòng */
+            white-space: nowrap; /* Không cho xuống dòng giữa chừng */
+        }
         .mention:hover { background: rgba(255, 196, 0, 0.35); }
         .mention-me { background: rgba(34, 197, 94, 0.2); color: #22c55e;
             border-color: rgba(34, 197, 94, 0.5); animation: mentionPulse 1.5s ease-in-out infinite; }
@@ -1409,6 +1417,14 @@
 
             const filtered = USERS_CACHE.filter(u => {
                 if (session && u.username === session.username) return false;
+                
+                // LỌC: CHỈ LẤY ADMIN VÀ DEV
+                const profile = getProfile(u.username);
+                const role = (profile.title || '').toUpperCase().trim();
+                const isAdminOrDev = (role === 'ADMIN' || role === 'DEV' || role === 'DEVELOPER');
+                
+                if (!isAdminOrDev) return false; // Loại bỏ user thường, vip, mod...
+
                 if (!query) return true;
                 return u.username.toLowerCase().includes(query);
             }).slice(0, 8);
