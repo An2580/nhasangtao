@@ -57,12 +57,21 @@
             font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.3s;
         }
         .btn-logout:hover { background: #FFC400; color: #080808; }
+        
         .btn-msg {
             padding: 8px 16px; background: #FFC400; color: #080808;
             border: none; border-radius: 20px; font-size: 13px;
             font-weight: 700; cursor: pointer; transition: 0.3s;
         }
         .btn-msg:hover { background: #fff; color: #FFC400; }
+        
+        .btn-pm {
+            padding: 8px 16px; background: transparent; color: #FFC400;
+            border: 1px solid #FFC400; border-radius: 20px; font-size: 13px;
+            font-weight: 600; cursor: pointer; transition: 0.3s;
+        }
+        .btn-pm:hover { background: #FFC400; color: #080808; }
+
         .btn-profile {
             padding: 8px 16px; background: transparent; color: #FFC400;
             border: 1px solid #FFC400; border-radius: 20px; font-size: 13px;
@@ -294,6 +303,14 @@
             cursor: pointer; height: 44px; flex-shrink: 0; }
         .msg-input-area > button:hover { background: #fff; color: #FFC400; }
 
+        /* Danh sách chọn người nhắn tin */
+        .pm-list-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px; background: #1a1a1a; border: 1px solid #2a2a2a;
+            border-radius: 12px; cursor: pointer; transition: 0.2s;
+        }
+        .pm-list-item:hover { background: #222; border-color: #FFC400; }
+        
         /* ================= PROFILE ================= */
         .profile-modal { max-width: 480px; padding: 30px; }
         .profile-header { display: flex; align-items: center; gap: 20px;
@@ -384,7 +401,7 @@
             .user-box { margin-left: 0; gap: 4px; }
             .modal { padding: 35px 25px; }
             .toast { top: 90px; right: 15px; left: 15px; max-width: none; }
-            .btn-msg, .btn-profile, .btn-admin, .btn-logout { padding: 7px 10px; font-size: 11px; }
+            .btn-msg, .btn-pm, .btn-profile, .btn-admin, .btn-logout { padding: 7px 10px; font-size: 11px; }
             .msg-container { height: 300px; }
             .btn-2010-hero, .btn-2011-hero { font-size: 15px; padding: 13px 28px; }
             .profile-info h3 { font-size: 20px; }
@@ -405,7 +422,11 @@
             <div class="user-box" id="userBox">
                 <div class="user-avatar" id="userAvatar" onclick="openProfile()">A</div>
                 <span class="user-name" id="userName">User</span>
-                <button class="btn-msg" onclick="openMsg()">✉️ Chat</button>
+                <!-- Nút Đổi Tên Thành Thông Báo -->
+                <button class="btn-msg" onclick="openMsg()">🔔 Thông báo</button>
+                <!-- Nút Nhắn Tin Riêng -->
+                <button class="btn-pm" onclick="openPmList()">💬 Tin nhắn riêng</button>
+                
                 <button class="btn-profile" onclick="openProfile()">👤 Hồ sơ</button>
                 <button class="btn-admin" id="btnAdmin" onclick="window.location.href='admin.html'">⚙️ Quản trị</button>
                 <button class="btn-logout" onclick="logout()">Đăng xuất</button>
@@ -486,15 +507,15 @@
         </div>
     </div>
 
-    <!-- MODAL MESSAGES (CỘNG ĐỒNG) -->
+    <!-- MODAL THÔNG BÁO (CHAT CỘNG ĐỒNG) -->
     <div class="modal-overlay" id="msgModal">
         <div class="modal msg-modal">
             <div class="msg-header">
-                <h2>✉️ Tin nhắn cộng đồng</h2>
+                <h2>🔔 Thông báo cộng đồng</h2>
                 <button class="modal-close" onclick="closeMsg()" style="position: static; font-size: 24px;">×</button>
             </div>
             <div class="msg-container" id="msgContainer">
-                <p style="text-align: center; color: #666; font-size: 14px; margin-top: 20px;">Đang tải tin nhắn...</p>
+                <p style="text-align: center; color: #666; font-size: 14px; margin-top: 20px;">Đang tải thông báo...</p>
             </div>
             <form class="msg-input-area" onsubmit="sendMessage(event)">
                 <div class="msg-input-wrapper">
@@ -506,7 +527,21 @@
         </div>
     </div>
 
-    <!-- MODAL PRIVATE MESSAGES (TIN NHẮN RIÊNG) -->
+    <!-- MODAL DANH SÁCH TIN NHẮN RIÊNG -->
+    <div class="modal-overlay" id="pmListModal">
+        <div class="modal msg-modal">
+            <div class="msg-header">
+                <h2>💬 Tin nhắn riêng</h2>
+                <button class="modal-close" onclick="closePmList()" style="position: static; font-size: 24px;">×</button>
+            </div>
+            <input type="text" id="pmSearchInput" placeholder="🔍 Tìm người dùng..." oninput="renderPmList()" style="width:100%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #333; background:#1a1a1a; color:white; outline:none;">
+            <div class="msg-container" id="pmListContainer" style="height: 350px; display:flex; flex-direction:column; gap:10px;">
+                <!-- Danh sách user sẽ được render ở đây -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CHAT RIÊNG TƯ -->
     <div class="modal-overlay" id="pmModal">
         <div class="modal msg-modal">
             <div class="msg-header">
@@ -948,7 +983,7 @@
         }
         authModal.addEventListener('click', e => { if (e.target === authModal) closeAuth(); });
         document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') { closeAuth(); closeMsg(); closeProfile(); closePrivateChat(); }
+            if (e.key === 'Escape') { closeAuth(); closeMsg(); closeProfile(); closePrivateChat(); closePmList(); }
         });
 
         function switchTab(tab) {
@@ -1166,7 +1201,7 @@
             showToast('✅ Đã lưu hồ sơ!', 'success');
         }
 
-        /* ============ CHAT CỘNG ĐỒNG ============ */
+        /* ============ THÔNG BÁO (CHAT CỘNG ĐỒNG) ============ */
         const msgModal = document.getElementById('msgModal');
 
         function openMsg() {
@@ -1206,7 +1241,7 @@
 
         async function loadMessages() {
             const container = document.getElementById('msgContainer');
-            container.innerHTML = `<p style="text-align: center; color: #666; font-size: 14px; margin-top: 20px;">Đang tải tin nhắn...</p>`;
+            container.innerHTML = `<p style="text-align: center; color: #666; font-size: 14px; margin-top: 20px;">Đang tải thông báo...</p>`;
 
             const { data, error } = await supabaseClient
                 .from('messages')
@@ -1215,13 +1250,13 @@
                 .limit(100);
 
             if (error) {
-                container.innerHTML = `<p style="text-align: center; color: #ef4444; font-size: 14px; margin-top: 20px;">❌ Không tải được tin nhắn.</p>`;
+                container.innerHTML = `<p style="text-align: center; color: #ef4444; font-size: 14px; margin-top: 20px;">❌ Không tải được thông báo.</p>`;
                 return;
             }
 
             container.innerHTML = '';
             if (data.length === 0) {
-                container.innerHTML = `<p style="text-align: center; color: #666; font-size: 14px; margin-top: 20px;">Chưa có tin nhắn nào. Hãy bắt đầu trò chuyện!</p>`;
+                container.innerHTML = `<p style="text-align: center; color: #666; font-size: 14px; margin-top: 20px;">Chưa có thông báo nào.</p>`;
                 return;
             }
 
@@ -1253,7 +1288,7 @@
 
             const textHtml = renderMentions(m.text, session ? session.username : '');
             
-            // Tên người gửi có thể click để chat riêng (nếu không phải là mình)
+            // Click tên để mở chat riêng
             const nameHtml = isMine 
                 ? escapeHtml(m.username) 
                 : `<span class="clickable-name" onclick="openPrivateChat('${m.username}')" title="Nhắn tin riêng cho ${m.username}">${escapeHtml(m.username)}</span>`;
@@ -1455,18 +1490,73 @@
         }
 
         /* ============ TIN NHẮN RIÊNG (PRIVATE MESSAGE) ============ */
+        const pmListModal = document.getElementById('pmListModal');
         const pmModal = document.getElementById('pmModal');
 
+        // Mở danh sách chọn người
+        function openPmList() {
+            const session = getSession();
+            if (!session) { showToast('❌ Bạn cần đăng nhập!', 'error'); return; }
+            pmListModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            document.getElementById('pmSearchInput').value = '';
+            renderPmList();
+        }
+
+        function closePmList() {
+            pmListModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        pmListModal.addEventListener('click', e => { if (e.target === pmListModal) closePmList(); });
+
+        // Vẽ danh sách user
+        function renderPmList() {
+            const container = document.getElementById('pmListContainer');
+            const search = document.getElementById('pmSearchInput').value.toLowerCase().trim();
+            const session = getSession();
+            if (!session) return;
+
+            const filtered = USERS_CACHE.filter(u => 
+                u.username !== session.username && 
+                (!search || u.username.toLowerCase().includes(search) || (u.display_name || '').toLowerCase().includes(search))
+            );
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#666; padding:20px;">Không tìm thấy ai.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            filtered.forEach(u => {
+                const p = getProfile(u.username);
+                const avatar = p.avatarUrl || '';
+                const avatarHtml = avatar ? `<img src="${avatar}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">` : `<div style="width:40px;height:40px;border-radius:50%;background:#FFC400;color:#000;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0;">${u.username.charAt(0).toUpperCase()}</div>`;
+                
+                const item = document.createElement('div');
+                item.className = 'pm-list-item';
+                item.onclick = () => {
+                    closePmList();
+                    openPrivateChat(u.username);
+                };
+
+                item.innerHTML = `
+                    ${avatarHtml}
+                    <div style="flex:1; min-width:0;">
+                        <div style="font-weight:bold; color:#FFC400; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(p.displayName || u.username)}</div>
+                        <div style="font-size:12px; color:#888; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">@${escapeHtml(u.username)}</div>
+                    </div>
+                    <div style="color:#FFC400; font-size:18px;">💬</div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // Mở chat với 1 người cụ thể
         function openPrivateChat(targetUsername) {
             const session = getSession();
-            if (!session) {
-                showToast('❌ Bạn cần đăng nhập!', 'error');
-                return;
-            }
-            if (session.username === targetUsername) {
-                showToast('❌ Không thể tự nhắn tin cho chính mình!', 'error');
-                return;
-            }
+            if (!session) { showToast('❌ Bạn cần đăng nhập!', 'error'); return; }
+            if (session.username === targetUsername) { showToast('❌ Không thể tự nhắn tin cho chính mình!', 'error'); return; }
 
             currentPmTarget = targetUsername;
             document.getElementById('pmHeaderTitle').innerHTML = `💬 Chat với <span style="color:#FFC400">@${escapeHtml(targetUsername)}</span>`;
