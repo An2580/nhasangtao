@@ -663,6 +663,11 @@
             return div.innerHTML;
         }
 
+        // Hàm bổ trợ để escape ký tự đặc biệt trong Regex
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
         function getProfile(username) {
             return PROFILES_CACHE[username] || {};
         }
@@ -873,8 +878,11 @@
             if (!user) {
                 const adminExists = USERS_CACHE.some(u => (u.title || '').toUpperCase().trim() === 'ADMIN');
                 const isFirst = USERS_CACHE.length === 0;
-                let username = userInfo.name || userInfo.email.split('@')[0];
-                let baseUsername = username;
+                
+                // Xử lý tên từ Google: Thay khoảng trắng bằng dấu gạch dưới để tránh lỗi tag @
+                let rawName = userInfo.name || userInfo.email.split('@')[0];
+                let baseUsername = rawName.replace(/\s+/g, '_'); 
+                let username = baseUsername;
                 let suffix = 1;
                 while (USERS_CACHE.some(u => u.username.toLowerCase() === username.toLowerCase())) {
                     username = baseUsername + suffix;
@@ -890,7 +898,7 @@
                         email: userInfo.email,
                         password: null,
                         title: autoTitle,
-                        display_name: username,
+                        display_name: rawName, // Vẫn giữ tên có dấu cách để hiển thị đẹp
                         bio: '',
                         avatar_url: userInfo.picture || '',
                         google_id: userInfo.sub
@@ -1320,13 +1328,28 @@
             container.scrollTop = container.scrollHeight;
         }
 
+        /* ============ SỬA LỖI MENTION TẠI ĐÂY ============ */
         function renderMentions(text, currentUser) {
-            const escaped = escapeHtml(text);
-            return escaped.replace(/@([a-zA-Z0-9_]+)/g, (match, username) => {
+            let escaped = escapeHtml(text);
+            if (!USERS_CACHE || USERS_CACHE.length === 0) return escaped;
+
+            // Sắp xếp user theo tên dài trước để tránh nhầm lẫn (VD: "An" và "An Vũ")
+            const sortedUsers = [...USERS_CACHE].sort((a, b) => b.username.length - a.username.length);
+            const usernamesRegex = sortedUsers.map(u => escapeRegExp(u.username)).join('|');
+            
+            // Tìm chính xác @username. Dùng (?!...) để đảm bảo không cắt nhầm chữ
+            const regex = new RegExp(`@(${usernamesRegex})(?![a-zA-Z0-9_])`, 'g');
+
+            escaped = escaped.replace(regex, (match, username) => {
+                const userObj = USERS_CACHE.find(u => u.username === username);
+                if (!userObj) return match;
+                
                 const isMe = currentUser && username.toLowerCase() === currentUser.toLowerCase();
                 const cls = 'mention' + (isMe ? ' mention-me' : '');
                 return `<span class="${cls}" onclick="mentionClick('${username}')">@${username}</span>`;
             });
+
+            return escaped;
         }
 
         function mentionClick(username) {
