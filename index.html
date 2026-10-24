@@ -126,6 +126,22 @@
             50% { box-shadow: 0 0 45px rgba(255, 77, 148, 1); }
         }
 
+        /* ================= NÚT HALLOWEEN ================= */
+        .btn-halloween-wrapper { margin-top: 15px; }
+        .btn-halloween-hero {
+            display: inline-block; padding: 15px 34px;
+            background: linear-gradient(135deg, #ff7a1a, #7c3aed);
+            color: #fff; text-decoration: none; border-radius: 30px;
+            font-weight: 700; font-size: 17px;
+            box-shadow: 0 0 25px rgba(255, 122, 26, 0.6);
+            transition: all 0.4s ease; animation: pulseHalloween 2s ease-in-out infinite;
+        }
+        .btn-halloween-hero:hover { background: #fff; color: #ff7a1a; animation: none; transform: translateY(-5px) scale(1.05); }
+        @keyframes pulseHalloween {
+            0%, 100% { box-shadow: 0 0 25px rgba(255, 122, 26, 0.6); }
+            50% { box-shadow: 0 0 45px rgba(255, 122, 26, 1); }
+        }
+
         /* ================= NÚT 20/11 & ĐẾM NGƯỢC ================= */
         .btn-2011-wrapper {
             display: flex; flex-direction: column; align-items: center;
@@ -411,7 +427,7 @@
             .toast { top: 90px; right: 15px; left: 15px; max-width: none; }
             .btn-msg, .btn-pm, .btn-profile, .btn-admin, .btn-logout { padding: 7px 10px; font-size: 11px; }
             .msg-container { height: 300px; }
-            .btn-2010-hero, .btn-2011-hero { font-size: 15px; padding: 13px 28px; }
+            .btn-2010-hero, .btn-2011-hero, .btn-halloween-hero { font-size: 15px; padding: 13px 28px; }
             .profile-info h3 { font-size: 20px; }
         }
     </style>
@@ -456,6 +472,12 @@
                onclick="return checkLoginAndAction(event, 'url');" 
                class="btn-2010-hero">🌸 Chúc mừng 20/10 🌸</a>
             
+            <div class="btn-halloween-wrapper">
+                <a href="halloween.html"
+                   onclick="return checkLoginAndAction(event, 'url');"
+                   class="btn-halloween-hero">🎃 Halloween 2026 🎃</a>
+            </div>
+
             <div class="btn-2011-wrapper">
                 <a href="20-11.html" 
                    class="btn-2011-hero locked" 
