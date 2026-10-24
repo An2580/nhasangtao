@@ -1,32 +1,207 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Not Found</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #080808; /* Nền đen giống web chính */
-            color: #FFC400; /* Màu vàng */
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            text-align: center;
-        }
-        h1 {
-            font-size: 50px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 0 15px rgba(255, 196, 0, 0.5);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>20/11 | Tri ân Nhà giáo Việt Nam</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sea:#0e1b3d; --board:#1d3b36; --board2:#17302c;
+  --wood:#9a6a3a; --wood-d:#6e4723;
+  --chalk:#f6f2e7; --yellow:#ffe58a; --pink:#ffb3c6; --blue:#9bd6ff;
+}
+*{box-sizing:border-box;margin:0}
+body{
+  min-height:100vh; overflow-x:hidden; color:var(--chalk);
+  font-family:"Patrick Hand","Segoe UI",system-ui,sans-serif;
+  background:radial-gradient(ellipse at 50% 0,#1d3a7a 0,var(--sea) 70%) fixed;
+  display:grid; place-items:center; padding:4.5rem 1rem 3rem;
+}
+
+.back{
+  position:fixed; top:14px; left:14px; z-index:5; text-decoration:none;
+  color:var(--chalk); font-size:1.05rem; padding:.4rem .9rem; border-radius:999px;
+  border:2px solid rgba(246,242,231,.5); background:rgba(14,27,61,.6);
+}
+.back:hover{color:var(--yellow); border-color:var(--yellow)}
+
+/* Cánh hoa rơi */
+.petal{
+  position:fixed; top:-6vh; left:var(--x); font-size:var(--sz); z-index:1; opacity:.85;
+  pointer-events:none; animation:fall var(--d) linear var(--dl) infinite;
+}
+@keyframes fall{to{transform:translate(var(--dx),112vh) rotate(360deg)}}
+
+/* Bảng đen trong khung gỗ */
+.wrap{position:relative; z-index:2; width:min(94vw,780px); display:flex; flex-direction:column; align-items:center}
+.frame{
+  width:100%; border:16px solid var(--wood); border-radius:10px;
+  box-shadow:0 0 0 3px var(--wood-d), inset 0 0 0 3px var(--wood-d), 0 30px 60px rgba(0,0,0,.5);
+}
+.board{
+  padding:clamp(1.4rem,5vw,3rem) clamp(1rem,5vw,3rem); text-align:center;
+  background:radial-gradient(ellipse at 30% 20%,rgba(255,255,255,.07),transparent 60%),linear-gradient(var(--board),var(--board2));
+  box-shadow:inset 0 0 60px rgba(0,0,0,.45);
+}
+.date{font-size:1.3rem; letter-spacing:.35em; color:var(--blue)}
+h1{
+  font:700 clamp(2.3rem,8vw,4rem)/1.1 "Dancing Script","Patrick Hand",cursive;
+  color:var(--yellow); margin:.4rem 0 .2rem;
+}
+.squiggle{display:block; width:min(70%,320px); height:14px; margin:0 auto .9rem}
+.lead{font-size:1.25rem; max-width:36ch; margin:0 auto 1.6rem; line-height:1.4}
+
+/* Viết lời tri ân */
+.wish{display:flex; flex-direction:column; align-items:center; gap:.8rem}
+label{font-size:1.15rem; color:var(--blue)}
+input{
+  width:min(100%,360px); padding:.6rem 1rem; font:inherit; font-size:1.2rem; text-align:center;
+  color:var(--chalk); background:transparent; outline:none;
+  border:2px dashed rgba(246,242,231,.55); border-radius:10px;
+}
+input::placeholder{color:rgba(246,242,231,.5)}
+input:focus{border-style:solid; border-color:var(--yellow)}
+.btns{display:flex; gap:.7rem; flex-wrap:wrap; justify-content:center}
+button{
+  font:inherit; font-size:1.2rem; padding:.55rem 1.4rem; border-radius:999px; cursor:pointer;
+  border:2px solid var(--yellow); background:var(--yellow); color:#2a2410;
+}
+button.ghost{background:transparent; color:var(--yellow)}
+button:hover{transform:translateY(-2px)}
+button:focus-visible,input:focus-visible,.back:focus-visible{outline:3px solid var(--blue); outline-offset:3px}
+.note{
+  width:100%; max-width:46ch; min-height:8.5rem; margin-top:1.2rem; padding:1rem 1.2rem;
+  display:flex; align-items:center; justify-content:center;
+  border:2px solid rgba(246,242,231,.35); border-radius:12px; font-size:1.3rem; line-height:1.5;
+}
+.note.empty{color:rgba(246,242,231,.55)}
+.note.in{animation:fade .5s ease-out}
+@keyframes fade{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none}}
+.status{min-height:1.4rem; font-size:1rem; color:var(--pink)}
+
+/* Khay phấn */
+.tray{
+  position:relative; width:104%; height:16px; margin-top:-2px; background:var(--wood);
+  border-radius:0 0 8px 8px; box-shadow:0 8px 0 var(--wood-d);
+}
+.chalk{position:absolute; top:-9px; width:34px; height:9px; border-radius:3px}
+.c1{left:12%; background:#fff}
+.c2{left:20%; background:var(--pink); transform:rotate(-6deg)}
+.c3{left:26%; background:var(--yellow)}
+.eraser{
+  position:absolute; right:10%; top:-14px; width:64px; height:14px; border-radius:3px;
+  background:linear-gradient(#2d2d2d 0 55%,#c9a46a 55%);
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important}
+  .petal{display:none}
+}
+</style>
 </head>
 <body>
-    <h1>Not Found</h1>
+
+<a class="back" href="index.html">← Trang chủ</a>
+
+<main class="wrap">
+  <div class="frame">
+    <div class="board">
+      <p class="date">20 · 11 · 2026</p>
+      <h1>Ngày Nhà giáo Việt Nam</h1>
+      <svg class="squiggle" viewBox="0 0 320 14" aria-hidden="true">
+        <path d="M2 8Q22 0 42 8T82 8T122 8T162 8T202 8T242 8T282 8T318 8" fill="none" stroke="#ffb3c6" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+      <p class="lead">Cảm ơn thầy cô đã dạy chúng em từng con chữ và cách làm người.</p>
+
+      <div class="wish">
+        <label for="name">Viết lời tri ân gửi đến</label>
+        <input id="name" type="text" maxlength="40" placeholder="Ví dụ: Cô Lan, Thầy Minh…" autocomplete="off">
+        <div class="btns">
+          <button id="write" type="button">Viết lời tri ân</button>
+          <button id="copy" class="ghost" type="button" hidden>Sao chép</button>
+        </div>
+        <div class="note empty" id="note" role="status" aria-live="polite">Nhập tên thầy cô rồi bấm “Viết lời tri ân”.</div>
+        <p class="status" id="status" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+  <div class="tray" aria-hidden="true">
+    <span class="chalk c1"></span><span class="chalk c2"></span><span class="chalk c3"></span>
+    <span class="eraser"></span>
+  </div>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+
+/* 1. Cánh hoa rơi */
+['🌸','🌼','🌸','🌸','🌼','🌸','🌸','🌼','🌸','🌸'].forEach((emoji, i) => {
+  const p = document.createElement('span');
+  p.className = 'petal';
+  p.setAttribute('aria-hidden', 'true');
+  p.textContent = emoji;
+  p.style.setProperty('--x', (5 + i * 10 + Math.random() * 6).toFixed(1) + 'vw');
+  p.style.setProperty('--sz', (16 + Math.random() * 14).toFixed(0) + 'px');
+  p.style.setProperty('--d', (11 + Math.random() * 9).toFixed(1) + 's');
+  p.style.setProperty('--dl', (-Math.random() * 14).toFixed(1) + 's');
+  p.style.setProperty('--dx', (Math.random() * 14 - 7).toFixed(1) + 'vw');
+  document.body.appendChild(p);
+});
+
+/* 2. Lời tri ân */
+const wishes = [
+  'Kính chúc {name} luôn mạnh khỏe và hạnh phúc. Em mãi biết ơn những ngày được ngồi nghe {name} giảng bài.',
+  'Nhân ngày 20/11, em xin gửi đến {name} lời tri ân sâu sắc. Những bài giảng của {name} em sẽ nhớ mãi.',
+  '{name} không chỉ dạy kiến thức mà còn dạy em không bỏ cuộc. Chúc {name} ngày Nhà giáo Việt Nam thật vui!',
+  'Cảm ơn {name} đã kiên nhẫn với em suốt những năm qua. Chúc {name} nhiều sức khỏe và luôn giữ lửa với nghề.',
+  'Mỗi lời nhắc nhở của {name} hôm nay đều trở thành điều em biết ơn. Chúc {name} một ngày 20/11 thật ấm áp.'
+];
+let last = -1;
+
+function write() {
+  const name = $('name').value.trim() || 'thầy cô';
+  let i;
+  do { i = Math.floor(Math.random() * wishes.length); } while (i === last);
+  last = i;
+
+  let msg = wishes[i].split('{name}').join(name);
+  msg = msg.charAt(0).toUpperCase() + msg.slice(1);
+
+  const box = $('note');
+  box.textContent = msg;
+  box.classList.remove('empty', 'in');
+  void box.offsetWidth;               // chạy lại hiệu ứng
+  box.classList.add('in');
+  $('copy').hidden = false;
+  $('status').textContent = '';
+}
+
+async function copyWish() {
+  const text = $('note').textContent;
+  try {
+    await navigator.clipboard.writeText(text);
+    $('status').textContent = 'Đã sao chép lời tri ân.';
+  } catch (e) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand('copy');
+      $('status').textContent = 'Đã sao chép lời tri ân.';
+    } catch (err) {
+      $('status').textContent = 'Không sao chép được, bạn hãy bôi đen và copy thủ công.';
+    }
+    ta.remove();
+  }
+}
+
+$('write').addEventListener('click', write);
+$('copy').addEventListener('click', copyWish);
+$('name').addEventListener('keydown', e => { if (e.key === 'Enter') write(); });
+</script>
 </body>
 </html>
