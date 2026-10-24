@@ -94,6 +94,13 @@
         .toggle-preview input { width: 18px; height: 18px; accent-color: #3b82f6; cursor: pointer; }
         .toggle-preview label { font-size: 13px; color: #93c5fd; font-weight: bold; cursor: pointer; user-select: none; }
 
+        .toggle-2027 {
+            display: flex; align-items: center; gap: 8px; cursor: pointer;
+            background: rgba(255, 211, 122, 0.1); padding: 10px 15px; border-radius: 10px; border: 1px solid rgba(255, 211, 122, 0.3);
+        }
+        .toggle-2027 input { width: 18px; height: 18px; accent-color: #ffd37a; cursor: pointer; }
+        .toggle-2027 label { font-size: 13px; color: #ffd37a; font-weight: bold; cursor: pointer; user-select: none; }
+
         /* Toast */
         .toast {
             position: fixed; top: 20px; right: 20px; background: #111; border-left: 4px solid #FFC400;
@@ -219,7 +226,8 @@
                     title: u.title || '',
                     displayName: u.display_name || u.username,
                     avatarUrl: u.avatar_url || '',
-                    canPreview2011: u.can_preview_2011 === true
+                    canPreview2011: u.can_preview_2011 === true,
+                    canAccess2027: u.can_access_2027 === true
                 };
             });
 
@@ -267,6 +275,7 @@
                 const title = (u.title || '').toUpperCase().trim();
                 const isMe = u.username === session.username;
                 const canPreview = u.can_preview_2011 === true;
+                const canAccess2027 = u.can_access_2027 === true;
 
                 let canEdit = true;
                 let reason = '';
@@ -294,6 +303,13 @@
                     </div>
                 ` : '';
 
+                const access2027Toggle = (!isMe && title !== 'ADMIN') ? `
+                    <div class="toggle-2027" title="Cấp quyền mở nút Năm mới 2027">
+                        <input type="checkbox" id="y27_${u.username}" ${canAccess2027 ? 'checked' : ''} onchange="toggleAccess2027('${u.username}', this.checked)">
+                        <label for="y27_${u.username}">Mở năm mới 2027</label>
+                    </div>
+                ` : '';
+
                 container.innerHTML += `
                     <div class="user-item">
                         <div class="u-avatar">${avatarHTML}</div>
@@ -306,6 +322,7 @@
                                 ${options}
                             </select>
                             ${previewToggle}
+                            ${access2027Toggle}
                         </div>
                     </div>
                 `;
@@ -323,6 +340,13 @@
             const { error } = await supabaseClient.from('users').update({ can_preview_2011: isChecked }).eq('username', username);
             if (error) { showToast('❌ Lỗi cấp quyền!', 'error'); return; }
             showToast(`✅ Đã ${isChecked ? 'bật' : 'tắt'} quyền xem trước 20/11!`, 'success');
+            await loadData();
+        }
+
+        async function toggleAccess2027(username, isChecked) {
+            const { error } = await supabaseClient.from('users').update({ can_access_2027: isChecked }).eq('username', username);
+            if (error) { showToast('❌ Lỗi cấp quyền! Đã thêm cột can_access_2027 trên Supabase chưa?', 'error'); await loadData(); return; }
+            showToast(`✅ Đã ${isChecked ? 'bật' : 'tắt'} quyền mở năm mới 2027!`, 'success');
             await loadData();
         }
 
