@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Halloween 2026 | Bí ngô đang nhìn bạn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Creepster&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#14081f; --plum:#2b1245; --grave:#3a2457;
+  --pumpkin:#ff7a1a; --bone:#f4ead5; --glow:#ffd36b;
+  --slime:#a4e04a; --mist:#cdb8ee;
+}
+*{box-sizing:border-box;margin:0}
+body{
+  min-height:100vh; overflow-x:hidden; color:var(--bone);
+  font-family:"Baloo 2",system-ui,sans-serif;
+  background:radial-gradient(ellipse at 50% 105%,#4a1d6b 0,var(--night) 62%) fixed;
+}
+
+/* Mặt trăng */
+.moon{
+  position:fixed; top:6vh; right:8vw; width:clamp(70px,12vw,130px); aspect-ratio:1; border-radius:50%;
+  background:
+    radial-gradient(circle at 62% 30%,rgba(190,170,110,.55) 0 9%,transparent 10%),
+    radial-gradient(circle at 34% 62%,rgba(190,170,110,.5) 0 12%,transparent 13%),
+    radial-gradient(circle at 35% 35%,#fffbe8,#f1e3b0 60%,#d8c78a);
+  box-shadow:0 0 60px 10px rgba(255,236,170,.32);
+}
+
+/* Dơi bay ngang màn hình */
+.bat{position:fixed; left:0; top:var(--t); width:44px; z-index:2; pointer-events:none;
+  animation:fly var(--d) linear var(--s) infinite; opacity:0}
+.bat svg{display:block; width:100%; fill:#0b0412; animation:flap .35s ease-in-out infinite alternate}
+@keyframes fly{
+  0%{transform:translate(-12vw,0); opacity:1}
+  50%{transform:translate(55vw,-5vh)}
+  100%{transform:translate(112vw,2vh); opacity:1}
+}
+@keyframes flap{from{transform:scaleY(1)}to{transform:scaleY(.45)}}
+
+/* Bố cục chính */
+.stage{
+  position:relative; z-index:1; min-height:100vh; padding:2rem 1rem 3rem;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:1.1rem; text-align:center;
+}
+.pumpkin{width:min(78vw,320px); height:auto; filter:drop-shadow(0 0 34px rgba(255,122,26,.5))}
+.face{animation:flicker 2.6s infinite}
+@keyframes flicker{0%,100%{opacity:1} 42%{opacity:.8} 48%{opacity:1} 70%{opacity:.9}}
+.hint{font-size:.9rem; color:var(--mist); margin-top:-.4rem}
+
+h1{
+  font:400 clamp(2.8rem,10vw,5.5rem)/1 Creepster,"Baloo 2",cursive;
+  letter-spacing:.04em; color:var(--pumpkin);
+  text-shadow:0 0 22px rgba(255,122,26,.55);
+}
+.lead{max-width:34ch; font-size:1.1rem; line-height:1.45}
+
+/* Đồng hồ đếm ngược: mỗi đơn vị là một tấm bia */
+.clock{display:flex; gap:.7rem; justify-content:center}
+.stone{
+  width:74px; padding:.9rem 0 .5rem; display:flex; flex-direction:column; gap:.25rem;
+  background:linear-gradient(var(--grave),#2e1a47);
+  border-radius:37px 37px 6px 6px; box-shadow:inset 0 2px 0 rgba(255,255,255,.12);
+}
+.stone b{font:400 1.9rem/1 Creepster,"Baloo 2",cursive; letter-spacing:.03em}
+.stone small{font-size:.8rem; color:var(--mist)}
+.done{font-size:1.4rem; font-weight:700; color:var(--glow)}
+
+/* Gõ cửa */
+button{
+  font:700 1.15rem "Baloo 2",system-ui,sans-serif; color:#1a0a00; background:var(--pumpkin);
+  border:0; border-radius:999px; padding:.7rem 1.9rem; cursor:pointer;
+  box-shadow:0 0 24px rgba(255,122,26,.5);
+}
+button:active{transform:translateY(2px)}
+button:focus-visible{outline:3px solid var(--glow); outline-offset:4px}
+.card{
+  max-width:36ch; min-height:5.5rem; padding:1rem 1.2rem; border-radius:14px;
+  background:rgba(43,18,69,.85); border:2px solid var(--pumpkin); line-height:1.4;
+}
+.card.treat{border-color:var(--slime)}
+.card .e{display:block; font-size:2rem; margin-bottom:.2rem}
+.card.pop{animation:pop .35s ease-out}
+@keyframes pop{from{transform:scale(.85); opacity:0} to{transform:scale(1); opacity:1}}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important}
+  .bat{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="moon" aria-hidden="true"></div>
+
+<!-- Biểu tượng dơi dùng lại nhiều lần -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="bat" viewBox="-32 -12 64 28">
+    <path d="M0 0C-10-8-22-6-30 4C-24 2-20 6-16 10C-12 6-8 8-4 12L0 6L4 12C8 8 12 6 16 10C20 6 24 2 30 4C22-6 10-8 0 0Z"/>
+  </symbol>
+</svg>
+<div class="bat" style="--t:12vh;--d:16s;--s:0s" aria-hidden="true"><svg viewBox="-32 -12 64 28"><use href="#bat"/></svg></div>
+<div class="bat" style="--t:26vh;--d:22s;--s:5s" aria-hidden="true"><svg viewBox="-32 -12 64 28"><use href="#bat"/></svg></div>
+<div class="bat" style="--t:8vh;--d:19s;--s:11s" aria-hidden="true"><svg viewBox="-32 -12 64 28"><use href="#bat"/></svg></div>
+
+<main class="stage">
+
+  <svg class="pumpkin" id="pumpkin" viewBox="0 0 300 280" role="img" aria-label="Quả bí ngô có đôi mắt nhìn theo con trỏ chuột">
+    <defs>
+      <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="4" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <clipPath id="eyes">
+        <polygon points="95,140 135,140 115,105"/>
+        <polygon points="165,140 205,140 185,105"/>
+      </clipPath>
+    </defs>
+    <!-- thân -->
+    <ellipse cx="82"  cy="162" rx="66" ry="96" fill="#d95a0a"/>
+    <ellipse cx="218" cy="162" rx="66" ry="96" fill="#d95a0a"/>
+    <ellipse cx="116" cy="162" rx="62" ry="102" fill="#ee6c10"/>
+    <ellipse cx="184" cy="162" rx="62" ry="102" fill="#ee6c10"/>
+    <ellipse cx="150" cy="162" rx="54" ry="106" fill="#ff7a1a"/>
+    <ellipse cx="120" cy="90" rx="16" ry="9" fill="#ffb066" opacity=".55" transform="rotate(-25 120 90)"/>
+    <!-- cuống -->
+    <path d="M140 62Q143 32 166 24L174 38Q158 46 162 64Z" fill="#4a6b2a"/>
+    <!-- khuôn mặt phát sáng -->
+    <g class="face" fill="#ffd36b" filter="url(#glow)">
+      <polygon points="95,140 135,140 115,105"/>
+      <polygon points="165,140 205,140 185,105"/>
+      <polygon points="150,150 139,167 161,167"/>
+      <path d="M90 186Q150 246 210 186L196 193L186 209L172 197L160 215L148 199L136 215L124 197L112 209L104 193Z"/>
+    </g>
+    <!-- con ngươi di chuyển theo chuột -->
+    <g clip-path="url(#eyes)">
+      <circle id="pl" cx="115" cy="128" r="7" fill="#2a0f00"/>
+      <circle id="pr" cx="185" cy="128" r="7" fill="#2a0f00"/>
+    </g>
+  </svg>
+  <p class="hint">Di chuột (hoặc chạm vào màn hình) để bí ngô nhìn theo bạn.</p>
+
+  <h1>Halloween 2026</h1>
+  <p class="lead">Đêm 31/10 đang đến gần. Thắp đèn bí ngô, rồi gõ cửa thử vận may.</p>
+
+  <div class="clock" id="clock" role="timer" aria-label="Thời gian còn lại đến Halloween">
+    <div class="stone"><b id="d">00</b><small>ngày</small></div>
+    <div class="stone"><b id="h">00</b><small>giờ</small></div>
+    <div class="stone"><b id="m">00</b><small>phút</small></div>
+    <div class="stone"><b id="s">00</b><small>giây</small></div>
+  </div>
+  <p class="done" id="done" hidden>Đêm nay là Halloween! Bật đèn lên nào.</p>
+
+  <button id="knock" type="button">Gõ cửa</button>
+  <div class="card" id="result" role="status" aria-live="polite" hidden></div>
+
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+
+/* 1. Con ngươi nhìn theo con trỏ */
+const svg = $('pumpkin'), pupils = [$('pl'), $('pr')];
+addEventListener('pointermove', e => {
+  const r = svg.getBoundingClientRect();
+  const dx = e.clientX - (r.left + r.width / 2);
+  const dy = e.clientY - (r.top + r.height * 0.46);
+  const dist = Math.hypot(dx, dy) || 1;
+  const k = Math.min(1, dist / 200) * 6;
+  const move = `translate(${(dx / dist * k).toFixed(2)}px, ${(dy / dist * k).toFixed(2)}px)`;
+  pupils.forEach(p => p.style.transform = move);
+});
+
+/* 2. Đếm ngược đến 31/10 */
+const pad = n => String(n).padStart(2, '0');
+function tick() {
+  const now = new Date();
+  const y = now.getFullYear();
+  const start = new Date(y, 9, 31);   // 00:00 ngày 31/10
+  const end = new Date(y, 10, 1);     // 00:00 ngày 1/11
+  if (now >= start && now < end) {
+    $('clock').hidden = true;
+    $('done').hidden = false;
+    return;
+  }
+  $('clock').hidden = false;
+  $('done').hidden = true;
+  const target = now >= end ? new Date(y + 1, 9, 31) : start;
+  const diff = Math.max(0, target - now);
+  $('d').textContent = pad(Math.floor(diff / 864e5));
+  $('h').textContent = pad(Math.floor(diff / 36e5) % 24);
+  $('m').textContent = pad(Math.floor(diff / 6e4) % 60);
+  $('s').textContent = pad(Math.floor(diff / 1e3) % 60);
+}
+tick();
+setInterval(tick, 1000);
+
+/* 3. Trick or treat */
+const treats = [
+  ['🍬', 'Bạn nhận được một nắm kẹo dẻ đủ màu. Chia cho bạn bè một nửa nhé.'],
+  ['🍫', 'Một thanh sô-cô-la đen còn nguyên vỏ. Hôm nay bạn may mắn đấy.'],
+  ['🍭', 'Kẹo mút hình bí ngô. Cắn nhẹ thôi kẻo vỡ răng.'],
+  ['🍪', 'Bánh quy hình ma vừa ra lò, vẫn còn ấm.']
+];
+const tricks = [
+  ['👻', 'Bùu! Không có ai ở nhà, chỉ có tiếng thì thầm sau lưng bạn.'],
+  ['🕷️', 'Một con nhện nhựa rơi xuống vai bạn. Chỉ là đồ chơi… chắc vậy.'],
+  ['🦇', 'Bầy dơi bay ra từ cửa và mang đi hết kẹo của bạn.'],
+  ['💀', 'Cánh cửa kẽo kẹt mở ra, bộ xương trong nhà nói: “Năm sau quay lại nhé.”']
+];
+const pick = list => list[Math.floor(Math.random() * list.length)];
+
+$('knock').addEventListener('click', () => {
+  const isTreat = Math.random() < 0.55;
+  const [emoji, text] = pick(isTreat ? treats : tricks);
+  const box = $('result');
+  box.hidden = false;
+  box.className = 'card ' + (isTreat ? 'treat' : 'trick');
+  box.innerHTML = '<span class="e"></span><span class="t"></span>';
+  box.querySelector('.e').textContent = emoji;
+  box.querySelector('.t').textContent = text;
+  void box.offsetWidth;            // chạy lại hiệu ứng
+  box.classList.add('pop');
+});
+</script>
+</body>
+</html>
