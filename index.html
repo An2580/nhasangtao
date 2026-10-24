@@ -175,6 +175,33 @@
         }
         .countdown.hidden { opacity: 0; pointer-events: none; }
 
+        /* ================= NÚT NĂM MỚI 2027 (CẦN ADMIN CẤP QUYỀN) ================= */
+        .btn-2027-wrapper {
+            display: flex; flex-direction: column; align-items: center; margin-top: 15px;
+        }
+        .btn-2027-hero {
+            display: inline-block; padding: 13px 34px;
+            background: #0b1026; color: #ffd37a;
+            border: 2px solid #ffd37a; border-radius: 30px;
+            text-decoration: none; font-weight: 700; font-size: 17px;
+            box-shadow: 0 0 25px rgba(255, 211, 122, 0.45);
+            transition: all 0.4s ease;
+        }
+        .btn-2027-hero:hover:not(.locked) {
+            background: #ffd37a; color: #0b1026; transform: translateY(-5px) scale(1.05);
+        }
+        .btn-2027-hero.locked {
+            opacity: 0.65; filter: grayscale(80%);
+            pointer-events: none; user-select: none;
+            box-shadow: none; cursor: not-allowed;
+        }
+        .lock-note {
+            margin-top: 10px; font-size: 14px; font-weight: 600;
+            color: #ffd37a; background: rgba(0,0,0,0.6); padding: 5px 15px;
+            border-radius: 15px; border: 1px solid rgba(255, 211, 122, 0.3);
+        }
+        .lock-note.granted { color: #22c55e; border-color: rgba(34, 197, 94, 0.3); }
+
         /* ================= MODAL ================= */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
@@ -427,7 +454,7 @@
             .toast { top: 90px; right: 15px; left: 15px; max-width: none; }
             .btn-msg, .btn-pm, .btn-profile, .btn-admin, .btn-logout { padding: 7px 10px; font-size: 11px; }
             .msg-container { height: 300px; }
-            .btn-2010-hero, .btn-2011-hero, .btn-halloween-hero { font-size: 15px; padding: 13px 28px; }
+            .btn-2010-hero, .btn-2011-hero, .btn-halloween-hero, .btn-2027-hero { font-size: 15px; padding: 13px 28px; }
             .profile-info h3 { font-size: 20px; }
         }
     </style>
@@ -484,6 +511,14 @@
                    id="btn2011" 
                    onclick="return checkLoginAndAction(event, 'url');">🍎 Chúc mừng ngày Nhà giáo Việt Nam 20/11 🍎</a>
                 <div class="countdown" id="countdown2011">Đang tải...</div>
+            </div>
+
+            <div class="btn-2027-wrapper">
+                <a href="nam-moi-2027.html"
+                   class="btn-2027-hero locked"
+                   id="btn2027"
+                   onclick="return checkLoginAndAction(event, 'url');">🎆 Chúc mừng năm mới 2027 🎆</a>
+                <div class="lock-note" id="note2027">🔒 Cần được Admin cấp quyền để mở</div>
             </div>
 
         </div>
@@ -714,7 +749,8 @@
                     displayName: u.display_name || u.username,
                     bio: u.bio || '',
                     avatarUrl: u.avatar_url || '',
-                    canPreview2011: u.can_preview_2011 === true
+                    canPreview2011: u.can_preview_2011 === true,
+                    canAccess2027: u.can_access_2027 === true
                 };
             });
         }
@@ -1003,6 +1039,35 @@
             }
             
             startCountdown2011();
+            updateNewYear2027Access();
+        }
+
+        /* ============ QUYỀN NÚT NĂM MỚI 2027 ============ */
+        function updateNewYear2027Access() {
+            const btn = document.getElementById('btn2027');
+            const note = document.getElementById('note2027');
+            if (!btn || !note) return;
+
+            const session = getSession();
+            let granted = false;
+            let text = '🔒 Đăng nhập và được Admin cấp quyền để mở';
+
+            if (session) {
+                const role = getCurrentUserRole();
+                if (role === 'admin' || role === 'dev') {
+                    granted = true;
+                    text = role === 'admin' ? '🔓 Quyền Admin' : '🔓 Quyền Dev';
+                } else if (getProfile(session.username).canAccess2027 === true) {
+                    granted = true;
+                    text = '🔓 Admin đã cấp quyền cho bạn';
+                } else {
+                    text = '🔒 Cần được Admin cấp quyền để mở';
+                }
+            }
+
+            btn.classList.toggle('locked', !granted);
+            note.classList.toggle('granted', granted);
+            note.textContent = text;
         }
 
         /* ============ MODAL AUTH ============ */
