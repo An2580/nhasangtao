@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chào 2027 | Tết Dương lịch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#070a1a; --gold:#ffd37a; --gold2:#f3a63c;
+  --ink:#f4efe4; --mist:#9fb0d6;
+}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{
+  overflow:hidden; color:var(--ink);
+  font-family:"Be Vietnam Pro",system-ui,sans-serif;
+  background:radial-gradient(ellipse at 50% 100%,#1a1f4d 0,var(--night) 65%);
+}
+
+/* Sao */
+.stars{
+  position:fixed; inset:0; opacity:.7;
+  background:
+    radial-gradient(1.5px 1.5px at 12% 18%,#fff,transparent),
+    radial-gradient(1px 1px at 28% 8%,#fff,transparent),
+    radial-gradient(1.5px 1.5px at 44% 24%,#cfe0ff,transparent),
+    radial-gradient(1px 1px at 63% 12%,#fff,transparent),
+    radial-gradient(1.5px 1.5px at 78% 28%,#fff,transparent),
+    radial-gradient(1px 1px at 90% 10%,#cfe0ff,transparent),
+    radial-gradient(1px 1px at 8% 44%,#fff,transparent),
+    radial-gradient(1.5px 1.5px at 94% 52%,#fff,transparent),
+    radial-gradient(1px 1px at 52% 6%,#fff,transparent);
+}
+canvas{position:fixed; inset:0; width:100%; height:100%; display:block; cursor:crosshair}
+.city{position:fixed; left:0; bottom:0; width:100%; height:14vh; z-index:1; pointer-events:none}
+
+/* Nội dung (không chặn thao tác bắn pháo hoa) */
+.ui{
+  position:fixed; inset:0; z-index:2; pointer-events:none; padding:1rem;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:.9rem; text-align:center;
+}
+.kicker{font-size:.85rem; letter-spacing:.4em; text-transform:uppercase; color:var(--mist)}
+h1{
+  font:800 clamp(5rem,22vw,13rem)/.9 "Playfair Display",Georgia,serif;
+  color:var(--gold);
+  background:linear-gradient(180deg,#fff2c9,var(--gold) 45%,var(--gold2));
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 24px rgba(255,200,90,.35));
+}
+.greet{font:700 clamp(1.3rem,4vw,2rem)/1.3 "Playfair Display",Georgia,serif; max-width:24ch}
+
+.clock{display:flex; margin-top:.4rem}
+.clock[hidden]{display:none}
+.unit{min-width:3.6rem; padding:0 clamp(.8rem,3vw,1.8rem)}
+.unit + .unit{border-left:1px solid rgba(255,211,122,.3)}
+.unit b{
+  display:block; font:600 clamp(1.8rem,6vw,3rem)/1 "Be Vietnam Pro",sans-serif;
+  font-variant-numeric:tabular-nums;
+}
+.unit span{font-size:.75rem; letter-spacing:.2em; text-transform:uppercase; color:var(--mist)}
+
+.btns{display:flex; gap:.7rem; flex-wrap:wrap; justify-content:center; margin-top:.6rem}
+button{
+  pointer-events:auto; cursor:pointer;
+  font:600 1.05rem "Be Vietnam Pro",system-ui,sans-serif; color:#2a1c00;
+  background:var(--gold); border:2px solid var(--gold); border-radius:999px; padding:.8rem 2rem;
+  box-shadow:0 0 28px rgba(255,200,90,.45);
+}
+button.ghost{background:rgba(7,10,26,.55); color:var(--gold); box-shadow:none}
+button:hover{transform:translateY(-2px)}
+button:focus-visible{outline:3px solid #fff; outline-offset:4px}
+.hint{font-size:.9rem; color:var(--mist)}
+</style>
+</head>
+<body>
+
+<div class="stars" aria-hidden="true"></div>
+<canvas id="sky" aria-hidden="true"></canvas>
+<svg class="city" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
+  <path fill="#04060f" d="M0 120V80h60V50h50v40h40V30h60v60h50V60h70v40h50V20h50v70h60V70h80v30h40V40h60v60h50V65h70V25h40v70h60V75h70v25h60V55h50v40h60V70h70V120z"/>
+</svg>
+
+<main class="ui">
+  <p class="kicker">Tết Dương lịch</p>
+  <h1>2027</h1>
+  <p class="greet" id="greet">Chúc mừng năm mới</p>
+  <div class="clock" id="clock" role="timer" aria-label="Thời gian còn lại đến năm mới">
+    <div class="unit"><b id="d">00</b><span>ngày</span></div>
+    <div class="unit"><b id="h">00</b><span>giờ</span></div>
+    <div class="unit"><b id="m">00</b><span>phút</span></div>
+    <div class="unit"><b id="s">00</b><span>giây</span></div>
+  </div>
+  <div class="btns">
+    <button id="boom" type="button">Bắn pháo hoa</button>
+    <button id="snd" class="ghost" type="button" aria-pressed="false">🔇 Bật âm thanh</button>
+  </div>
+  <p class="hint">Chạm vào bầu trời để bắn pháo hoa. Bật âm thanh để nghe tiếng nổ (trên iPhone nhớ tắt chế độ im lặng).</p>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const rand = (a, b) => a + Math.random() * (b - a);
+
+/* ===== Âm thanh (tạo bằng Web Audio, không cần file) ===== */
+let actx = null, master = null, noiseBuf = null, soundOn = false;
+
+function initAudio() {
+  if (!actx) {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return false;
+    actx = new AC();
+    const comp = actx.createDynamicsCompressor();   // chống vỡ tiếng khi nổ nhiều quả cùng lúc
+    master = actx.createGain();
+    master.gain.value = 0.6;
+    master.connect(comp); comp.connect(actx.destination);
+    noiseBuf = actx.createBuffer(1, actx.sampleRate, actx.sampleRate);
+    const d = noiseBuf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  }
+  if (actx.state === 'suspended') actx.resume();
+  return true;
+}
+
+function route(node, pan) {                          // pan: -1 (trái) đến 1 (phải)
+  if (actx.createStereoPanner) {
+    const p = actx.createStereoPanner();
+    p.pan.value = Math.max(-1, Math.min(1, pan));
+    node.connect(p); p.connect(master);
+  } else {
+    node.connect(master);
+  }
+}
+
+function noise(type, f0, f1, dur, gain, pan, delay = 0) {
+  const t = actx.currentTime + delay;
+  const src = actx.createBufferSource();
+  src.buffer = noiseBuf; src.loop = true;
+  const f = actx.createBiquadFilter();
+  f.type = type;
+  f.frequency.setValueAtTime(f0, t);
+  f.frequency.exponentialRampToValueAtTime(f1, t + dur);
+  const g = actx.createGain();
+  g.gain.setValueAtTime(gain, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+  src.connect(f); f.connect(g); route(g, pan);
+  src.start(t); src.stop(t + dur + 0.05);
+}
+
+function thump(f0, f1, dur, gain, pan) {
+  const t = actx.currentTime;
+  const o = actx.createOscillator();
+  o.type = 'sine';
+  o.frequency.setValueAtTime(f0, t);
+  o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+  const g = actx.createGain();
+  g.gain.setValueAtTime(gain, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+  o.connect(g); route(g, pan);
+  o.start(t); o.stop(t + dur + 0.05);
+}
+
+function sfxLaunch(pan) {                            // tiếng vút lên
+  noise('bandpass', 300, 2200, 0.8, 0.18, pan);
+}
+function sfxBoom(pan) {                              // tiếng nổ + lách tách
+  thump(140, 38, 0.7, 0.9, pan);
+  noise('lowpass', 3500, 200, 0.6, 0.55, pan);
+  const n = 3 + Math.floor(Math.random() * 4);
+  for (let i = 0; i < n; i++) {
+    noise('highpass', 5000, 7000, 0.06, 0.12, pan, 0.12 + Math.random() * 0.7);
+  }
+}
+
+/* ===== Pháo hoa (canvas) ===== */
+const cv = $('sky'), ctx = cv.getContext('2d');
+let W, H;
+function resize() {
+  const d = Math.min(window.devicePixelRatio || 1, 2);
+  W = innerWidth; H = innerHeight;
+  cv.width = W * d; cv.height = H * d;
+  ctx.setTransform(d, 0, 0, d, 0, 0);
+}
+addEventListener('resize', resize);
+resize();
+
+const HUES = [44, 340, 190, 275, 120, 20];
+const rockets = [], sparks = [];
+const autoOn = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function launch(tx, ty) {
+  tx = tx ?? rand(W * 0.12, W * 0.88);
+  ty = ty ?? rand(H * 0.1, H * 0.45);
+  const x0 = Math.min(W, Math.max(0, tx + rand(-80, 80)));
+  const n = rand(40, 60);
+  rockets.push({
+    x: x0, y: H, vx: (tx - x0) / n, vy: (ty - H) / n, n,
+    hue: HUES[Math.floor(Math.random() * HUES.length)]
+  });
+  if (soundOn) sfxLaunch((x0 / W) * 2 - 1);
+}
+
+function explode(x, y, hue) {
+  if (soundOn) sfxBoom((x / W) * 2 - 1);
+  const ring = Math.random() < 0.35;          // vòng tròn hoặc quả cầu
+  const white = Math.random() < 0.2;          // thỉnh thoảng có pháo trắng
+  const count = Math.floor(rand(80, 130));
+  for (let i = 0; i < count; i++) {
+    const a = ring ? (i / count) * Math.PI * 2 : rand(0, Math.PI * 2);
+    const s = ring ? 4.2 : Math.sqrt(Math.random()) * 6;
+    sparks.push({
+      x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s,
+      life: 1, decay: rand(0.008, 0.02),
+      hue: hue + rand(-12, 12), sat: white ? 0 : 100, size: rand(1.2, 2.4)
+    });
+  }
+}
+
+let auto = 20;
+function frame() {
+  // làm mờ dần vệt sáng cũ
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.fillStyle = 'rgba(0,0,0,0.22)';
+  ctx.fillRect(0, 0, W, H);
+  ctx.globalCompositeOperation = 'lighter';
+
+  if (autoOn && --auto <= 0) { launch(); auto = rand(30, 75); }
+
+  for (let i = rockets.length - 1; i >= 0; i--) {
+    const r = rockets[i];
+    r.x += r.vx; r.y += r.vy; r.n--;
+    if (sparks.length < 2500) {
+      sparks.push({ x: r.x, y: r.y, vx: rand(-0.3, 0.3), vy: rand(0.2, 0.8),
+                    life: 0.6, decay: 0.04, hue: r.hue, sat: 40, size: 1.3 });
+    }
+    ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.arc(r.x, r.y, 2, 0, 6.283); ctx.fill();
+    if (r.n <= 0) { explode(r.x, r.y, r.hue); rockets.splice(i, 1); }
+  }
+
+  for (let i = sparks.length - 1; i >= 0; i--) {
+    const p = sparks[i];
+    p.vx *= 0.97; p.vy = p.vy * 0.97 + 0.045;
+    p.x += p.vx; p.y += p.vy; p.life -= p.decay;
+    if (p.life <= 0) { sparks.splice(i, 1); continue; }
+    ctx.fillStyle = `hsla(${p.hue},${p.sat}%,62%,${p.life})`;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, 6.283); ctx.fill();
+  }
+  requestAnimationFrame(frame);
+}
+frame();
+
+function salvo(n) {
+  for (let i = 0; i < n; i++) setTimeout(() => launch(), i * 140 + Math.random() * 100);
+}
+cv.addEventListener('pointerdown', e => launch(e.clientX, e.clientY));
+$('boom').addEventListener('click', () => salvo(8));
+$('snd').addEventListener('click', () => {
+  soundOn = !soundOn;
+  if (soundOn && !initAudio()) { soundOn = false; return; }   // trình duyệt không hỗ trợ
+  $('snd').setAttribute('aria-pressed', soundOn);
+  $('snd').textContent = soundOn ? '🔊 Tắt âm thanh' : '🔇 Bật âm thanh';
+  if (soundOn) launch(W / 2, H * 0.3);                          // bắn thử một quả để nghe
+});
+salvo(3);
+
+/* ===== Đếm ngược đến 0h ngày 1/1/2027 (giờ trên máy bạn) ===== */
+const target = new Date(2027, 0, 1, 0, 0, 0);
+const pad = n => String(n).padStart(2, '0');
+let celebrated = false;
+
+function tick() {
+  const diff = target - new Date();
+  if (diff <= 0) {
+    $('clock').hidden = true;
+    $('greet').textContent = 'Năm mới đã đến! Chúc bạn thật nhiều sức khỏe và niềm vui.';
+    if (!celebrated) { celebrated = true; salvo(30); }
+    return;
+  }
+  $('d').textContent = pad(Math.floor(diff / 864e5));
+  $('h').textContent = pad(Math.floor(diff / 36e5) % 24);
+  $('m').textContent = pad(Math.floor(diff / 6e4) % 60);
+  $('s').textContent = pad(Math.floor(diff / 1e3) % 60);
+}
+tick();
+setInterval(tick, 1000);
+</script>
+</body>
+</html>
