@@ -427,6 +427,7 @@
         .locked-note { display: block; margin-top: 6px; font-size: 11px;
             color: #ef4444; font-style: italic; }
 
+        .field-hint { display: block; margin-top: 6px; font-size: 11px; color: #888; }
         .profile-actions { display: flex; gap: 10px; margin-top: 20px; }
         .profile-actions button { flex: 1; padding: 14px; border: none;
             border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; }
@@ -596,7 +597,7 @@
                 <h2>Đăng ký</h2>
                 <p class="subtitle">Tạo tài khoản mới — mỗi người 1 tài khoản 🎮</p>
                 <form onsubmit="handleRegister(event)">
-                    <input type="text" id="regUser" placeholder="Tên đăng nhập (3-20 ký tự)" required minlength="3" maxlength="20">
+                    <input type="text" id="regUser" oninput="cleanUsernameInput(this, event)" placeholder="Tên đăng nhập (3-20 ký tự, không dấu cách)" required minlength="3" maxlength="20">
                     <input type="email" id="regEmail" placeholder="Email" required>
                     <input type="password" id="regPass" placeholder="Mật khẩu (ít nhất 6 ký tự)" required minlength="6">
                     <input type="password" id="regPass2" placeholder="Nhập lại mật khẩu" required>
@@ -686,6 +687,9 @@
             </div>
 
             <div id="profileEditMode" style="display:none;">
+                <div class="profile-field"><label>Tên người dùng (@username)</label>
+                    <input type="text" id="editUsername" oninput="cleanUsernameInput(this, event)" placeholder="vd: an_go (không dấu cách)" maxlength="20" autocomplete="off" autocapitalize="off" spellcheck="false">
+                    <span class="field-hint">3-20 ký tự: chữ không dấu, số và dấu _ (không có dấu cách).</span></div>
                 <div class="profile-field"><label>Tên hiển thị</label>
                     <input type="text" id="editDisplayName" placeholder="Nhập tên hiển thị..." maxlength="50"></div>
                 <div class="profile-field"><label>Chức danh</label>
@@ -759,6 +763,25 @@
         // Hàm bổ trợ để escape ký tự đặc biệt trong Regex
         function escapeRegExp(string) {
             return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        /* ============ USERNAME: KHÔNG DẤU CÁCH, KHÔNG DẤU TIẾNG VIỆT ============ */
+        const USERNAME_RE = /^[a-zA-Z0-9_]{3,20}$/;
+        function removeAccents(str) {
+            return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
+        }
+        // Tên Google -> username hợp lệ (vd: "Nguyễn Văn A" -> "Nguyen_Van_A")
+        function toUsername(name) {
+            let u = removeAccents(name).replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '')
+                .replace(/_+/g, '_').replace(/^_|_$/g, '');
+            if (u.length < 3) u = 'user' + u;
+            return u.slice(0, 17);
+        }
+        // Đang gõ vào ô username: tự bỏ dấu cách, dấu tiếng Việt và ký tự lạ
+        function cleanUsernameInput(el, ev) {
+            if (ev && ev.isComposing) return;
+            const v = removeAccents(el.value).replace(/[^a-zA-Z0-9_]/g, '');
+            if (v !== el.value) el.value = v;
         }
 
         function getProfile(username) {
@@ -921,7 +944,7 @@
                 .from('users')
                 .select('*')
                 .or(`username.ilike.${input},email.ilike.${input}`)
-                .limit(1);
+                .limit(20);
 
             btn.disabled = false;
             btn.textContent = 'Đăng nhập ngay';
@@ -933,7 +956,10 @@
                 return showError('loginError', '❌ Không tìm thấy tài khoản này!');
             }
 
-            const user = data[0];
+            const user = data.find(u => (u.username || '').toLowerCase() === input || (u.email || '').toLowerCase() === input);
+            if (!user) {
+                return showError('loginError', '❌ Không tìm thấy tài khoản này!');
+            }
             if (user.password !== hashPass(pass)) {
                 return showError('loginError', '❌ Mật khẩu không đúng!');
             }
@@ -975,7 +1001,7 @@
                 
                 // Xử lý tên từ Google: Thay khoảng trắng bằng dấu gạch dưới để tránh lỗi tag @
                 let rawName = userInfo.name || userInfo.email.split('@')[0];
-                let baseUsername = rawName.replace(/\s+/g, '_'); 
+                let baseUsername = toUsername(rawName); 
                 let username = baseUsername;
                 let suffix = 1;
                 while (USERS_CACHE.some(u => u.username.toLowerCase() === username.toLowerCase())) {
@@ -1218,6 +1244,7 @@
             document.getElementById('viewBio').className = 'value' + (bio ? '' : ' empty');
 
             document.getElementById('editDisplayName').value = displayName;
+            document.getElementById('editUsername').value = session.username;
             document.getElementById('editTitle').value = title;
             document.getElementById('editBio').value = bio;
             document.getElementById('editAvatarUrl').value = avatarUrl;
@@ -1289,6 +1316,8 @@
             const newDisplayName = document.getElementById('editDisplayName').value.trim();
             const newBio = document.getElementById('editBio').value.trim();
             const newAvatarUrl = document.getElementById('editAvatarUrl').value.trim();
+            const oldUsername = session.username;
+            const newUsername = removeAccents(document.getElementById('editUsername').value).replace(/[^a-zA-Z0-9_]/g, '');
 
             if (!newDisplayName) {
                 showToast('❌ Tên hiển thị không được để trống!', 'error');
@@ -1312,23 +1341,60 @@
                 newTitle = myProfile.title || '';
             }
 
+            // ----- Kiểm tra tên người dùng (@username) -----
+            const usernameChanged = newUsername !== oldUsername;
+            if (usernameChanged) {
+                if (!USERNAME_RE.test(newUsername)) {
+                    showToast('❌ Tên người dùng 3-20 ký tự, chỉ gồm chữ không dấu, số và _ (không có dấu cách)!', 'error');
+                    return;
+                }
+                if (newUsername.toLowerCase() === 'admin' && (myProfile.title || '').toUpperCase().trim() !== 'ADMIN') {
+                    showToast('❌ Không thể dùng tên "admin"!', 'error');
+                    return;
+                }
+                await loadUsersFromServer();   // lấy danh sách mới nhất để kiểm tra trùng
+                if (USERS_CACHE.some(u => u.username.toLowerCase() === newUsername.toLowerCase() && u.username !== oldUsername)) {
+                    showToast('❌ Tên người dùng này đã có người dùng!', 'error');
+                    return;
+                }
+            }
+
             const { error } = await supabaseClient
                 .from('users')
                 .update({
+                    username: newUsername,
                     display_name: newDisplayName,
                     title: newTitle,
                     bio: newBio,
                     avatar_url: newAvatarUrl
                 })
-                .eq('username', session.username);
+                .eq('username', oldUsername);
 
             if (error) {
                 console.error('Lỗi lưu profile:', error);
-                showToast('❌ Không lưu được!', 'error');
+                if (usernameChanged && error.code === '23505') {
+                    showToast('❌ Tên người dùng này đã có người dùng!', 'error');
+                } else if (usernameChanged && error.code === '23503') {
+                    showToast('❌ Chưa đổi được tên: dữ liệu đang liên kết với tên cũ.', 'error');
+                } else {
+                    showToast('❌ Không lưu được!', 'error');
+                }
                 return;
             }
 
-            const newSession = { ...session };
+            // Đổi tên thì cập nhật luôn tin nhắn cũ để vẫn hiện đúng tên mới
+            let renameWarn = false;
+            if (usernameChanged) {
+                const results = await Promise.all([
+                    supabaseClient.from('messages').update({ username: newUsername }).eq('username', oldUsername),
+                    supabaseClient.from('private_messages').update({ sender_username: newUsername }).eq('sender_username', oldUsername),
+                    supabaseClient.from('private_messages').update({ receiver_username: newUsername }).eq('receiver_username', oldUsername)
+                ]);
+                renameWarn = results.some(r => r.error);
+                if (renameWarn) console.error('Lỗi cập nhật tin nhắn cũ:', results.map(r => r.error));
+            }
+
+            const newSession = { ...session, username: newUsername };
             if (newAvatarUrl) newSession.avatar = newAvatarUrl;
             localStorage.setItem(SESSION_KEY, JSON.stringify(newSession));
 
@@ -1337,7 +1403,13 @@
             updateUI();
             renderProfile();
             cancelEditProfile();
-            showToast('✅ Đã lưu hồ sơ!', 'success');
+            if (renameWarn) {
+                showToast('⚠️ Đã đổi tên, nhưng tin nhắn cũ chưa cập nhật được tên mới.', 'error');
+            } else if (usernameChanged) {
+                showToast('✅ Đã đổi tên người dùng thành @' + newUsername, 'success');
+            } else {
+                showToast('✅ Đã lưu hồ sơ!', 'success');
+            }
         }
 
         /* ============ THÔNG BÁO (CHAT CỘNG ĐỒNG) ============ */
