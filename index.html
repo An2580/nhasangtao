@@ -735,13 +735,49 @@
         let currentPmTarget = null;
 
         /* ============ HELPER ============ */
-        function hashPass(pass) {
+        // Mật khẩu mới dùng PBKDF2-SHA256 + salt ngẫu nhiên.
+        // Hash cũ dạng h_... chỉ được dùng tạm để xác minh tài khoản cũ rồi nâng cấp khi đăng nhập.
+        function bytesToBase64(bytes) {
+            let binary = '';
+            bytes.forEach(b => binary += String.fromCharCode(b));
+            return btoa(binary);
+        }
+        function base64ToBytes(value) {
+            return Uint8Array.from(atob(value), c => c.charCodeAt(0));
+        }
+        async function hashPass(pass) {
+            if (!globalThis.crypto?.subtle || !globalThis.crypto?.getRandomValues) {
+                throw new Error('Trình duyệt cần HTTPS để bảo vệ mật khẩu.');
+            }
+            const salt = crypto.getRandomValues(new Uint8Array(16));
+            const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveBits']);
+            const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt, iterations: 310000, hash: 'SHA-256' }, key, 256);
+            return 'pbkdf2$310000$' + bytesToBase64(salt) + '$' + bytesToBase64(new Uint8Array(bits));
+        }
+        function legacyHashPass(pass) {
             let hash = 0;
             for (let i = 0; i < pass.length; i++) {
                 hash = ((hash << 5) - hash) + pass.charCodeAt(i);
                 hash |= 0;
             }
             return 'h_' + hash.toString(36);
+        }
+        async function verifyPass(pass, stored) {
+            if (typeof stored !== 'string') return { ok: false, needsUpgrade: false };
+            if (stored.startsWith('pbkdf2$')) {
+                try {
+                    const [, iterationsText, saltText, expectedText] = stored.split('$');
+                    const iterations = Number(iterationsText);
+                    if (!Number.isInteger(iterations) || iterations < 100000 || iterations > 1000000 || !saltText || !expectedText) return { ok: false, needsUpgrade: false };
+                    const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveBits']);
+                    const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt: base64ToBytes(saltText), iterations, hash: 'SHA-256' }, key, 256);
+                    const actual = new Uint8Array(bits);
+                    const expected = base64ToBytes(expectedText);
+                    const ok = actual.length === expected.length && actual.every((v, i) => v === expected[i]);
+                    return { ok, needsUpgrade: false };
+                } catch (_) { return { ok: false, needsUpgrade: false }; }
+            }
+            return { ok: stored === legacyHashPass(pass), needsUpgrade: stored === legacyHashPass(pass) };
         }
 
         function getTitleClass(title) {
@@ -825,7 +861,7 @@
         async function loadUsersFromServer() {
             const { data, error } = await supabaseClient
                 .from('users')
-                .select('*')
+                .select('username,email,title,display_name,bio,avatar_url,can_preview_2011,can_access_2027,created_at,google_id')
                 .order('created_at', { ascending: true });
 
             if (error) {
@@ -849,8 +885,19 @@
 
         /* ============ QUYỀN ============ */
         function getSession() {
-            const s = localStorage.getItem(SESSION_KEY);
-            return s ? JSON.parse(s) : null;
+            try {
+                const raw = localStorage.getItem(SESSION_KEY);
+                if (!raw) return null;
+                const session = JSON.parse(raw);
+                if (!session || typeof session.username !== 'string' || !USERNAME_RE.test(session.username)) {
+                    localStorage.removeItem(SESSION_KEY);
+                    return null;
+                }
+                return session;
+            } catch (_) {
+                localStorage.removeItem(SESSION_KEY);
+                return null;
+            }
         }
 
         function getCurrentUserRole() {
@@ -883,8 +930,14 @@
             const pass2 = document.getElementById('regPass2').value;
             const btn = document.getElementById('btnRegSubmit');
 
-            if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-                return showError('regError', '❌ Tên đăng nhập chỉ gồm chữ, số và dấu _');
+            if (!USERNAME_RE.test(username)) {
+                return showError('regError', '❌ Tên đăng nhập phải dài 3–20 ký tự, chỉ gồm chữ không dấu, số và dấu _.');
+            }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                return showError('regError', '❌ Email không hợp lệ!');
+            }
+            if (pass.length < 8 || pass.length > 128) {
+                return showError('regError', '❌ Mật khẩu phải dài từ 8 đến 128 ký tự.');
             }
             if (pass !== pass2) {
                 return showError('regError', '❌ Mật khẩu nhập lại không khớp!');
@@ -900,25 +953,28 @@
                 btn.textContent = 'Tạo tài khoản';
                 return showError('regError', '❌ Tên đăng nhập đã được sử dụng!');
             }
-            if (USERS_CACHE.some(u => u.email.toLowerCase() === email)) {
+            if (USERS_CACHE.some(u => (u.email || '').toLowerCase() === email)) {
                 btn.disabled = false;
                 btn.textContent = 'Tạo tài khoản';
                 return showError('regError', '❌ Email này đã có tài khoản rồi!');
             }
 
-            const adminExists = USERS_CACHE.some(u => (u.title || '').toUpperCase().trim() === 'ADMIN');
-            const isFirst = USERS_CACHE.length === 0;
-            const isAdminName = username.toLowerCase() === 'admin';
-
-            if (isAdminName && adminExists) {
+            // Không tự cấp ADMIN cho tài khoản đầu tiên: người ngoài có thể đăng ký trước.
+            // Quyền quản trị phải được gán qua một quy trình quản trị đáng tin cậy.
+            if (username.toLowerCase() === 'admin') {
                 btn.disabled = false;
                 btn.textContent = 'Tạo tài khoản';
-                return showError('regError', '❌ Hệ thống đã có ADMIN rồi! Không thể đăng ký username "admin".');
+                return showError('regError', '❌ Tên đăng nhập này được dành riêng.');
             }
 
-            let autoTitle = '';
-            if (!adminExists && (isFirst || isAdminName)) {
-                autoTitle = 'ADMIN';
+            let passwordHash;
+            try {
+                passwordHash = await hashPass(pass);
+            } catch (e) {
+                console.error('Không thể bảo vệ mật khẩu:', e);
+                btn.disabled = false;
+                btn.textContent = 'Tạo tài khoản';
+                return showError('regError', '❌ Cần mở website qua HTTPS và dùng trình duyệt mới để đăng ký an toàn.');
             }
 
             const { error } = await supabaseClient
@@ -926,8 +982,8 @@
                 .insert([{
                     username: username,
                     email: email,
-                    password: hashPass(pass),
-                    title: autoTitle,
+                    password: passwordHash,
+                    title: '',
                     display_name: username,
                     bio: '',
                     avatar_url: ''
@@ -954,11 +1010,7 @@
             });
             closeAuth();
 
-            if (autoTitle === 'ADMIN') {
-                showToast('👑 Chào ADMIN! Bạn là admin duy nhất.', 'success');
-            } else {
-                showToast('🎉 Đăng ký thành công! Chào mừng ' + username, 'success');
-            }
+            showToast('🎉 Đăng ký thành công! Chào mừng ' + username, 'success');
         }
 
         /* ============ ĐĂNG NHẬP ============ */
@@ -969,43 +1021,52 @@
             const input = document.getElementById('loginUser').value.trim().toLowerCase();
             const pass = document.getElementById('loginPass').value;
             const btn = document.getElementById('btnLoginSubmit');
+            if (!input || !pass) return showError('loginError', '❌ Vui lòng nhập tài khoản và mật khẩu.');
 
             btn.disabled = true;
             btn.textContent = 'Đang đăng nhập...';
+            try {
+                // Tìm tài khoản trong danh sách hồ sơ đã tải, sau đó chỉ lấy hash của đúng tài khoản.
+                // Dùng eq với username chính xác để tránh ký tự _/% bị hiểu là wildcard của ilike.
+                await loadUsersFromServer();
+                const matchedAccount = USERS_CACHE.find(u =>
+                    (u.username || '').toLowerCase() === input || (u.email || '').toLowerCase() === input
+                );
+                if (!matchedAccount) return showError('loginError', '❌ Không tìm thấy tài khoản này!');
+                const { data: user, error } = await supabaseClient
+                    .from('users').select('username,email,password,avatar_url,created_at')
+                    .eq('username', matchedAccount.username).maybeSingle();
+                if (error) {
+                    console.error('Lỗi đăng nhập:', error);
+                    return showError('loginError', '❌ Không thể kết nối hoặc truy vấn tài khoản.');
+                }
+                if (!user) return showError('loginError', '❌ Không tìm thấy tài khoản này!');
 
-            const { data, error } = await supabaseClient
-                .from('users')
-                .select('*')
-                .or(`username.ilike.${input},email.ilike.${input}`)
-                .limit(20);
+                let verification;
+                try { verification = await verifyPass(pass, user.password); }
+                catch (e) { console.error(e); return showError('loginError', '❌ Trình duyệt không hỗ trợ bảo vệ mật khẩu. Hãy dùng HTTPS và trình duyệt mới.'); }
+                if (!verification.ok) return showError('loginError', '❌ Mật khẩu không đúng!');
 
-            btn.disabled = false;
-            btn.textContent = 'Đăng nhập ngay';
+                // Nâng cấp hash cũ sau khi đăng nhập thành công. Đây vẫn là biện pháp chuyển tiếp;
+                // hệ thống nên chuyển hoàn toàn sang Supabase Auth để bảo vệ xác thực phía máy chủ.
+                if (verification.needsUpgrade) {
+                    const upgradedHash = await hashPass(pass);
+                    const { error: upgradeError } = await supabaseClient.from('users')
+                        .update({ password: upgradedHash }).eq('username', user.username);
+                    if (upgradeError) console.warn('Đăng nhập được nhưng chưa nâng cấp hash cũ:', upgradeError);
+                }
 
-            if (error) {
-                return showError('loginError', '❌ Lỗi kết nối server!');
+                await loadUsersFromServer();
+                setSession({ username: user.username, email: user.email, avatar: user.avatar_url || null, createdAt: user.created_at });
+                closeAuth();
+                showToast('✅ Đăng nhập thành công! Chào ' + user.username, 'success');
+            } catch (e) {
+                console.error('Lỗi đăng nhập:', e);
+                showError('loginError', '❌ Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Đăng nhập ngay';
             }
-            if (!data || data.length === 0) {
-                return showError('loginError', '❌ Không tìm thấy tài khoản này!');
-            }
-
-            const user = data.find(u => (u.username || '').toLowerCase() === input || (u.email || '').toLowerCase() === input);
-            if (!user) {
-                return showError('loginError', '❌ Không tìm thấy tài khoản này!');
-            }
-            if (user.password !== hashPass(pass)) {
-                return showError('loginError', '❌ Mật khẩu không đúng!');
-            }
-
-            await loadUsersFromServer();
-            setSession({
-                username: user.username,
-                email: user.email,
-                avatar: user.avatar_url || null,
-                createdAt: user.created_at
-            });
-            closeAuth();
-            showToast('✅ Đăng nhập thành công! Chào ' + user.username, 'success');
         }
 
         /* ============ GOOGLE LOGIN ============ */
@@ -1026,23 +1087,19 @@
 
             await loadUsersFromServer();
 
-            let user = USERS_CACHE.find(u => u.email.toLowerCase() === userInfo.email.toLowerCase());
+            let user = USERS_CACHE.find(u => (u.email || '').toLowerCase() === (userInfo.email || '').toLowerCase());
 
             if (!user) {
-                const adminExists = USERS_CACHE.some(u => (u.title || '').toUpperCase().trim() === 'ADMIN');
-                const isFirst = USERS_CACHE.length === 0;
-                
+                // Không tự cấp ADMIN cho tài khoản Google đầu tiên.
                 // Xử lý tên từ Google: Thay khoảng trắng bằng dấu gạch dưới để tránh lỗi tag @
                 let rawName = userInfo.name || userInfo.email.split('@')[0];
                 let baseUsername = toUsername(rawName); 
-                let username = baseUsername;
+                let username = baseUsername.toLowerCase() === 'admin' ? 'user_admin' : baseUsername;
                 let suffix = 1;
                 while (USERS_CACHE.some(u => u.username.toLowerCase() === username.toLowerCase())) {
                     username = baseUsername + suffix;
                     suffix++;
                 }
-
-                const autoTitle = (!adminExists && isFirst) ? 'ADMIN' : '';
 
                 const { error } = await supabaseClient
                     .from('users')
@@ -1050,7 +1107,7 @@
                         username: username,
                         email: userInfo.email,
                         password: null,
-                        title: autoTitle,
+                        title: '',
                         display_name: rawName, // Vẫn giữ tên có dấu cách để hiển thị đẹp
                         bio: '',
                         avatar_url: userInfo.picture || '',
@@ -1063,7 +1120,7 @@
                 }
 
                 await loadUsersFromServer();
-                user = USERS_CACHE.find(u => u.email.toLowerCase() === userInfo.email.toLowerCase());
+                user = USERS_CACHE.find(u => (u.email || '').toLowerCase() === (userInfo.email || '').toLowerCase());
                 showToast('🎉 Đã tạo tài khoản qua Google!', 'success');
             } else {
                 showToast('✅ Đăng nhập Google thành công!', 'success');
@@ -1339,6 +1396,7 @@
 
         async function saveProfile() {
             const session = getSession();
+            if (!session) { showToast('❌ Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.', 'error'); return; }
             const newDisplayName = document.getElementById('editDisplayName').value.trim();
             const newBio = document.getElementById('editBio').value.trim();
             const newAvatarUrl = document.getElementById('editAvatarUrl').value.trim();
@@ -1347,6 +1405,14 @@
 
             if (!newDisplayName) {
                 showToast('❌ Tên hiển thị không được để trống!', 'error');
+                return;
+            }
+            if (newDisplayName.length > 50 || newBio.length > 500 || newAvatarUrl.length > 2048) {
+                showToast('❌ Tên hiển thị tối đa 50 ký tự, giới thiệu 500 ký tự và URL ảnh 2048 ký tự.', 'error');
+                return;
+            }
+            if (newAvatarUrl && !safeUrl(newAvatarUrl)) {
+                showToast('❌ URL ảnh phải là địa chỉ HTTP hoặc HTTPS hợp lệ.', 'error');
                 return;
             }
 
@@ -1736,6 +1802,7 @@
             const input = document.getElementById('msgInput');
             const text = input.value.trim();
             if (!text) return;
+            if (text.length > 2000) { showToast('❌ Tin nhắn tối đa 2000 ký tự.', 'error'); return; }
 
             const session = getSession();
             if (!session) {
@@ -1949,8 +2016,12 @@
             if (!text) return;
 
             const session = getSession();
-            if (!session || !currentPmTarget) {
+            if (!session || !currentPmTarget || !USERNAME_RE.test(currentPmTarget)) {
                 showToast('❌ Lỗi phiên chat!', 'error');
+                return;
+            }
+            if (text.length > 2000) {
+                showToast('❌ Tin nhắn tối đa 2000 ký tự.', 'error');
                 return;
             }
 
