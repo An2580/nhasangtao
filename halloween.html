@@ -3,228 +3,339 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Halloween 2026 | Bí ngô đang nhìn bạn</title>
+<title>Halloween 2026 | Đêm của những bóng ma</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Creepster&display=swap" rel="stylesheet">
 <style>
-:root{
-  --night:#14081f; --plum:#2b1245; --grave:#3a2457;
-  --pumpkin:#ff7a1a; --bone:#f4ead5; --glow:#ffd36b;
-  --slime:#a4e04a; --mist:#cdb8ee;
-}
+:root{--night:#14081f;--plum:#2b1245;--grave:#3a2457;--pumpkin:#ff7a1a;--bone:#f4ead5;--glow:#ffd36b;--slime:#a4e04a;--mist:#cdb8ee}
 *{box-sizing:border-box;margin:0}
-body{
-  min-height:100vh; overflow-x:hidden; color:var(--bone);
-  font-family:"Baloo 2",system-ui,sans-serif;
-  background:radial-gradient(ellipse at 50% 105%,#4a1d6b 0,var(--night) 62%) fixed;
-}
+body{min-height:100vh;overflow-x:hidden;color:var(--bone);font-family:"Baloo 2",system-ui,sans-serif;background:radial-gradient(ellipse at 50% 105%,#4a1d6b 0,var(--night) 62%) fixed}
+.back{position:fixed;top:12px;left:12px;z-index:60;color:var(--bone);text-decoration:none;font-size:1rem;padding:.35rem .9rem;border-radius:999px;border:2px solid rgba(244,234,213,.5);background:rgba(20,8,31,.7)}
+.back:hover{color:var(--glow);border-color:var(--glow)}
 
-/* Mặt trăng */
-.moon{
-  position:fixed; top:6vh; right:8vw; width:clamp(70px,12vw,130px); aspect-ratio:1; border-radius:50%;
-  background:
-    radial-gradient(circle at 62% 30%,rgba(190,170,110,.55) 0 9%,transparent 10%),
-    radial-gradient(circle at 34% 62%,rgba(190,170,110,.5) 0 12%,transparent 13%),
-    radial-gradient(circle at 35% 35%,#fffbe8,#f1e3b0 60%,#d8c78a);
-  box-shadow:0 0 60px 10px rgba(255,236,170,.32);
-}
+/* Bầu trời, trăng, sương, nghĩa địa */
+.stars{position:fixed;inset:0;opacity:.8;animation:twinkle 4s ease-in-out infinite alternate;background:radial-gradient(1.5px 1.5px at 12% 18%,#fff,transparent),radial-gradient(1px 1px at 28% 8%,#fff,transparent),radial-gradient(1.5px 1.5px at 44% 24%,#cfe0ff,transparent),radial-gradient(1px 1px at 63% 12%,#fff,transparent),radial-gradient(1.5px 1.5px at 78% 30%,#fff,transparent),radial-gradient(1px 1px at 8% 44%,#fff,transparent),radial-gradient(1px 1px at 52% 5%,#fff,transparent),radial-gradient(1.5px 1.5px at 92% 56%,#fff,transparent)}
+@keyframes twinkle{from{opacity:.4}to{opacity:.9}}
+.moon{position:fixed;top:6vh;right:8vw;width:clamp(70px,12vw,130px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 62% 30%,rgba(190,170,110,.55) 0 9%,transparent 10%),radial-gradient(circle at 34% 62%,rgba(190,170,110,.5) 0 12%,transparent 13%),radial-gradient(circle at 35% 35%,#fffbe8,#f1e3b0 60%,#d8c78a);box-shadow:0 0 60px 10px rgba(255,236,170,.32)}
+.fog{position:fixed;left:-50%;bottom:5vh;width:200%;height:32vh;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 30% 50%,rgba(205,184,238,.2),transparent 60%),radial-gradient(ellipse at 70% 60%,rgba(205,184,238,.15),transparent 60%);animation:drift 45s linear infinite alternate}
+@keyframes drift{to{transform:translateX(25%)}}
+.yard{position:fixed;left:0;bottom:0;width:100%;height:20vh;z-index:2;pointer-events:none}
+.spider{position:fixed;top:0;left:12vw;z-index:4;display:flex;flex-direction:column;align-items:center;pointer-events:none}
+.thread{width:1px;background:rgba(255,255,255,.6);animation:dangle 5s ease-in-out infinite}
+.spider span{font-size:2rem;margin-top:-4px}
+@keyframes dangle{0%,100%{height:8vh}50%{height:22vh}}
 
-/* Dơi bay ngang màn hình */
-.bat{position:fixed; left:0; top:var(--t); width:44px; z-index:2; pointer-events:none;
-  animation:fly var(--d) linear var(--s) infinite; opacity:0}
-.bat svg{display:block; width:100%; fill:#0b0412; animation:flap .35s ease-in-out infinite alternate}
-@keyframes fly{
-  0%{transform:translate(-12vw,0); opacity:1}
-  50%{transform:translate(55vw,-5vh)}
-  100%{transform:translate(112vw,2vh); opacity:1}
-}
+/* Dơi, ma, sấm, đèn pin */
+.bat{position:fixed;left:0;top:var(--t);width:44px;z-index:3;pointer-events:none;opacity:0;animation:fly var(--d) linear var(--s) infinite}
+.bat svg{display:block;width:100%;fill:#0b0412;animation:flap .35s ease-in-out infinite alternate}
+@keyframes fly{0%{transform:translate(-12vw,0);opacity:1}50%{transform:translate(55vw,-5vh)}100%{transform:translate(112vw,2vh);opacity:1}}
 @keyframes flap{from{transform:scaleY(1)}to{transform:scaleY(.45)}}
+.ghost{position:fixed;top:var(--y);left:-10vw;z-index:6;font-size:var(--s);line-height:1;padding:0;box-shadow:none;border-radius:0;background:none;border:0;cursor:pointer;filter:drop-shadow(0 0 12px rgba(205,184,238,.8));animation:ghostL var(--d) linear forwards,bob 1.8s ease-in-out infinite alternate}
+.ghost.r{animation-name:ghostR,bob}
+.ghost.poof{animation:poof .3s forwards}
+@keyframes ghostL{from{left:-10vw}to{left:110vw}}
+@keyframes ghostR{from{left:110vw}to{left:-10vw}}
+@keyframes bob{from{transform:translateY(-10px)}to{transform:translateY(10px)}}
+@keyframes poof{to{transform:scale(1.9);opacity:0}}
+.flash{position:fixed;inset:0;z-index:50;background:#dfe8ff;opacity:0;pointer-events:none}
+.flash.on{animation:zap .7s}
+@keyframes zap{0%,40%,60%,100%{opacity:0}5%{opacity:.75}10%{opacity:.1}18%{opacity:.55}30%{opacity:0}}
+.torch{position:fixed;inset:0;z-index:40;pointer-events:none;opacity:0;transition:opacity .4s;background:radial-gradient(circle 170px at var(--mx,50%) var(--my,45%),transparent 0,rgba(0,0,0,.93) 100%)}
+.torch.on{opacity:1}
 
-/* Bố cục chính */
-.stage{
-  position:relative; z-index:1; min-height:100vh; padding:2rem 1rem 3rem;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:1.1rem; text-align:center;
-}
-.pumpkin{width:min(78vw,320px); height:auto; filter:drop-shadow(0 0 34px rgba(255,122,26,.5))}
+/* Bố cục */
+.stage{position:relative;z-index:3;min-height:100vh;padding:3.5rem 1rem 22vh;display:flex;flex-direction:column;align-items:center;gap:1rem;text-align:center}
+.pumpkin{width:min(70vw,280px);height:auto;cursor:pointer;filter:drop-shadow(0 0 34px rgba(255,122,26,.5))}
 .face{animation:flicker 2.6s infinite}
-@keyframes flicker{0%,100%{opacity:1} 42%{opacity:.8} 48%{opacity:1} 70%{opacity:.9}}
-.hint{font-size:.9rem; color:var(--mist); margin-top:-.4rem}
+@keyframes flicker{0%,100%{opacity:1}42%{opacity:.8}48%{opacity:1}70%{opacity:.9}}
+.hint{font-size:.9rem;color:var(--mist);margin-top:-.4rem}
+h1{font:400 clamp(2.8rem,10vw,5.5rem)/1 Creepster,"Baloo 2",cursive;letter-spacing:.04em;color:var(--pumpkin);text-shadow:0 0 22px rgba(255,122,26,.55)}
+.lead{max-width:34ch;font-size:1.1rem;line-height:1.45}
+.clock{display:flex;gap:.7rem;justify-content:center}
+.clock[hidden]{display:none}
+.stone{width:74px;padding:.9rem 0 .5rem;display:flex;flex-direction:column;gap:.25rem;background:linear-gradient(var(--grave),#2e1a47);border-radius:37px 37px 6px 6px;box-shadow:inset 0 2px 0 rgba(255,255,255,.12)}
+.stone b{font:400 1.9rem/1 Creepster,"Baloo 2",cursive;letter-spacing:.03em}
+.stone small{font-size:.8rem;color:var(--mist)}
+.done{font-size:1.4rem;font-weight:700;color:var(--glow)}
+.done[hidden]{display:none}
 
-h1{
-  font:400 clamp(2.8rem,10vw,5.5rem)/1 Creepster,"Baloo 2",cursive;
-  letter-spacing:.04em; color:var(--pumpkin);
-  text-shadow:0 0 22px rgba(255,122,26,.55);
-}
-.lead{max-width:34ch; font-size:1.1rem; line-height:1.45}
-
-/* Đồng hồ đếm ngược: mỗi đơn vị là một tấm bia */
-.clock{display:flex; gap:.7rem; justify-content:center}
-.stone{
-  width:74px; padding:.9rem 0 .5rem; display:flex; flex-direction:column; gap:.25rem;
-  background:linear-gradient(var(--grave),#2e1a47);
-  border-radius:37px 37px 6px 6px; box-shadow:inset 0 2px 0 rgba(255,255,255,.12);
-}
-.stone b{font:400 1.9rem/1 Creepster,"Baloo 2",cursive; letter-spacing:.03em}
-.stone small{font-size:.8rem; color:var(--mist)}
-.done{font-size:1.4rem; font-weight:700; color:var(--glow)}
-
-/* Gõ cửa */
-button{
-  font:700 1.15rem "Baloo 2",system-ui,sans-serif; color:#1a0a00; background:var(--pumpkin);
-  border:0; border-radius:999px; padding:.7rem 1.9rem; cursor:pointer;
-  box-shadow:0 0 24px rgba(255,122,26,.5);
-}
+/* Nút và bảng chức năng */
+button{font:700 1.1rem "Baloo 2",system-ui,sans-serif;color:#1a0a00;background:var(--pumpkin);border:2px solid var(--pumpkin);border-radius:999px;padding:.55rem 1.4rem;cursor:pointer;box-shadow:0 0 18px rgba(255,122,26,.4)}
 button:active{transform:translateY(2px)}
-button:focus-visible{outline:3px solid var(--glow); outline-offset:4px}
-.card{
-  max-width:36ch; min-height:5.5rem; padding:1rem 1.2rem; border-radius:14px;
-  background:rgba(43,18,69,.85); border:2px solid var(--pumpkin); line-height:1.4;
-}
-.card.treat{border-color:var(--slime)}
-.card .e{display:block; font-size:2rem; margin-bottom:.2rem}
-.card.pop{animation:pop .35s ease-out}
-@keyframes pop{from{transform:scale(.85); opacity:0} to{transform:scale(1); opacity:1}}
-
-@media (prefers-reduced-motion:reduce){
-  *{animation:none!important}
-  .bat{display:none}
-}
+button:focus-visible,.back:focus-visible{outline:3px solid var(--glow);outline-offset:3px}
+.tools{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center}
+button.tool{font-size:.95rem;padding:.4rem 1rem;color:var(--pumpkin);background:rgba(20,8,31,.65);box-shadow:none}
+button.tool[aria-pressed="true"]{background:var(--pumpkin);color:#1a0a00}
+.hud{font-size:1.15rem}
+.hud b{color:var(--glow)}
+.cards{display:grid;gap:1rem;width:min(94vw,420px)}
+.panel{padding:1.1rem;border-radius:16px;background:rgba(43,18,69,.75);border:1px solid rgba(255,122,26,.35);display:flex;flex-direction:column;align-items:center;gap:.7rem}
+.panel h2{font:400 1.7rem/1 Creepster,"Baloo 2",cursive;letter-spacing:.04em;color:var(--glow)}
+.out{width:100%;min-height:5.5rem;padding:.8rem 1rem;border-radius:12px;border:2px solid var(--pumpkin);line-height:1.45;background:rgba(20,8,31,.6)}
+.out[hidden]{display:none}
+.out.treat{border-color:var(--slime)}
+.out .e{display:block;font-size:2rem}
+.out.pop{animation:pop .35s ease-out}
+@keyframes pop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.sub{font-size:.85rem;color:var(--mist)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}.bat,.spider{display:none}}
 </style>
 </head>
 <body>
-
+<a class="back" href="index.html">← Trang chủ</a>
+<div class="stars" aria-hidden="true"></div>
 <div class="moon" aria-hidden="true"></div>
-
-<!-- Biểu tượng dơi dùng lại nhiều lần -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="bat" viewBox="-32 -12 64 28">
-    <path d="M0 0C-10-8-22-6-30 4C-24 2-20 6-16 10C-12 6-8 8-4 12L0 6L4 12C8 8 12 6 16 10C20 6 24 2 30 4C22-6 10-8 0 0Z"/>
-  </symbol>
-</svg>
+<div class="fog" aria-hidden="true"></div>
+<svg class="yard" viewBox="0 0 1200 170" preserveAspectRatio="none" aria-hidden="true"><g fill="#0a0414">
+<path d="M0 170V135q100-18 200 0t200 0 200 0 200 0 200 0 200 0V170z"/>
+<path d="M70 140V98q0-20 20-20t20 20v42zM210 142V108q0-16 16-16t16 16v34zM520 140V92q0-22 22-22t22 22v48zM760 142V104q0-18 18-18t18 18v38zM1010 140V96q0-20 20-20t20 20v44z"/>
+<path d="M900 140q-6-60 10-100l-26-30m26 30l34-40m-30 80l40-26m-48 50l-34-24" stroke="#0a0414" stroke-width="7" fill="none" stroke-linecap="round"/></g></svg>
+<div class="spider" aria-hidden="true"><i class="thread"></i><span>🕷️</span></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="bat" viewBox="-32 -12 64 28"><path d="M0 0C-10-8-22-6-30 4C-24 2-20 6-16 10C-12 6-8 8-4 12L0 6L4 12C8 8 12 6 16 10C20 6 24 2 30 4C22-6 10-8 0 0Z"/></symbol></svg>
 <div class="bat" style="--t:12vh;--d:16s;--s:0s" aria-hidden="true"><svg viewBox="-32 -12 64 28"><use href="#bat"/></svg></div>
 <div class="bat" style="--t:26vh;--d:22s;--s:5s" aria-hidden="true"><svg viewBox="-32 -12 64 28"><use href="#bat"/></svg></div>
 <div class="bat" style="--t:8vh;--d:19s;--s:11s" aria-hidden="true"><svg viewBox="-32 -12 64 28"><use href="#bat"/></svg></div>
+<div class="flash" id="flash" aria-hidden="true"></div>
+<div class="torch" id="torch" aria-hidden="true"></div>
 
 <main class="stage">
-
-  <svg class="pumpkin" id="pumpkin" viewBox="0 0 300 280" role="img" aria-label="Quả bí ngô có đôi mắt nhìn theo con trỏ chuột">
+  <svg class="pumpkin" id="pumpkin" viewBox="0 0 300 280" role="img" aria-label="Quả bí ngô nhìn theo con trỏ chuột, bấm để đổi mặt">
     <defs>
-      <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
-        <feGaussianBlur stdDeviation="4" result="b"/>
-        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-      </filter>
-      <clipPath id="eyes">
-        <polygon points="95,140 135,140 115,105"/>
-        <polygon points="165,140 205,140 185,105"/>
-      </clipPath>
+      <filter id="glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <clipPath id="clipE"></clipPath>
     </defs>
-    <!-- thân -->
-    <ellipse cx="82"  cy="162" rx="66" ry="96" fill="#d95a0a"/>
-    <ellipse cx="218" cy="162" rx="66" ry="96" fill="#d95a0a"/>
-    <ellipse cx="116" cy="162" rx="62" ry="102" fill="#ee6c10"/>
-    <ellipse cx="184" cy="162" rx="62" ry="102" fill="#ee6c10"/>
+    <ellipse cx="82" cy="162" rx="66" ry="96" fill="#d95a0a"/><ellipse cx="218" cy="162" rx="66" ry="96" fill="#d95a0a"/>
+    <ellipse cx="116" cy="162" rx="62" ry="102" fill="#ee6c10"/><ellipse cx="184" cy="162" rx="62" ry="102" fill="#ee6c10"/>
     <ellipse cx="150" cy="162" rx="54" ry="106" fill="#ff7a1a"/>
     <ellipse cx="120" cy="90" rx="16" ry="9" fill="#ffb066" opacity=".55" transform="rotate(-25 120 90)"/>
-    <!-- cuống -->
     <path d="M140 62Q143 32 166 24L174 38Q158 46 162 64Z" fill="#4a6b2a"/>
-    <!-- khuôn mặt phát sáng -->
-    <g class="face" fill="#ffd36b" filter="url(#glow)">
-      <polygon points="95,140 135,140 115,105"/>
-      <polygon points="165,140 205,140 185,105"/>
-      <polygon points="150,150 139,167 161,167"/>
-      <path d="M90 186Q150 246 210 186L196 193L186 209L172 197L160 215L148 199L136 215L124 197L112 209L104 193Z"/>
-    </g>
-    <!-- con ngươi di chuyển theo chuột -->
-    <g clip-path="url(#eyes)">
-      <circle id="pl" cx="115" cy="128" r="7" fill="#2a0f00"/>
-      <circle id="pr" cx="185" cy="128" r="7" fill="#2a0f00"/>
-    </g>
+    <g class="face" fill="#ffd36b" filter="url(#glow)"><g id="eyesG"></g><g id="mouthG"></g></g>
+    <g clip-path="url(#clipE)"><circle id="pl" r="7" fill="#2a0f00"/><circle id="pr" r="7" fill="#2a0f00"/></g>
   </svg>
-  <p class="hint">Di chuột (hoặc chạm vào màn hình) để bí ngô nhìn theo bạn.</p>
+  <p class="hint">Di chuột để bí ngô nhìn theo bạn. Bấm vào bí ngô để đổi mặt.</p>
 
   <h1>Halloween 2026</h1>
-  <p class="lead">Đêm 31/10 đang đến gần. Thắp đèn bí ngô, rồi gõ cửa thử vận may.</p>
+  <p class="lead">Đêm 31/10 đang đến gần. Thắp đèn bí ngô, gõ cửa xin kẹo và đừng để ma bắt gặp bạn.</p>
 
   <div class="clock" id="clock" role="timer" aria-label="Thời gian còn lại đến Halloween">
-    <div class="stone"><b id="d">00</b><small>ngày</small></div>
-    <div class="stone"><b id="h">00</b><small>giờ</small></div>
-    <div class="stone"><b id="m">00</b><small>phút</small></div>
-    <div class="stone"><b id="s">00</b><small>giây</small></div>
+    <div class="stone"><b id="d">00</b><small>ngày</small></div><div class="stone"><b id="h">00</b><small>giờ</small></div>
+    <div class="stone"><b id="m">00</b><small>phút</small></div><div class="stone"><b id="s">00</b><small>giây</small></div>
   </div>
   <p class="done" id="done" hidden>Đêm nay là Halloween! Bật đèn lên nào.</p>
 
-  <button id="knock" type="button">Gõ cửa</button>
-  <div class="card" id="result" role="status" aria-live="polite" hidden></div>
+  <div class="tools">
+    <button class="tool" id="tSound" type="button" aria-pressed="false">🔇 Âm thanh</button>
+    <button class="tool" id="tStorm" type="button" aria-pressed="false">⚡ Sấm chớp</button>
+    <button class="tool" id="tTorch" type="button" aria-pressed="false">🔦 Đèn pin</button>
+    <button class="tool" id="tFace" type="button">🎭 Đổi mặt</button>
+    <button class="tool" id="tGhost" type="button">👻 Gọi ma</button>
+  </div>
+  <p class="hud">🍬 <b id="candy">0</b> kẹo &nbsp;·&nbsp; 👻 <b id="ghosts">0</b> ma bắt được</p>
+  <p class="sub">Trên iPhone nhớ tắt chế độ im lặng để nghe âm thanh. Kẹo và ma được lưu trên máy bạn.</p>
 
+  <div class="cards">
+    <section class="panel">
+      <h2>Trick or treat</h2>
+      <button id="knock" type="button">Gõ cửa</button>
+      <div class="out" id="result" role="status" aria-live="polite" hidden></div>
+    </section>
+  </div>
 </main>
 
 <script>
 const $ = id => document.getElementById(id);
+const rnd = a => a[Math.floor(Math.random() * a.length)];
+const rand = (a, b) => a + Math.random() * (b - a);
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/* 1. Con ngươi nhìn theo con trỏ */
-const svg = $('pumpkin'), pupils = [$('pl'), $('pr')];
-addEventListener('pointermove', e => {
-  const r = svg.getBoundingClientRect();
-  const dx = e.clientX - (r.left + r.width / 2);
-  const dy = e.clientY - (r.top + r.height * 0.46);
-  const dist = Math.hypot(dx, dy) || 1;
-  const k = Math.min(1, dist / 200) * 6;
-  const move = `translate(${(dx / dist * k).toFixed(2)}px, ${(dy / dist * k).toFixed(2)}px)`;
-  pupils.forEach(p => p.style.transform = move);
+/* ===== Lưu kẹo và ma ===== */
+const ls = {
+  get(k) { try { return +localStorage.getItem(k) || 0; } catch (e) { return 0; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+};
+let candy = ls.get('hw26_candy'), ghosts = ls.get('hw26_ghost');
+function stats() {
+  $('candy').textContent = candy; $('ghosts').textContent = ghosts;
+  ls.set('hw26_candy', candy); ls.set('hw26_ghost', ghosts);
+}
+stats();
+
+/* ===== Âm thanh (Web Audio, không cần file) ===== */
+let actx, master, nbuf, drone, soundOn = false;
+function audioInit() {
+  if (!actx) {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return false;
+    actx = new AC();
+    const comp = actx.createDynamicsCompressor();
+    master = actx.createGain(); master.gain.value = 0.7;
+    master.connect(comp); comp.connect(actx.destination);
+    nbuf = actx.createBuffer(1, actx.sampleRate, actx.sampleRate);
+    const d = nbuf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  }
+  if (actx.state === 'suspended') actx.resume();
+  return true;
+}
+function env(node, t, peak, dur) {
+  const g = actx.createGain();
+  g.gain.setValueAtTime(peak, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+  node.connect(g); g.connect(master);
+}
+function tone(type, f0, f1, dur, gain, delay = 0) {
+  const t = actx.currentTime + delay, o = actx.createOscillator();
+  o.type = type; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+  env(o, t, gain, dur); o.start(t); o.stop(t + dur + 0.05);
+}
+function hiss(type, f0, f1, dur, gain, delay = 0) {
+  const t = actx.currentTime + delay, s = actx.createBufferSource(), f = actx.createBiquadFilter();
+  s.buffer = nbuf; s.loop = true; f.type = type;
+  f.frequency.setValueAtTime(f0, t); f.frequency.exponentialRampToValueAtTime(f1, t + dur);
+  s.connect(f); env(f, t, gain, dur); s.start(t); s.stop(t + dur + 0.05);
+}
+const sfx = {
+  knock()   { tone('sine', 110, 50, 0.25, 0.9); tone('sine', 110, 50, 0.25, 0.9, 0.3); },
+  catch()   { tone('sawtooth', 900, 180, 0.45, 0.12); hiss('bandpass', 2000, 400, 0.3, 0.2); },
+  chime()   { tone('triangle', 880, 880, 0.35, 0.2); tone('triangle', 1320, 1320, 0.45, 0.18, 0.12); },
+  creak()   { tone('sawtooth', 160, 420, 0.7, 0.07); tone('sawtooth', 420, 140, 0.5, 0.06, 0.7); },
+  thunder() { hiss('lowpass', 500, 50, 2.4, 0.9); tone('sine', 70, 30, 1.8, 0.7); }
+};
+const play = n => { if (soundOn) sfx[n](); };
+function droneStart() {
+  if (drone) return;
+  const g = actx.createGain(), f = actx.createBiquadFilter();
+  g.gain.value = 0.05; f.type = 'lowpass'; f.frequency.value = 220;
+  const os = [55, 58.5].map(fr => {
+    const o = actx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = fr; o.connect(f); o.start(); return o;
+  });
+  f.connect(g); g.connect(master); drone = os;
+}
+function droneStop() { if (drone) { drone.forEach(o => o.stop()); drone = null; } }
+
+function toggle(btn, on) { btn.setAttribute('aria-pressed', on); }
+$('tSound').addEventListener('click', () => {
+  soundOn = !soundOn;
+  if (soundOn && !audioInit()) { soundOn = false; return; }
+  toggle($('tSound'), soundOn);
+  $('tSound').textContent = soundOn ? '🔊 Âm thanh' : '🔇 Âm thanh';
+  if (soundOn) { droneStart(); sfx.creak(); } else droneStop();
 });
 
-/* 2. Đếm ngược đến 31/10 */
+/* ===== Sấm chớp ===== */
+let stormOn = false, stormT;
+function zap() {
+  const f = $('flash'); f.classList.remove('on'); void f.offsetWidth; f.classList.add('on');
+  setTimeout(() => play('thunder'), rand(500, 1300));
+}
+function storm() { if (!stormOn) return; zap(); stormT = setTimeout(storm, rand(6000, 14000)); }
+$('tStorm').addEventListener('click', () => {
+  stormOn = !stormOn; toggle($('tStorm'), stormOn); clearTimeout(stormT);
+  if (stormOn) stormT = setTimeout(storm, 600);
+});
+
+/* ===== Đèn pin ===== */
+$('tTorch').addEventListener('click', () => {
+  const on = !$('torch').classList.contains('on');
+  $('torch').classList.toggle('on', on); toggle($('tTorch'), on);
+});
+
+/* ===== Bí ngô: đổi mặt và con ngươi nhìn theo chuột ===== */
+const NOSE = '<polygon points="150,150 139,167 161,167"/>';
+const TRI = '<polygon points="95,140 135,140 115,105"/><polygon points="165,140 205,140 185,105"/>';
+const FACES = [
+  { e: TRI, m: NOSE + '<path d="M90 186Q150 246 210 186L196 193L186 209L172 197L160 215L148 199L136 215L124 197L112 209L104 193Z"/>', p: [[115, 128], [185, 128]] },
+  { e: TRI, m: NOSE + '<ellipse cx="150" cy="205" rx="22" ry="28"/>', p: [[115, 128], [185, 128]] },
+  { e: '<circle cx="115" cy="125" r="20"/><circle cx="185" cy="125" r="20"/>', m: NOSE + '<path d="M85 180Q150 250 215 180Q150 212 85 180Z"/>', p: [[115, 125], [185, 125]] },
+  { e: '<polygon points="92,112 138,134 132,148 94,140"/><polygon points="208,112 162,134 168,148 206,140"/>', m: NOSE + '<path d="M88 190Q150 225 212 190L200 214L184 196L168 220L150 198L132 220L116 196L100 214Z"/>', p: [[115, 134], [185, 134]] }
+];
+let face = 0;
+function setFace(i) {
+  face = i % FACES.length; const f = FACES[face];
+  $('eyesG').innerHTML = f.e; $('clipE').innerHTML = f.e; $('mouthG').innerHTML = f.m;
+  [$('pl'), $('pr')].forEach((p, k) => { p.setAttribute('cx', f.p[k][0]); p.setAttribute('cy', f.p[k][1]); });
+}
+setFace(0);
+const nextFace = () => { setFace(face + 1); play('creak'); };
+$('pumpkin').addEventListener('click', nextFace);
+$('tFace').addEventListener('click', nextFace);
+
+addEventListener('pointermove', e => {
+  const r = $('pumpkin').getBoundingClientRect();
+  const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height * 0.46);
+  const dist = Math.hypot(dx, dy) || 1, k = Math.min(1, dist / 200) * 6;
+  const mv = `translate(${(dx / dist * k).toFixed(2)}px, ${(dy / dist * k).toFixed(2)}px)`;
+  $('pl').style.transform = mv; $('pr').style.transform = mv;
+  document.documentElement.style.setProperty('--mx', e.clientX + 'px');
+  document.documentElement.style.setProperty('--my', e.clientY + 'px');
+});
+
+/* ===== Đếm ngược đến 31/10 ===== */
 const pad = n => String(n).padStart(2, '0');
 function tick() {
-  const now = new Date();
-  const y = now.getFullYear();
-  const start = new Date(y, 9, 31);   // 00:00 ngày 31/10
-  const end = new Date(y, 10, 1);     // 00:00 ngày 1/11
-  if (now >= start && now < end) {
-    $('clock').hidden = true;
-    $('done').hidden = false;
-    return;
-  }
-  $('clock').hidden = false;
-  $('done').hidden = true;
-  const target = now >= end ? new Date(y + 1, 9, 31) : start;
-  const diff = Math.max(0, target - now);
+  const now = new Date(), y = now.getFullYear();
+  const start = new Date(y, 9, 31), end = new Date(y, 10, 1);
+  if (now >= start && now < end) { $('clock').hidden = true; $('done').hidden = false; return; }
+  $('clock').hidden = false; $('done').hidden = true;
+  const diff = Math.max(0, (now >= end ? new Date(y + 1, 9, 31) : start) - now);
   $('d').textContent = pad(Math.floor(diff / 864e5));
   $('h').textContent = pad(Math.floor(diff / 36e5) % 24);
   $('m').textContent = pad(Math.floor(diff / 6e4) % 60);
   $('s').textContent = pad(Math.floor(diff / 1e3) % 60);
 }
-tick();
-setInterval(tick, 1000);
+tick(); setInterval(tick, 1000);
 
-/* 3. Trick or treat */
+/* ===== Bắt ma ===== */
+let onScreen = 0;
+function spawnGhost(force) {
+  if (!force && (document.hidden || onScreen >= 3)) return;
+  const d = rand(9, 16), g = document.createElement('button');
+  g.className = 'ghost' + (Math.random() < 0.5 ? ' r' : '');
+  g.textContent = '👻'; g.setAttribute('aria-label', 'Bắt ma');
+  g.style.setProperty('--y', rand(12, 62) + 'vh');
+  g.style.setProperty('--s', rand(1.8, 3) + 'rem');
+  g.style.setProperty('--d', d + 's');
+  onScreen++;
+  const remove = () => { if (g.isConnected) { g.remove(); onScreen--; } };
+  g.addEventListener('click', () => {
+    g.style.left = g.getBoundingClientRect().left + 'px';
+    g.classList.add('poof'); ghosts++; stats(); play('catch');
+    setTimeout(remove, 300);
+  });
+  document.body.appendChild(g);
+  setTimeout(remove, d * 1000 + 200);
+}
+$('tGhost').addEventListener('click', () => spawnGhost(true));
+if (!reduced) { setTimeout(spawnGhost, 2500); setInterval(spawnGhost, 5000); }
+
+/* ===== Trick or treat ===== */
 const treats = [
-  ['🍬', 'Bạn nhận được một nắm kẹo dẻ đủ màu. Chia cho bạn bè một nửa nhé.'],
-  ['🍫', 'Một thanh sô-cô-la đen còn nguyên vỏ. Hôm nay bạn may mắn đấy.'],
-  ['🍭', 'Kẹo mút hình bí ngô. Cắn nhẹ thôi kẻo vỡ răng.'],
-  ['🍪', 'Bánh quy hình ma vừa ra lò, vẫn còn ấm.']
+  ['🍬', 'Bạn nhận được một nắm kẹo dẻ đủ màu.'], ['🍫', 'Một thanh sô-cô-la đen còn nguyên vỏ.'],
+  ['🍭', 'Kẹo mút hình bí ngô. Cắn nhẹ thôi kẻo vỡ răng.'], ['🍪', 'Bánh quy hình ma vừa ra lò, vẫn còn ấm.']
 ];
 const tricks = [
   ['👻', 'Bùu! Không có ai ở nhà, chỉ có tiếng thì thầm sau lưng bạn.'],
   ['🕷️', 'Một con nhện nhựa rơi xuống vai bạn. Chỉ là đồ chơi… chắc vậy.'],
-  ['🦇', 'Bầy dơi bay ra từ cửa và mang đi hết kẹo của bạn.'],
-  ['💀', 'Cánh cửa kẽo kẹt mở ra, bộ xương trong nhà nói: “Năm sau quay lại nhé.”']
+  ['🦇', 'Bầy dơi bay ra từ cửa và mang đi một ít kẹo của bạn.'],
+  ['💀', 'Bộ xương trong nhà nói: “Năm sau quay lại nhé.”']
 ];
-const pick = list => list[Math.floor(Math.random() * list.length)];
-
-$('knock').addEventListener('click', () => {
-  const isTreat = Math.random() < 0.55;
-  const [emoji, text] = pick(isTreat ? treats : tricks);
-  const box = $('result');
-  box.hidden = false;
-  box.className = 'card ' + (isTreat ? 'treat' : 'trick');
+function show(box, cls, emoji, text) {
+  box.hidden = false; box.className = 'out ' + cls;
   box.innerHTML = '<span class="e"></span><span class="t"></span>';
-  box.querySelector('.e').textContent = emoji;
-  box.querySelector('.t').textContent = text;
-  void box.offsetWidth;            // chạy lại hiệu ứng
-  box.classList.add('pop');
+  box.querySelector('.e').textContent = emoji; box.querySelector('.t').textContent = text;
+  void box.offsetWidth; box.classList.add('pop');
+}
+$('knock').addEventListener('click', () => {
+  const btn = $('knock'); btn.disabled = true; play('knock');
+  setTimeout(() => {
+    const isTreat = Math.random() < 0.6;
+    const [emoji, text] = rnd(isTreat ? treats : tricks);
+    let note;
+    if (isTreat) { const n = 1 + Math.floor(Math.random() * 3); candy += n; note = ` (+${n} kẹo)`; play('chime'); }
+    else { const n = Math.min(candy, 1 + Math.floor(Math.random() * 2)); candy -= n; note = n ? ` (−${n} kẹo)` : ''; play('creak'); }
+    stats(); show($('result'), isTreat ? 'treat' : 'trick', emoji, text + note);
+    btn.disabled = false;
+  }, 650);
 });
 </script>
 </body>
