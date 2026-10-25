@@ -376,6 +376,7 @@
             border-radius: 12px; cursor: pointer; transition: 0.2s;
         }
         .pm-list-item:hover { background: #222; border-color: #FFC400; }
+        .pm-av img { width: 100%; height: 100%; object-fit: cover; }
         
         /* ================= PROFILE ================= */
         .profile-modal { max-width: 480px; padding: 30px; }
@@ -765,6 +766,38 @@
             return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
 
+        /* ============ AN TOÀN KHI ĐƯA DỮ LIỆU VÀO HTML ============ */
+        function escapeAttr(str) {
+            return String(str ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+                .replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+        // Chỉ cho phép link ảnh http/https (chặn javascript:, data: và ký tự phá thẻ)
+        function safeUrl(u) {
+            if (!u) return '';
+            try {
+                const x = new URL(String(u).trim(), location.href);
+                return (x.protocol === 'https:' || x.protocol === 'http:') ? x.href : '';
+            } catch (e) { return ''; }
+        }
+        // Gắn ảnh đại diện: hiện chữ cái trước, ảnh tải xong mới thay vào (ảnh lỗi thì giữ chữ cái)
+        function setAvatar(el, url, letter) {
+            const src = safeUrl(url);
+            const key = src + '|' + letter;
+            if (el.dataset.k === key) return;          // không đổi thì khỏi vẽ lại (tránh nháy mỗi 10 giây)
+            el.dataset.k = key;
+            el.textContent = letter;
+            if (!src) return;
+            const img = new Image();
+            img.alt = 'Avatar';
+            img.onload = () => { if (el.dataset.k === key) { el.textContent = ''; el.appendChild(img); } };
+            img.src = src;
+        }
+        // Ảnh tròn nhỏ cạnh tên trong tin nhắn
+        function smallAvatarTag(url) {
+            const src = safeUrl(url);
+            return src ? `<img src="${escapeAttr(src)}" alt="" style="width:18px;height:18px;border-radius:50%;margin-right:5px;vertical-align:middle;display:inline-block;">` : '';
+        }
+
         /* ============ USERNAME: KHÔNG DẤU CÁCH, KHÔNG DẤU TIẾNG VIỆT ============ */
         const USERNAME_RE = /^[a-zA-Z0-9_]{3,20}$/;
         function removeAccents(str) {
@@ -1082,11 +1115,7 @@
                     nameEl.textContent = displayName;
                 }
 
-                if (avatarUrl) {
-                    userAvatar.innerHTML = `<img src="${avatarUrl}" alt="Avatar" onerror="this.parentElement.textContent='${displayName.charAt(0).toUpperCase()}'">`;
-                } else {
-                    userAvatar.textContent = displayName.charAt(0).toUpperCase();
-                }
+                setAvatar(userAvatar, avatarUrl, displayName.charAt(0).toUpperCase());
 
                 if (canAccessAdminPanel()) {
                     btnAdmin.classList.add('show');
@@ -1097,6 +1126,7 @@
                 btnLogin.style.display = 'inline-block';
                 userBox.classList.remove('active');
                 userAvatar.innerHTML = 'A';
+                delete userAvatar.dataset.k;
                 btnAdmin.classList.remove('show');
             }
             
@@ -1207,11 +1237,7 @@
             const createdAt = session.createdAt || new Date().toISOString();
 
             const avatarBig = document.getElementById('profileAvatar');
-            if (avatarUrl) {
-                avatarBig.innerHTML = `<img src="${avatarUrl}" alt="Avatar" onerror="this.parentElement.textContent='${displayName.charAt(0).toUpperCase()}'">`;
-            } else {
-                avatarBig.textContent = displayName.charAt(0).toUpperCase();
-            }
+            setAvatar(avatarBig, avatarUrl, displayName.charAt(0).toUpperCase());
 
             document.getElementById('profileDisplayName').textContent = displayName;
             document.getElementById('profileUsername').textContent = '@' + session.username;
@@ -1490,16 +1516,14 @@
             const session = getSession();
             const isMine = session && m.username === session.username;
 
-            const empty = container.querySelector('p');
+            const empty = container.querySelector(':scope > p');
             if (empty && empty.textContent.includes('Chưa có')) empty.remove();
 
             const bubble = document.createElement('div');
             bubble.className = 'msg-bubble' + (isMine ? ' mine' : '');
 
             const time = new Date(m.created_at).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-            const avatarHtml = m.avatar
-                ? `<img src="${m.avatar}" style="width:18px;height:18px;border-radius:50%;margin-right:5px;vertical-align:middle;display:inline-block;">`
-                : '';
+            const avatarHtml = smallAvatarTag(m.avatar);
 
             const senderProfile = getProfile(m.username);
             const senderTitle = senderProfile.title || '';
@@ -1512,7 +1536,7 @@
             // Click tên để mở chat riêng
             const nameHtml = isMine 
                 ? escapeHtml(m.username) 
-                : `<span class="clickable-name" onclick="openPrivateChat('${m.username}')" title="Nhắn tin riêng cho ${m.username}">${escapeHtml(m.username)}</span>`;
+                : `<span class="clickable-name" data-user="${escapeAttr(m.username)}" onclick="openPrivateChat(this.dataset.user)" title="Nhắn tin riêng cho ${escapeAttr(m.username)}">${escapeHtml(m.username)}</span>`;
 
             bubble.innerHTML = `
                 <strong>${avatarHtml}${nameHtml}${badgeHtml}</strong>
@@ -1541,7 +1565,7 @@
                 
                 const isMe = currentUser && username.toLowerCase() === currentUser.toLowerCase();
                 const cls = 'mention' + (isMe ? ' mention-me' : '');
-                return `<span class="${cls}" onclick="mentionClick('${username}')">@${username}</span>`;
+                return `<span class="${cls}" data-user="${escapeAttr(username)}" onclick="mentionClick(this.dataset.user)">@${escapeHtml(username)}</span>`;
             });
 
             return escaped;
@@ -1661,9 +1685,7 @@
 
                 const item = document.createElement('div');
                 item.className = 'mention-item' + (idx === 0 ? ' active' : '');
-                const avatarHTML = avatarUrl
-                    ? `<img src="${avatarUrl}" onerror="this.parentElement.textContent='${displayName.charAt(0).toUpperCase()}'">`
-                    : displayName.charAt(0).toUpperCase();
+                const avatarHTML = '';
                 const badgeHTML = title
                     ? ` <span class="title-badge ${getTitleClass(title)}" style="font-size:8px;">${escapeHtml(title)}</span>`
                     : '';
@@ -1675,6 +1697,8 @@
                         <div style="font-size:12px;color:#888;">@${escapeHtml(u.username)}</div>
                     </div>
                 `;
+
+                setAvatar(item.querySelector('.m-avatar'), avatarUrl, displayName.charAt(0).toUpperCase());
 
                 item.onclick = () => {
                     const curValue = msgInput.value;
@@ -1783,7 +1807,7 @@
             filtered.forEach(u => {
                 const p = getProfile(u.username);
                 const avatar = p.avatarUrl || '';
-                const avatarHtml = avatar ? `<img src="${avatar}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">` : `<div style="width:40px;height:40px;border-radius:50%;background:#FFC400;color:#000;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0;">${u.username.charAt(0).toUpperCase()}</div>`;
+                const avatarHtml = '<div class="pm-av" style="width:40px;height:40px;border-radius:50%;background:#FFC400;color:#000;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0;overflow:hidden;"></div>';
                 
                 const item = document.createElement('div');
                 item.className = 'pm-list-item';
@@ -1800,6 +1824,7 @@
                     </div>
                     <div style="color:#FFC400; font-size:18px;">💬</div>
                 `;
+                setAvatar(item.querySelector('.pm-av'), avatar, u.username.charAt(0).toUpperCase());
                 container.appendChild(item);
             });
         }
@@ -1895,7 +1920,7 @@
             const session = getSession();
             const isMine = session && m.sender_username === session.username;
 
-            const empty = container.querySelector('p');
+            const empty = container.querySelector(':scope > p');
             if (empty && empty.textContent.includes('Chưa có')) empty.remove();
 
             const bubble = document.createElement('div');
@@ -1906,9 +1931,7 @@
             // Lấy avatar người gửi
             const senderProfile = getProfile(m.sender_username);
             const senderAvatar = senderProfile.avatarUrl || '';
-            const avatarHtml = senderAvatar
-                ? `<img src="${senderAvatar}" style="width:18px;height:18px;border-radius:50%;margin-right:5px;vertical-align:middle;display:inline-block;">`
-                : '';
+            const avatarHtml = smallAvatarTag(senderAvatar);
 
             bubble.innerHTML = `
                 <strong>${avatarHtml}${escapeHtml(m.sender_username)}</strong>
@@ -1993,8 +2016,9 @@
             clearInterval(countdownInterval);
 
             const now = new Date();
-            let targetYear = now.getFullYear();
-            let targetDate = new Date(`November 20, ${targetYear} 00:00:00`);
+            // Lấy ngày mở từ khối sự kiện (data-start) để khớp với nhóm "chưa bắt đầu / đã diễn ra"
+            const evEl = btn.closest('.event');
+            let targetDate = new Date(evEl && evEl.dataset.start ? evEl.dataset.start : '2026-11-20T00:00:00');
 
             const session = getSession();
             let hasPreview = false;
@@ -2073,6 +2097,7 @@
             startCountdown2011();
             
             setInterval(async () => {
+                if (document.hidden) return;   // tab đang ẩn thì khỏi tải lại
                 await loadUsersFromServer();
                 updateUI();
             }, 10000);
