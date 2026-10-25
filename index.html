@@ -202,6 +202,21 @@
         }
         .lock-note.granted { color: #22c55e; border-color: rgba(34, 197, 94, 0.3); }
 
+        /* ================= NHÓM SỰ KIỆN ================= */
+        .event-group { margin-top: 34px; }
+        .event-title {
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+            font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+            color: #FFC400;
+        }
+        .event-title::before, .event-title::after {
+            content: ''; width: 50px; height: 1px; background: rgba(255, 196, 0, 0.4);
+        }
+        .event-group.past .event-title { color: #9ca3af; }
+        .event-group.past .event-title::before, .event-group.past .event-title::after { background: rgba(156, 163, 175, 0.4); }
+        .event-group.past .event { opacity: 0.8; }
+        @media (max-width: 700px) { .event-title::before, .event-title::after { width: 22px; } }
+
         /* ================= MODAL ================= */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
@@ -495,30 +510,51 @@
                class="btn">Vào Free Fire ngay 🚀</a>
             <br>
             
-            <a href="20-10.html" 
-               onclick="return checkLoginAndAction(event, 'url');" 
-               class="btn-2010-hero">🌸 Chúc mừng 20/10 🌸</a>
-            
-            <div class="btn-halloween-wrapper">
-                <a href="halloween.html"
-                   onclick="return checkLoginAndAction(event, 'url');"
-                   class="btn-halloween-hero">🎃 Halloween 2026 🎃</a>
+            <!-- ===== NHÓM SỰ KIỆN: tự động chia theo ngày bắt đầu (data-start) ===== -->
+            <div class="event-group" id="groupUpcoming" hidden>
+                <h2 class="event-title">⏳ Sự kiện chưa bắt đầu</h2>
+                <div class="event-list" id="listUpcoming"></div>
+            </div>
+            <div class="event-group past" id="groupPast" hidden>
+                <h2 class="event-title">✅ Sự kiện đã diễn ra</h2>
+                <div class="event-list" id="listPast"></div>
             </div>
 
-            <div class="btn-2011-wrapper">
-                <a href="20-11.html" 
-                   class="btn-2011-hero locked" 
-                   id="btn2011" 
-                   onclick="return checkLoginAndAction(event, 'url');">🍎 Chúc mừng ngày Nhà giáo Việt Nam 20/11 🍎</a>
-                <div class="countdown" id="countdown2011">Đang tải...</div>
+            <!-- Kho sự kiện: script xếp từng sự kiện vào nhóm đúng. Thêm sự kiện mới = thêm 1 khối .event ở đây -->
+            <div id="eventStore" hidden>
+            <div class="event" data-start="2026-10-20T00:00:00">
+                <a href="20-10.html" 
+                   onclick="return checkLoginAndAction(event, 'url');" 
+                   class="btn-2010-hero">🌸 Chúc mừng 20/10 🌸</a>
             </div>
 
-            <div class="btn-2027-wrapper">
-                <a href="nam-moi-2027.html"
-                   class="btn-2027-hero locked"
-                   id="btn2027"
-                   onclick="return checkLoginAndAction(event, 'url');">🎆 Chúc mừng năm mới 2027 🎆</a>
-                <div class="lock-note" id="note2027">🔒 Cần được Admin cấp quyền để mở</div>
+            <div class="event" data-start="2026-10-31T00:00:00">
+                <div class="btn-halloween-wrapper">
+                    <a href="halloween.html"
+                       onclick="return checkLoginAndAction(event, 'url');"
+                       class="btn-halloween-hero">🎃 Halloween 2026 🎃</a>
+                </div>
+            </div>
+
+            <div class="event" data-start="2026-11-20T00:00:00">
+                <div class="btn-2011-wrapper">
+                    <a href="20-11.html" 
+                       class="btn-2011-hero locked" 
+                       id="btn2011" 
+                       onclick="return checkLoginAndAction(event, 'url');">🍎 Chúc mừng ngày Nhà giáo Việt Nam 20/11 🍎</a>
+                    <div class="countdown" id="countdown2011">Đang tải...</div>
+                </div>
+            </div>
+
+            <div class="event" data-start="2027-01-01T00:00:00">
+                <div class="btn-2027-wrapper">
+                    <a href="nam-moi-2027.html"
+                       class="btn-2027-hero locked"
+                       id="btn2027"
+                       onclick="return checkLoginAndAction(event, 'url');">🎆 Chúc mừng năm mới 2027 🎆</a>
+                    <div class="lock-note" id="note2027">🔒 Cần được Admin cấp quyền để mở</div>
+                </div>
+            </div>
             </div>
 
         </div>
@@ -1936,6 +1972,27 @@
             }, 1000);
         }
 
+        /* ============ CHIA SỰ KIỆN: CHƯA BẮT ĐẦU / ĐÃ DIỄN RA ============ */
+        function arrangeEvents() {
+            const upList = document.getElementById('listUpcoming');
+            const pastList = document.getElementById('listPast');
+            if (!upList || !pastList) return;
+
+            const now = new Date();
+            const items = [...document.querySelectorAll('.event')]
+                .map(el => ({ el, start: new Date(el.dataset.start) }))
+                .filter(x => !isNaN(x.start));
+
+            const upcoming = items.filter(x => x.start > now).sort((a, b) => a.start - b.start);   // sắp tới trước
+            const past = items.filter(x => x.start <= now).sort((a, b) => b.start - a.start);      // mới nhất trước
+
+            upcoming.forEach(x => upList.appendChild(x.el));
+            past.forEach(x => pastList.appendChild(x.el));
+
+            document.getElementById('groupUpcoming').hidden = upcoming.length === 0;
+            document.getElementById('groupPast').hidden = past.length === 0;
+        }
+
         /* ============ KHỞI TẠO ============ */
         async function init() {
             await loadUsersFromServer();
@@ -1948,6 +2005,8 @@
                 updateUI();
             }, 10000);
         }
+        arrangeEvents();
+        setInterval(arrangeEvents, 60000);   // tự cập nhật khi sang ngày mới
         init();
     </script>
 </body>
