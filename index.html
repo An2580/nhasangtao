@@ -2454,8 +2454,10 @@
 
         function errorText(e) {
             const c = e && e.code;
-            if (c === 'nokey') return 'Chưa có API key. Chủ web: thêm biến bí mật GEMINI_API_KEY trong Cloudflare Pages rồi deploy lại.';
+            if (c === 'nokey') return 'Chưa có API key. Chủ web: thêm biến bí mật OPENAI_API_KEY trong Cloudflare Pages rồi deploy lại.';
             if (c === 'key') return 'Trợ lý AI chưa cấu hình đúng (API key bị từ chối). Chủ web cần kiểm tra lại key.';
+            if (c === 'credit') return 'Trợ lý AI tạm nghỉ vì tài khoản OpenAI của chủ web đã hết credit. Bạn quay lại sau nhé!';
+            if (c === 'region') return 'OpenAI từ chối vì khu vực máy chủ không được hỗ trợ. Chủ web: xem hướng dẫn bật Smart Placement trong Cloudflare.';
             if (c === 'forbidden') return 'Tên miền này chưa được phép dùng trợ lý AI. Chủ web kiểm tra ALLOWED_HOSTS trong functions/chat.js.';
             if (c === 404) return 'Chưa tìm thấy /chat. Chủ web: kiểm tra thư mục functions/chat.js đã được đưa lên GitHub và deploy xong chưa.';
             if (c === 'quota' || c === 429) return 'AI đang hết lượt dùng miễn phí hoặc quá tải. Bạn thử lại sau ít phút nhé.';
