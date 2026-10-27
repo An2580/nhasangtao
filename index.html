@@ -2328,7 +2328,7 @@
 
         /* ============ CẤU HÌNH ============ */
         // API key KHÔNG nằm ở đây: nó được giữ bí mật trên Cloudflare, trình duyệt chỉ gọi /chat.
-        const CHAT_ENDPOINT = "/chat";
+        const CHAT_ENDPOINT = "https://ai-rieng.angoytb1.workers.dev";
         const MAX_HISTORY = 20;       // số tin nhắn gần nhất gửi kèm để AI nhớ ngữ cảnh
         const COOLDOWN_MS = 1500;     // khoảng nghỉ tối thiểu giữa 2 lần gửi (chống spam)
         const TIMEOUT_MS = 60000;
@@ -2438,7 +2438,7 @@
                 res = await fetch(CHAT_ENDPOINT, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ messages: history.slice(-MAX_HISTORY) }),
+                    body: JSON.stringify({ message: history.filter(item => item.role === 'user').slice(-1)[0]?.text || '' }),
                     signal: ctrl.signal
                 });
             } catch (err) {
