@@ -1,5 +1,6 @@
 
-const MODEL = "@cf/google/gemma-4-26b-a4b-it";
+const MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
+
 const MAX_MESSAGES = 20;
 const MAX_TEXT_LENGTH = 4000;
 
@@ -26,18 +27,23 @@ function errorResponse(message, status = 500) {
 }
 
 export async function onRequestPost({ request, env }) {
-  if (!env.AI) {
+  // Xác nhận Workers AI binding đã được cấu hình.
+  if (!env.AI || typeof env.AI.run !== "function") {
+    console.error("Workers AI binding AI is missing.");
+
     return errorResponse(
-      "Chưa cấu hình Workers AI binding. Hãy thêm binding tên AI.",
+      "Chưa cấu hình Workers AI. Kiểm tra binding có tên AI và triển khai lại.",
       500
     );
   }
 
   const contentType = request.headers.get("Content-Type") || "";
+
   if (!contentType.toLowerCase().includes("application/json")) {
     return errorResponse("Yêu cầu phải có định dạng JSON.", 415);
   }
 
+  // Chỉ chấp nhận yêu cầu từ cùng website.
   const origin = request.headers.get("Origin");
   const requestOrigin = new URL(request.url).origin;
 
@@ -74,7 +80,10 @@ export async function onRequestPost({ request, env }) {
 
     if (source) {
       if (!source.length || source.length > MAX_MESSAGES) {
-        return errorResponse("Lịch sử chat không hợp lệ hoặc quá dài.", 400);
+        return errorResponse(
+          "Lịch sử chat không hợp lệ hoặc quá dài.",
+          400
+        );
       }
 
       messages = source.map(item => {
@@ -108,10 +117,13 @@ export async function onRequestPost({ request, env }) {
     }
 
     if (!messages.length || messages[0].role !== "user") {
-      return errorResponse("Câu hỏi hoặc lịch sử chat không hợp lệ.", 400);
+      return errorResponse(
+        "Câu hỏi hoặc lịch sử trò chuyện không hợp lệ.",
+        400
+      );
     }
 
-    // Gộp các tin nhắn liên tiếp cùng vai trò.
+    // Gộp các lượt liên tiếp cùng vai trò.
     const normalized = [];
 
     for (const message of messages) {
@@ -124,25 +136,80 @@ export async function onRequestPost({ request, env }) {
       }
     }
 
-    const systemPrompt = {
-      role: "system",
-      content: "Bạn là trợ lý AI của website An Gờ. Hãy trả lời hữu ích, chính xác, dễ hiểu bằng tiếng Việt khi phù hợp."
-    };
+    const modelMessages = [
+      {
+        role: "system",
+        content:
+          "Bạn là trợ lý AI của website An Gờ. " +
+          "Hãy trả lời hữu ích, chính xác và dễ hiểu. " +
+          "Ưu tiên tiếng Việt khi phù hợp."
+      },
+      ...normalized
+    ];
 
-    const result = await env.AI.run(MODEL, {
-      messages: [systemPrompt, ...normalized],
-      max_tokens: 512
-    });
+    let result;
 
-    const reply = typeof result?.response === "string"
-      ? result.response.trim()
-      : typeof result?.choices?.[0]?.message?.content === "string"
-        ? result.choices[0].message.content.trim()
-        : "";
+    try {
+      result = await env.AI.run(MODEL, {
+        messages: modelMessages,
+        max_tokens: 512
+      });
+    } catch (error) {
+      console.error(
+        "Workers AI diagnostic:",
+        error.name,
+        error.message
+      );
+
+      const detail = String(error.message || "").toLowerCase();
+
+      if (
+        detail.includes("limit") ||
+        detail.includes("quota") ||
+        detail.includes("exceed")
+      ) {
+        return errorResponse(
+          "Workers AI đã đạt giới hạn sử dụng. Hãy thử lại sau.",
+          429
+        );
+      }
+
+      if (
+        detail.includes("model") ||
+        detail.includes("not found") ||
+        detail.includes("not available")
+      ) {
+        return errorResponse(
+          "Model Workers AI không khả dụng. Kiểm tra tên model trong Cloudflare AI Catalog.",
+          502
+        );
+      }
+
+      return errorResponse(
+        "Workers AI không xử lý được yêu cầu. Hãy kiểm tra Cloudflare Functions Logs.",
+        502
+      );
+    }
+
+    // Hỗ trợ các dạng phản hồi thường gặp.
+    const reply =
+      (typeof result?.response === "string" && result.response.trim()) ||
+      (
+        typeof result?.choices?.[0]?.message?.content === "string" &&
+        result.choices[0].message.content.trim()
+      ) ||
+      "";
 
     if (!reply) {
-      console.error("Workers AI returned no text.");
-      return errorResponse("AI chưa trả về câu trả lời. Hãy thử lại.", 502);
+      console.error(
+        "Workers AI returned an unexpected response:",
+        JSON.stringify(result).slice(0, 1000)
+      );
+
+      return errorResponse(
+        "AI không trả về nội dung. Kiểm tra model và phản hồi trong Cloudflare Logs.",
+        502
+      );
     }
 
     return json({
@@ -154,11 +221,15 @@ export async function onRequestPost({ request, env }) {
       }]
     });
   } catch (error) {
-    console.error("Workers AI error:", error.name, error.message);
+    console.error(
+      "Chat Function error:",
+      error.name,
+      error.message
+    );
 
     return errorResponse(
-      "Workers AI đang gặp lỗi hoặc đã đạt giới hạn sử dụng. Hãy thử lại sau.",
-      503
+      "Máy chủ không xử lý được yêu cầu chat.",
+      500
     );
   }
 }
