@@ -9,11 +9,10 @@ export async function onRequestPost(context) {
       );
     }
 
-    // 2. Nhận dữ liệu câu hỏi từ phía giao diện web
+    // 2. Nhận dữ liệu từ giao diện web
     const requestData = await context.request.json();
     let geminiContents = [];
 
-    // Chuyển đổi và lọc các tin nhắn hợp lệ (không để rỗng content)
     if (requestData.messages && Array.isArray(requestData.messages) && requestData.messages.length > 0) {
       geminiContents = requestData.messages
         .filter(msg => msg.content && typeof msg.content === 'string' && msg.content.trim() !== '')
@@ -23,7 +22,6 @@ export async function onRequestPost(context) {
         }));
     }
 
-    // Nếu không có tin nhắn nào hợp lệ, lấy từ prompt hoặc gán tin nhắn mặc định
     if (geminiContents.length === 0) {
       const userText = (requestData.prompt && typeof requestData.prompt === 'string' && requestData.prompt.trim() !== '') 
         ? requestData.prompt.trim() 
@@ -31,13 +29,14 @@ export async function onRequestPost(context) {
       geminiContents = [{ role: "user", parts: [{ text: userText }] }];
     }
 
-    // 3. Gọi API Google AI Studio với Gemini 1.5 Flash
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`;
+    // 3. Gọi Gemini API với model thế hệ mới gemini-2.5-flash và Header x-goog-api-key chuẩn cho key AQ...
+    const geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
     const apiResponse = await fetch(geminiUrl, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "x-goog-api-key": apiKey.trim()
       },
       body: JSON.stringify({ contents: geminiContents })
     });
