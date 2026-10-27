@@ -1,17 +1,7 @@
 
-const MODEL = "gemini-3.6-flash";
-
-const TIMEOUT_MS = 45000;
-const ATTEMPT_TIMEOUT_MS = 15000;
-const MAX_ATTEMPTS = 3;
-const RETRY_DELAYS = [700, 1400];
-
+const MODEL = "@cf/google/gemma-4-26b-a4b-it";
 const MAX_MESSAGES = 20;
 const MAX_TEXT_LENGTH = 4000;
-
-const RETRYABLE_STATUSES = new Set([
-  429, 500, 502, 503, 504
-]);
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -23,7 +13,7 @@ function json(data, status = 200) {
   });
 }
 
-function errorResponse(message, status) {
+function errorResponse(message, status = 500) {
   return json({
     error: message,
     choices: [{
@@ -35,27 +25,17 @@ function errorResponse(message, status) {
   }, status);
 }
 
-function wait(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 export async function onRequestPost({ request, env }) {
-  const apiKey = env.GEMINI_API_KEY;
-
-  if (!apiKey || !apiKey.trim()) {
+  if (!env.AI) {
     return errorResponse(
-      "Máy chủ chưa cấu hình GEMINI_API_KEY.",
+      "Chưa cấu hình Workers AI binding. Hãy thêm binding tên AI.",
       500
     );
   }
 
   const contentType = request.headers.get("Content-Type") || "";
-
   if (!contentType.toLowerCase().includes("application/json")) {
-    return errorResponse(
-      "Yêu cầu phải có định dạng JSON.",
-      415
-    );
+    return errorResponse("Yêu cầu phải có định dạng JSON.", 415);
   }
 
   const origin = request.headers.get("Origin");
@@ -64,17 +44,12 @@ export async function onRequestPost({ request, env }) {
   if (origin) {
     try {
       if (new URL(origin).origin !== requestOrigin) {
-        return errorResponse(
-          "Nguồn yêu cầu không hợp lệ.",
-          403
-        );
+        return errorResponse("Nguồn yêu cầu không hợp lệ.", 403);
       }
     } catch {
       return errorResponse("Origin không hợp lệ.", 403);
     }
   }
-
-  const startedAt = Date.now();
 
   try {
     let body;
@@ -95,39 +70,30 @@ export async function onRequestPost({ request, env }) {
         ? body.messages
         : null;
 
-    let contents = [];
+    let messages = [];
 
     if (source) {
-      if (
-        source.length === 0 ||
-        source.length > MAX_MESSAGES
-      ) {
-        return errorResponse(
-          "Lịch sử chat không hợp lệ hoặc quá dài.",
-          400
-        );
+      if (!source.length || source.length > MAX_MESSAGES) {
+        return errorResponse("Lịch sử chat không hợp lệ hoặc quá dài.", 400);
       }
 
-      contents = source.map(item => {
-        if (!item || typeof item !== "object") {
-          return null;
-        }
+      messages = source.map(item => {
+        if (!item || typeof item !== "object") return null;
 
-        const role = item.role;
-        const text = item.text ?? item.content;
+        const content = item.text ?? item.content;
 
         if (
-          !["user", "assistant", "model"].includes(role) ||
-          typeof text !== "string" ||
-          !text.trim() ||
-          text.length > MAX_TEXT_LENGTH
+          !["user", "assistant", "model"].includes(item.role) ||
+          typeof content !== "string" ||
+          !content.trim() ||
+          content.length > MAX_TEXT_LENGTH
         ) {
           return null;
         }
 
         return {
-          role: role === "user" ? "user" : "model",
-          parts: [{ text: text.trim() }]
+          role: item.role === "user" ? "user" : "assistant",
+          content: content.trim()
         };
       }).filter(Boolean);
     } else if (
@@ -135,206 +101,48 @@ export async function onRequestPost({ request, env }) {
       body.prompt.trim() &&
       body.prompt.length <= MAX_TEXT_LENGTH
     ) {
-      contents = [{
+      messages = [{
         role: "user",
-        parts: [{ text: body.prompt.trim() }]
+        content: body.prompt.trim()
       }];
     }
 
-    if (!contents.length || contents[0].role !== "user") {
-      return errorResponse(
-        "Câu hỏi hoặc lịch sử trò chuyện không hợp lệ.",
-        400
-      );
+    if (!messages.length || messages[0].role !== "user") {
+      return errorResponse("Câu hỏi hoặc lịch sử chat không hợp lệ.", 400);
     }
 
-    // Gộp các lượt liên tiếp có cùng vai trò.
+    // Gộp các tin nhắn liên tiếp cùng vai trò.
     const normalized = [];
 
-    for (const item of contents) {
+    for (const message of messages) {
       const previous = normalized[normalized.length - 1];
 
-      if (previous && previous.role === item.role) {
-        previous.parts[0].text += "\n" + item.parts[0].text;
+      if (previous && previous.role === message.role) {
+        previous.content += "\n" + message.content;
       } else {
-        normalized.push(item);
+        normalized.push({ ...message });
       }
     }
 
-    const payload = JSON.stringify({
-      contents: normalized,
-      generationConfig: {
-        maxOutputTokens: 512,
-        temperature: 0.7
-      }
+    const systemPrompt = {
+      role: "system",
+      content: "Bạn là trợ lý AI của website An Gờ. Hãy trả lời hữu ích, chính xác, dễ hiểu bằng tiếng Việt khi phù hợp."
+    };
+
+    const result = await env.AI.run(MODEL, {
+      messages: [systemPrompt, ...normalized],
+      max_tokens: 512
     });
 
-    let result = null;
-    let lastStatus = 502;
-    let lastError = null;
-
-    for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
-      const remaining = TIMEOUT_MS - (Date.now() - startedAt);
-
-      if (remaining <= 0) {
-        return errorResponse(
-          "Gemini phản hồi quá lâu. Hãy thử lại sau.",
-          504
-        );
-      }
-
-      const controller = new AbortController();
-      const attemptTimeout = Math.min(
-        ATTEMPT_TIMEOUT_MS,
-        remaining
-      );
-
-      const timer = setTimeout(
-        () => controller.abort(),
-        attemptTimeout
-      );
-
-      let shouldRetry = false;
-
-      try {
-        const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "x-goog-api-key": apiKey.trim()
-            },
-            body: payload,
-            signal: controller.signal
-          }
-        );
-
-        if (response.ok) {
-          result = await response.json();
-          lastError = null;
-          break;
-        }
-
-        lastStatus = response.status;
-
-        const details = await response.text();
-
-        console.error(
-          "Gemini API error:",
-          response.status,
-          details.slice(0, 800)
-        );
-
-        if (!RETRYABLE_STATUSES.has(response.status)) {
-          if (response.status === 400) {
-            return errorResponse(
-              "Gemini từ chối yêu cầu. Kiểm tra model và nội dung chat.",
-              502
-            );
-          }
-
-          if (response.status === 401 || response.status === 403) {
-            return errorResponse(
-              "API key hoặc quyền truy cập Gemini không hợp lệ.",
-              502
-            );
-          }
-
-          if (response.status === 404) {
-            return errorResponse(
-              "Không tìm thấy model Gemini. Kiểm tra tên model.",
-              502
-            );
-          }
-
-          return errorResponse(
-            "Gemini trả về lỗi không thể xử lý.",
-            502
-          );
-        }
-
-        lastError = "HTTP " + response.status;
-        shouldRetry = true;
-      } catch (error) {
-        if (error.name === "AbortError") {
-          lastError = "timeout";
-          lastStatus = 504;
-        } else {
-          lastError = "network";
-          lastStatus = 502;
-
-          console.error(
-            "Gemini network error:",
-            error.name,
-            error.message
-          );
-        }
-
-        shouldRetry = true;
-      } finally {
-        clearTimeout(timer);
-      }
-
-      if (!shouldRetry) break;
-
-      if (attempt < MAX_ATTEMPTS - 1) {
-        const delay = RETRY_DELAYS[attempt];
-        const timeLeft = TIMEOUT_MS - (Date.now() - startedAt);
-
-        if (timeLeft <= delay + 100) break;
-
-        console.log(
-          `Retrying Gemini request: ${attempt + 2}/${MAX_ATTEMPTS}`
-        );
-
-        await wait(delay);
-      }
-    }
-
-    if (!result) {
-      if (lastError === "timeout") {
-        return errorResponse(
-          "Gemini phản hồi quá lâu sau nhiều lần thử. Hãy thử lại sau.",
-          504
-        );
-      }
-
-      if (lastStatus === 429) {
-        return errorResponse(
-          "Gemini đang quá tải hoặc đã đạt giới hạn sử dụng. Hãy thử lại sau.",
-          429
-        );
-      }
-
-      if (lastStatus === 503) {
-        return errorResponse(
-          "Gemini đang quá tải. Hệ thống đã thử lại nhưng chưa thành công. Vui lòng thử lại sau.",
-          503
-        );
-      }
-
-      return errorResponse(
-        "Gemini tạm thời không khả dụng. Vui lòng thử lại sau.",
-        502
-      );
-    }
-
-    const reply = result.candidates?.[0]?.content?.parts
-      ?.map(part => part.text || "")
-      .join("")
-      .trim();
+    const reply = typeof result?.response === "string"
+      ? result.response.trim()
+      : typeof result?.choices?.[0]?.message?.content === "string"
+        ? result.choices[0].message.content.trim()
+        : "";
 
     if (!reply) {
-      console.error(
-        "Gemini returned no text:",
-        result.promptFeedback?.blockReason || "No text candidate"
-      );
-
-      return errorResponse(
-        "Gemini chưa trả về câu trả lời. Hãy thử câu hỏi khác.",
-        502
-      );
+      console.error("Workers AI returned no text.");
+      return errorResponse("AI chưa trả về câu trả lời. Hãy thử lại.", 502);
     }
 
     return json({
@@ -346,15 +154,11 @@ export async function onRequestPost({ request, env }) {
       }]
     });
   } catch (error) {
-    console.error(
-      "Chat Function error:",
-      error.name,
-      error.message
-    );
+    console.error("Workers AI error:", error.name, error.message);
 
     return errorResponse(
-      "Máy chủ không xử lý được yêu cầu chat.",
-      500
+      "Workers AI đang gặp lỗi hoặc đã đạt giới hạn sử dụng. Hãy thử lại sau.",
+      503
     );
   }
 }
