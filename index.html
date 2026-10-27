@@ -2446,10 +2446,33 @@
             } finally {
                 clearTimeout(timer);
             }
-            let data = {};
-            try { data = await res.json(); } catch (_) {}
-            if (res.ok && data.reply) return data.reply;
-            throw { code: data.code || res.status };
+           
+let data = {};
+try {
+    data = await res.json();
+} catch (_) {}
+
+if (res.ok) {
+    const reply =
+        data.reply ||
+        data.choices?.[0]?.message?.content;
+
+    if (typeof reply === 'string' && reply.trim()) {
+        return reply.trim();
+    }
+
+    throw { code: 'empty' };
+}
+
+if (data.error) {
+    console.error('[AI server error]', data.error);
+}
+
+throw {
+    code: data.code || res.status,
+    message: data.error || 'Yêu cầu AI thất bại'
+};
+
         }
 
         function errorText(e) {
