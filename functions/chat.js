@@ -9,9 +9,8 @@ export async function onRequestPost(context) {
       );
     }
 
-    // 2. Nhận tin nhắn gửi lên từ giao diện web
+    // 2. Nhận dữ liệu câu hỏi từ phía giao diện web
     const requestData = await context.request.json();
-    
     let geminiContents = [];
     if (requestData.messages && Array.isArray(requestData.messages)) {
       geminiContents = requestData.messages.map(msg => ({
@@ -19,21 +18,19 @@ export async function onRequestPost(context) {
         parts: [{ text: msg.content }]
       }));
     } else {
-      const userPrompt = requestData.prompt || "Chào bạn!";
-      geminiContents = [{ role: "user", parts: [{ text: userPrompt }] }];
+      geminiContents = [{ role: "user", parts: [{ text: requestData.prompt || "Chào bạn!" }] }];
     }
 
-    // 3. Gọi API Google AI Studio (Dùng model gemini-2.5-flash miễn phí & phản hồi cực nhanh)
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+    // 3. Gọi Google Gemini API với Header xác thực x-goog-api-key chuẩn cho key AQ...
+    const geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
 
     const apiResponse = await fetch(geminiUrl, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "x-goog-api-key": apiKey.trim()
       },
-      body: JSON.stringify({
-        contents: geminiContents
-      })
+      body: JSON.stringify({ contents: geminiContents })
     });
 
     const data = await apiResponse.json();
@@ -45,17 +42,10 @@ export async function onRequestPost(context) {
       replyText = `Lỗi Gemini API: ${data.error.message}`;
     }
 
-    // 4. Trả kết quả chuẩn về cho khung chat Trợ lý AI An Gờ
+    // 4. Trả kết quả về cho khung chat Trợ lý AI An Gờ
     return new Response(
       JSON.stringify({
-        choices: [
-          {
-            message: {
-              role: "assistant",
-              content: replyText
-            }
-          }
-        ]
+        choices: [{ message: { role: "assistant", content: replyText } }]
       }),
       {
         status: 200,
