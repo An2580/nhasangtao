@@ -12,23 +12,32 @@ export async function onRequestPost(context) {
     // 2. Nhận dữ liệu câu hỏi từ phía giao diện web
     const requestData = await context.request.json();
     let geminiContents = [];
-    if (requestData.messages && Array.isArray(requestData.messages)) {
-      geminiContents = requestData.messages.map(msg => ({
-        role: msg.role === "user" ? "user" : "model",
-        parts: [{ text: msg.content }]
-      }));
-    } else {
-      geminiContents = [{ role: "user", parts: [{ text: requestData.prompt || "Chào bạn!" }] }];
+
+    // Chuyển đổi và lọc các tin nhắn hợp lệ (không để rỗng content)
+    if (requestData.messages && Array.isArray(requestData.messages) && requestData.messages.length > 0) {
+      geminiContents = requestData.messages
+        .filter(msg => msg.content && typeof msg.content === 'string' && msg.content.trim() !== '')
+        .map(msg => ({
+          role: msg.role === "user" ? "user" : "model",
+          parts: [{ text: msg.content.trim() }]
+        }));
     }
 
-    // 3. Gọi Google Gemini API với Header xác thực x-goog-api-key chuẩn cho key AQ...
-    const geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+    // Nếu không có tin nhắn nào hợp lệ, lấy từ prompt hoặc gán tin nhắn mặc định
+    if (geminiContents.length === 0) {
+      const userText = (requestData.prompt && typeof requestData.prompt === 'string' && requestData.prompt.trim() !== '') 
+        ? requestData.prompt.trim() 
+        : "Xin chào!";
+      geminiContents = [{ role: "user", parts: [{ text: userText }] }];
+    }
+
+    // 3. Gọi API Google AI Studio với Gemini 1.5 Flash
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`;
 
     const apiResponse = await fetch(geminiUrl, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "x-goog-api-key": apiKey.trim()
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ contents: geminiContents })
     });
@@ -42,10 +51,17 @@ export async function onRequestPost(context) {
       replyText = `Lỗi Gemini API: ${data.error.message}`;
     }
 
-    // 4. Trả kết quả về cho khung chat Trợ lý AI An Gờ
+    // 4. Trả kết quả chuẩn về cho khung chat
     return new Response(
       JSON.stringify({
-        choices: [{ message: { role: "assistant", content: replyText } }]
+        choices: [
+          {
+            message: {
+              role: "assistant",
+              content: replyText
+            }
+          }
+        ]
       }),
       {
         status: 200,
