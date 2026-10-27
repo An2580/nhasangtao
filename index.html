@@ -324,8 +324,8 @@
             border-radius: 4px; 
             font-weight: 700;
             border: 1px solid rgba(255, 196, 0, 0.35); 
-            display: inline;
-            white-space: nowrap;
+            display: inline; /* Fix lỗi bị đẩy xuống dòng */
+            white-space: nowrap; /* Không cho xuống dòng giữa chừng */
         }
         .mention:hover { background: rgba(255, 196, 0, 0.35); }
         .mention-me { background: rgba(34, 197, 94, 0.2); color: #22c55e;
@@ -849,6 +849,8 @@
         let currentPmTarget = null;
 
         /* ============ HELPER ============ */
+        // Mật khẩu mới dùng PBKDF2-SHA256 + salt ngẫu nhiên.
+        // Hash cũ dạng h_... chỉ được dùng tạm để xác minh tài khoản cũ rồi nâng cấp khi đăng nhập.
         function bytesToBase64(bytes) {
             let binary = '';
             bytes.forEach(b => binary += String.fromCharCode(b));
@@ -909,6 +911,7 @@
             return div.innerHTML;
         }
 
+        // Hàm bổ trợ để escape ký tự đặc biệt trong Regex
         function escapeRegExp(string) {
             return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
@@ -918,6 +921,7 @@
             return String(str ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
                 .replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
+        // Chỉ cho phép link ảnh http/https (chặn javascript:, data: và ký tự phá thẻ)
         function safeUrl(u) {
             if (!u) return '';
             try {
@@ -925,10 +929,11 @@
                 return (x.protocol === 'https:' || x.protocol === 'http:') ? x.href : '';
             } catch (e) { return ''; }
         }
+        // Gắn ảnh đại diện: hiện chữ cái trước, ảnh tải xong mới thay vào (ảnh lỗi thì giữ chữ cái)
         function setAvatar(el, url, letter) {
             const src = safeUrl(url);
             const key = src + '|' + letter;
-            if (el.dataset.k === key) return;
+            if (el.dataset.k === key) return;          // không đổi thì khỏi vẽ lại (tránh nháy mỗi 10 giây)
             el.dataset.k = key;
             el.textContent = letter;
             if (!src) return;
@@ -937,9 +942,346 @@
             img.onload = () => { if (el.dataset.k === key) { el.textContent = ''; el.appendChild(img); } };
             img.src = src;
         }
+        // Ảnh tròn nhỏ cạnh tên trong tin nhắn
         function smallAvatarTag(url) {
             const src = safeUrl(url);
-            return src ? `<img src="${escapeAttr(src)}" alt="" style="width:18px;height:18px;border-radius:50\%;margin-right:5px;vertical-align:middle;display:inline-block;">` : ''; }  /* ============ USERNAME: KHÔNG DẤU CÁCH, KHÔNG DẤU TIẾNG VIỆT ============ */ const USERNAME_RE = /^[a-zA-Z0-9_]{3,20}$/; function removeAccents(str) { return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D'); } function toUsername(name) { let u = removeAccents(name).replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '') .replace(/_+/g, '_').replace(/^_\vert{}_$/g, ''); if (u.length < 3) u = 'user' + u; return u.slice(0, 17); } function cleanUsernameInput(el, ev) { if (ev && ev.isComposing) return; const v = removeAccents(el.value).replace(/[^a-zA-Z0-9_]/g, ''); if (v !== el.value) el.value = v; }  function getProfile(username) { return PROFILES_CACHE[username] \vert{}\vert{} {}; }  /* ============ TẢI USERS TỪ SUPABASE ============ */ async function loadUsersFromServer() { const { data, error } = await supabaseClient .from('users') .select('username,email,title,display_name,bio,avatar_url,can_preview_2011,can_access_2027,created_at,google_id') .order('created_at', { ascending: true });  if (error) { console.error('Lỗi tải users:', error); return; }  USERS_CACHE = data \vert{}\vert{} []; PROFILES_CACHE = {}; USERS_CACHE.forEach(u => { PROFILES_CACHE[u.username] = { title: u.title \vert{}\vert{} '', displayName: u.display_name \vert{}\vert{} u.username, bio: u.bio \vert{}\vert{} '', avatarUrl: u.avatar_url \vert{}\vert{} '', canPreview2011: u.can_preview_2011 === true, canAccess2027: u.can_access_2027 === true }; }); }  /* ============ QUYỀN ============ */ function getSession() { try { const raw = localStorage.getItem(SESSION_KEY); if (!raw) return null; const session = JSON.parse(raw); if (!session \vert{}\vert{} typeof session.username !== 'string' \vert{}\vert{} !USERNAME_RE.test(session.username)) { localStorage.removeItem(SESSION_KEY); return null; } return session; } catch (_) { localStorage.removeItem(SESSION_KEY); return null; } }  function getCurrentUserRole() { const session = getSession(); if (!session) return null; const profile = getProfile(session.username); const t = (profile.title \vert{}\vert{} '').toUpperCase().trim(); if (t === 'ADMIN') return 'admin'; if (t === 'DEV' \vert{}\vert{} t === 'DEVELOPER') return 'dev'; return null; }  function isCurrentUserAdmin() { return getCurrentUserRole() === 'admin'; }  function canAccessAdminPanel() { const role = getCurrentUserRole(); return role === 'admin' \vert{}\vert{} role === 'dev'; }  /* ============ ĐĂNG KÝ ============ */ async function handleRegister(event) { event.preventDefault(); clearErrors();  const username = document.getElementById('regUser').value.trim(); const email = document.getElementById('regEmail').value.trim().toLowerCase(); const pass = document.getElementById('regPass').value; const pass2 = document.getElementById('regPass2').value; const btn = document.getElementById('btnRegSubmit');  if (!USERNAME_RE.test(username)) { return showError('regError', '❌ Tên đăng nhập phải dài 3–20 ký tự, chỉ gồm chữ không dấu, số và dấu _.'); } if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { return showError('regError', '❌ Email không hợp lệ!'); } if (pass.length < 8 \vert{}\vert{} pass.length > 128) { return showError('regError', '❌ Mật khẩu phải dài từ 8 đến 128 ký tự.'); } if (pass !== pass2) { return showError('regError', '❌ Mật khẩu nhập lại không khớp!'); }  btn.disabled = true; btn.textContent = 'Đang tạo tài khoản...';  await loadUsersFromServer();  if (USERS_CACHE.some(u => u.username.toLowerCase() === username.toLowerCase())) { btn.disabled = false; btn.textContent = 'Tạo tài khoản'; return showError('regError', '❌ Tên đăng nhập đã được sử dụng!'); } if (USERS_CACHE.some(u => (u.email \vert{}\vert{} '').toLowerCase() === email)) { btn.disabled = false; btn.textContent = 'Tạo tài khoản'; return showError('regError', '❌ Email này đã có tài khoản rồi!'); }  if (username.toLowerCase() === 'admin') { btn.disabled = false; btn.textContent = 'Tạo tài khoản'; return showError('regError', '❌ Tên đăng nhập này được dành riêng.'); }  let passwordHash; try { passwordHash = await hashPass(pass); } catch (e) { console.error('Không thể bảo vệ mật khẩu:', e); btn.disabled = false; btn.textContent = 'Tạo tài khoản'; return showError('regError', '❌ Cần mở website qua HTTPS và dùng trình duyệt mới để đăng ký an toàn.'); }  const { error } = await supabaseClient .from('users') .insert([{ username: username, email: email, password: passwordHash, title: '', display_name: username, bio: '', avatar_url: '' }]);  btn.disabled = false; btn.textContent = 'Tạo tài khoản';  if (error) { console.error('Lỗi đăng ký:', error); if (error.message.includes('only_one_admin')) { return showError('regError', '❌ Hệ thống chỉ có 1 ADMIN duy nhất!'); } return showError('regError', '❌ Lỗi: ' + error.message); }  await loadUsersFromServer();  setSession({ username: username, email: email, avatar: null, createdAt: new Date().toISOString() }); closeAuth();  showToast('🎉 Đăng ký thành công! Chào mừng ' + username, 'success'); }  /* ============ ĐĂNG NHẬP ============ */ async function handleLogin(event) { event.preventDefault(); clearErrors();  const input = document.getElementById('loginUser').value.trim().toLowerCase(); const pass = document.getElementById('loginPass').value; const btn = document.getElementById('btnLoginSubmit'); if (!input \vert{}\vert{} !pass) return showError('loginError', '❌ Vui lòng nhập tài khoản và mật khẩu.');  btn.disabled = true; btn.textContent = 'Đang đăng nhập...'; try { await loadUsersFromServer(); const matchedAccount = USERS_CACHE.find(u => (u.username \vert{}\vert{} '').toLowerCase() === input \vert{}\vert{} (u.email \vert{}\vert{} '').toLowerCase() === input ); if (!matchedAccount) return showError('loginError', '❌ Không tìm thấy tài khoản này!'); const { data: user, error } = await supabaseClient .from('users').select('username,email,password,avatar_url,created_at') .eq('username', matchedAccount.username).maybeSingle(); if (error) { console.error('Lỗi đăng nhập:', error); return showError('loginError', '❌ Không thể kết nối hoặc truy vấn tài khoản.'); } if (!user) return showError('loginError', '❌ Không tìm thấy tài khoản này!');  let verification; try { verification = await verifyPass(pass, user.password); } catch (e) { console.error(e); return showError('loginError', '❌ Trình duyệt không hỗ trợ bảo vệ mật khẩu. Hãy dùng HTTPS và trình duyệt mới.'); } if (!verification.ok) return showError('loginError', '❌ Mật khẩu không đúng!');  if (verification.needsUpgrade) { const upgradedHash = await hashPass(pass); const { error: upgradeError } = await supabaseClient.from('users') .update({ password: upgradedHash }).eq('username', user.username); if (upgradeError) console.warn('Đăng nhập được nhưng chưa nâng cấp hash cũ:', upgradeError); }  await loadUsersFromServer(); setSession({ username: user.username, email: user.email, avatar: user.avatar_url \vert{}\vert{} null, createdAt: user.created_at }); closeAuth(); showToast('✅ Đăng nhập thành công! Chào ' + user.username, 'success'); } catch (e) { console.error('Lỗi đăng nhập:', e); showError('loginError', '❌ Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại.'); } finally { btn.disabled = false; btn.textContent = 'Đăng nhập ngay'; } }  /* ============ GOOGLE LOGIN ============ */ function decodeJWT(token) { try { const base64Url = token.split('.')[1]; const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/'); const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) { return '\%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2); }).join('')); return JSON.parse(jsonPayload); } catch (e) { return null; } }  async function handleGoogleLogin(response) { const userInfo = decodeJWT(response.credential); if (!userInfo) return showToast('❌ Lỗi xác thực Google!', 'error');  await loadUsersFromServer();  let user = USERS_CACHE.find(u => (u.email \vert{}\vert{} '').toLowerCase() === (userInfo.email \vert{}\vert{} '').toLowerCase());  if (!user) { let rawName = userInfo.name \vert{}\vert{} userInfo.email.split('@')[0]; let baseUsername = toUsername(rawName); let username = baseUsername.toLowerCase() === 'admin' ? 'user_admin' : baseUsername; let suffix = 1; while (USERS_CACHE.some(u => u.username.toLowerCase() === username.toLowerCase())) { username = baseUsername + suffix; suffix++; }  const { error } = await supabaseClient .from('users') .insert([{ username: username, email: userInfo.email, password: null, title: '', display_name: rawName, bio: '', avatar_url: userInfo.picture \vert{}\vert{} '', google_id: userInfo.sub }]);  if (error) { console.error('Lỗi tạo tài khoản Google:', error); return showToast('❌ Không tạo được tài khoản!', 'error'); }  await loadUsersFromServer(); user = USERS_CACHE.find(u => (u.email \vert{}\vert{} '').toLowerCase() === (userInfo.email \vert{}\vert{} '').toLowerCase()); showToast('🎉 Đã tạo tài khoản qua Google!', 'success'); } else { showToast('✅ Đăng nhập Google thành công!', 'success'); }  setSession({ username: user.username, email: user.email, avatar: user.avatar_url \vert{}\vert{} null, createdAt: user.created_at }); closeAuth(); }  /* ============ SESSION ============ */ function setSession(user) { localStorage.setItem(SESSION_KEY, JSON.stringify(user)); updateUI(); }  async function logout() { localStorage.removeItem(SESSION_KEY); updateUI(); showToast('👋 Đã đăng xuất!', 'success'); }  /* ============ UPDATE UI ============ */ function updateUI() { const session = getSession(); const btnLogin = document.getElementById('btnLogin'); const userBox = document.getElementById('userBox'); const userAvatar = document.getElementById('userAvatar'); const btnAdmin = document.getElementById('btnAdmin');  if (session) { const profile = getProfile(session.username); const displayName = profile.displayName \vert{}\vert{} session.username; const avatarUrl = profile.avatarUrl \vert{}\vert{} session.avatar; const title = profile.title \vert{}\vert{} '';  btnLogin.style.display = 'none'; userBox.classList.add('active');  const nameEl = document.getElementById('userName'); if (title) { const cls = getTitleClass(title); nameEl.innerHTML = `${escapeHtml(displayName)}<span class="title-badge ${cls}">${escapeHtml(title)}</span>`;
+            return src ? `<img src="${escapeAttr(src)}" alt="" style="width:18px;height:18px;border-radius:50%;margin-right:5px;vertical-align:middle;display:inline-block;">` : '';
+        }
+
+        /* ============ USERNAME: KHÔNG DẤU CÁCH, KHÔNG DẤU TIẾNG VIỆT ============ */
+        const USERNAME_RE = /^[a-zA-Z0-9_]{3,20}$/;
+        function removeAccents(str) {
+            return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
+        }
+        // Tên Google -> username hợp lệ (vd: "Nguyễn Văn A" -> "Nguyen_Van_A")
+        function toUsername(name) {
+            let u = removeAccents(name).replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '')
+                .replace(/_+/g, '_').replace(/^_|_$/g, '');
+            if (u.length < 3) u = 'user' + u;
+            return u.slice(0, 17);
+        }
+        // Đang gõ vào ô username: tự bỏ dấu cách, dấu tiếng Việt và ký tự lạ
+        function cleanUsernameInput(el, ev) {
+            if (ev && ev.isComposing) return;
+            const v = removeAccents(el.value).replace(/[^a-zA-Z0-9_]/g, '');
+            if (v !== el.value) el.value = v;
+        }
+
+        function getProfile(username) {
+            return PROFILES_CACHE[username] || {};
+        }
+
+        /* ============ TẢI USERS TỪ SUPABASE ============ */
+        async function loadUsersFromServer() {
+            const { data, error } = await supabaseClient
+                .from('users')
+                .select('username,email,title,display_name,bio,avatar_url,can_preview_2011,can_access_2027,created_at,google_id')
+                .order('created_at', { ascending: true });
+
+            if (error) {
+                console.error('Lỗi tải users:', error);
+                return;
+            }
+
+            USERS_CACHE = data || [];
+            PROFILES_CACHE = {};
+            USERS_CACHE.forEach(u => {
+                PROFILES_CACHE[u.username] = {
+                    title: u.title || '',
+                    displayName: u.display_name || u.username,
+                    bio: u.bio || '',
+                    avatarUrl: u.avatar_url || '',
+                    canPreview2011: u.can_preview_2011 === true,
+                    canAccess2027: u.can_access_2027 === true
+                };
+            });
+        }
+
+        /* ============ QUYỀN ============ */
+        function getSession() {
+            try {
+                const raw = localStorage.getItem(SESSION_KEY);
+                if (!raw) return null;
+                const session = JSON.parse(raw);
+                if (!session || typeof session.username !== 'string' || !USERNAME_RE.test(session.username)) {
+                    localStorage.removeItem(SESSION_KEY);
+                    return null;
+                }
+                return session;
+            } catch (_) {
+                localStorage.removeItem(SESSION_KEY);
+                return null;
+            }
+        }
+
+        function getCurrentUserRole() {
+            const session = getSession();
+            if (!session) return null;
+            const profile = getProfile(session.username);
+            const t = (profile.title || '').toUpperCase().trim();
+            if (t === 'ADMIN') return 'admin';
+            if (t === 'DEV' || t === 'DEVELOPER') return 'dev';
+            return null;
+        }
+
+        function isCurrentUserAdmin() {
+            return getCurrentUserRole() === 'admin';
+        }
+
+        function canAccessAdminPanel() {
+            const role = getCurrentUserRole();
+            return role === 'admin' || role === 'dev';
+        }
+
+        /* ============ ĐĂNG KÝ ============ */
+        async function handleRegister(event) {
+            event.preventDefault();
+            clearErrors();
+
+            const username = document.getElementById('regUser').value.trim();
+            const email = document.getElementById('regEmail').value.trim().toLowerCase();
+            const pass = document.getElementById('regPass').value;
+            const pass2 = document.getElementById('regPass2').value;
+            const btn = document.getElementById('btnRegSubmit');
+
+            if (!USERNAME_RE.test(username)) {
+                return showError('regError', '❌ Tên đăng nhập phải dài 3–20 ký tự, chỉ gồm chữ không dấu, số và dấu _.');
+            }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                return showError('regError', '❌ Email không hợp lệ!');
+            }
+            if (pass.length < 8 || pass.length > 128) {
+                return showError('regError', '❌ Mật khẩu phải dài từ 8 đến 128 ký tự.');
+            }
+            if (pass !== pass2) {
+                return showError('regError', '❌ Mật khẩu nhập lại không khớp!');
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Đang tạo tài khoản...';
+
+            await loadUsersFromServer();
+
+            if (USERS_CACHE.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+                btn.disabled = false;
+                btn.textContent = 'Tạo tài khoản';
+                return showError('regError', '❌ Tên đăng nhập đã được sử dụng!');
+            }
+            if (USERS_CACHE.some(u => (u.email || '').toLowerCase() === email)) {
+                btn.disabled = false;
+                btn.textContent = 'Tạo tài khoản';
+                return showError('regError', '❌ Email này đã có tài khoản rồi!');
+            }
+
+            // Không tự cấp ADMIN cho tài khoản đầu tiên: người ngoài có thể đăng ký trước.
+            // Quyền quản trị phải được gán qua một quy trình quản trị đáng tin cậy.
+            if (username.toLowerCase() === 'admin') {
+                btn.disabled = false;
+                btn.textContent = 'Tạo tài khoản';
+                return showError('regError', '❌ Tên đăng nhập này được dành riêng.');
+            }
+
+            let passwordHash;
+            try {
+                passwordHash = await hashPass(pass);
+            } catch (e) {
+                console.error('Không thể bảo vệ mật khẩu:', e);
+                btn.disabled = false;
+                btn.textContent = 'Tạo tài khoản';
+                return showError('regError', '❌ Cần mở website qua HTTPS và dùng trình duyệt mới để đăng ký an toàn.');
+            }
+
+            const { error } = await supabaseClient
+                .from('users')
+                .insert([{
+                    username: username,
+                    email: email,
+                    password: passwordHash,
+                    title: '',
+                    display_name: username,
+                    bio: '',
+                    avatar_url: ''
+                }]);
+
+            btn.disabled = false;
+            btn.textContent = 'Tạo tài khoản';
+
+            if (error) {
+                console.error('Lỗi đăng ký:', error);
+                if (error.message.includes('only_one_admin')) {
+                    return showError('regError', '❌ Hệ thống chỉ có 1 ADMIN duy nhất!');
+                }
+                return showError('regError', '❌ Lỗi: ' + error.message);
+            }
+
+            await loadUsersFromServer();
+
+            setSession({
+                username: username,
+                email: email,
+                avatar: null,
+                createdAt: new Date().toISOString()
+            });
+            closeAuth();
+
+            showToast('🎉 Đăng ký thành công! Chào mừng ' + username, 'success');
+        }
+
+        /* ============ ĐĂNG NHẬP ============ */
+        async function handleLogin(event) {
+            event.preventDefault();
+            clearErrors();
+
+            const input = document.getElementById('loginUser').value.trim().toLowerCase();
+            const pass = document.getElementById('loginPass').value;
+            const btn = document.getElementById('btnLoginSubmit');
+            if (!input || !pass) return showError('loginError', '❌ Vui lòng nhập tài khoản và mật khẩu.');
+
+            btn.disabled = true;
+            btn.textContent = 'Đang đăng nhập...';
+            try {
+                // Tìm tài khoản trong danh sách hồ sơ đã tải, sau đó chỉ lấy hash của đúng tài khoản.
+                // Dùng eq với username chính xác để tránh ký tự _/% bị hiểu là wildcard của ilike.
+                await loadUsersFromServer();
+                const matchedAccount = USERS_CACHE.find(u =>
+                    (u.username || '').toLowerCase() === input || (u.email || '').toLowerCase() === input
+                );
+                if (!matchedAccount) return showError('loginError', '❌ Không tìm thấy tài khoản này!');
+                const { data: user, error } = await supabaseClient
+                    .from('users').select('username,email,password,avatar_url,created_at')
+                    .eq('username', matchedAccount.username).maybeSingle();
+                if (error) {
+                    console.error('Lỗi đăng nhập:', error);
+                    return showError('loginError', '❌ Không thể kết nối hoặc truy vấn tài khoản.');
+                }
+                if (!user) return showError('loginError', '❌ Không tìm thấy tài khoản này!');
+
+                let verification;
+                try { verification = await verifyPass(pass, user.password); }
+                catch (e) { console.error(e); return showError('loginError', '❌ Trình duyệt không hỗ trợ bảo vệ mật khẩu. Hãy dùng HTTPS và trình duyệt mới.'); }
+                if (!verification.ok) return showError('loginError', '❌ Mật khẩu không đúng!');
+
+                // Nâng cấp hash cũ sau khi đăng nhập thành công. Đây vẫn là biện pháp chuyển tiếp;
+                // hệ thống nên chuyển hoàn toàn sang Supabase Auth để bảo vệ xác thực phía máy chủ.
+                if (verification.needsUpgrade) {
+                    const upgradedHash = await hashPass(pass);
+                    const { error: upgradeError } = await supabaseClient.from('users')
+                        .update({ password: upgradedHash }).eq('username', user.username);
+                    if (upgradeError) console.warn('Đăng nhập được nhưng chưa nâng cấp hash cũ:', upgradeError);
+                }
+
+                await loadUsersFromServer();
+                setSession({ username: user.username, email: user.email, avatar: user.avatar_url || null, createdAt: user.created_at });
+                closeAuth();
+                showToast('✅ Đăng nhập thành công! Chào ' + user.username, 'success');
+            } catch (e) {
+                console.error('Lỗi đăng nhập:', e);
+                showError('loginError', '❌ Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Đăng nhập ngay';
+            }
+        }
+
+        /* ============ GOOGLE LOGIN ============ */
+        function decodeJWT(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                return JSON.parse(jsonPayload);
+            } catch (e) { return null; }
+        }
+
+        async function handleGoogleLogin(response) {
+            const userInfo = decodeJWT(response.credential);
+            if (!userInfo) return showToast('❌ Lỗi xác thực Google!', 'error');
+
+            await loadUsersFromServer();
+
+            let user = USERS_CACHE.find(u => (u.email || '').toLowerCase() === (userInfo.email || '').toLowerCase());
+
+            if (!user) {
+                // Không tự cấp ADMIN cho tài khoản Google đầu tiên.
+                // Xử lý tên từ Google: Thay khoảng trắng bằng dấu gạch dưới để tránh lỗi tag @
+                let rawName = userInfo.name || userInfo.email.split('@')[0];
+                let baseUsername = toUsername(rawName); 
+                let username = baseUsername.toLowerCase() === 'admin' ? 'user_admin' : baseUsername;
+                let suffix = 1;
+                while (USERS_CACHE.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+                    username = baseUsername + suffix;
+                    suffix++;
+                }
+
+                const { error } = await supabaseClient
+                    .from('users')
+                    .insert([{
+                        username: username,
+                        email: userInfo.email,
+                        password: null,
+                        title: '',
+                        display_name: rawName, // Vẫn giữ tên có dấu cách để hiển thị đẹp
+                        bio: '',
+                        avatar_url: userInfo.picture || '',
+                        google_id: userInfo.sub
+                    }]);
+
+                if (error) {
+                    console.error('Lỗi tạo tài khoản Google:', error);
+                    return showToast('❌ Không tạo được tài khoản!', 'error');
+                }
+
+                await loadUsersFromServer();
+                user = USERS_CACHE.find(u => (u.email || '').toLowerCase() === (userInfo.email || '').toLowerCase());
+                showToast('🎉 Đã tạo tài khoản qua Google!', 'success');
+            } else {
+                showToast('✅ Đăng nhập Google thành công!', 'success');
+            }
+
+            setSession({
+                username: user.username,
+                email: user.email,
+                avatar: user.avatar_url || null,
+                createdAt: user.created_at
+            });
+            closeAuth();
+        }
+
+        /* ============ SESSION ============ */
+        function setSession(user) {
+            localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+            updateUI();
+        }
+
+        async function logout() {
+            localStorage.removeItem(SESSION_KEY);
+            updateUI();
+            showToast('👋 Đã đăng xuất!', 'success');
+        }
+
+        /* ============ UPDATE UI ============ */
+        function updateUI() {
+            const session = getSession();
+            const btnLogin = document.getElementById('btnLogin');
+            const userBox = document.getElementById('userBox');
+            const userAvatar = document.getElementById('userAvatar');
+            const btnAdmin = document.getElementById('btnAdmin');
+
+            if (session) {
+                const profile = getProfile(session.username);
+                const displayName = profile.displayName || session.username;
+                const avatarUrl = profile.avatarUrl || session.avatar;
+                const title = profile.title || '';
+
+                btnLogin.style.display = 'none';
+                userBox.classList.add('active');
+
+                const nameEl = document.getElementById('userName');
+                if (title) {
+                    const cls = getTitleClass(title);
+                    nameEl.innerHTML = `${escapeHtml(displayName)}<span class="title-badge ${cls}">${escapeHtml(title)}</span>`;
                 } else {
                     nameEl.textContent = displayName;
                 }
@@ -1205,6 +1547,7 @@
                 newTitle = myProfile.title || '';
             }
 
+            // ----- Kiểm tra tên người dùng (@username) -----
             const usernameChanged = newUsername !== oldUsername;
             if (usernameChanged) {
                 if (!USERNAME_RE.test(newUsername)) {
@@ -1215,7 +1558,7 @@
                     showToast('❌ Không thể dùng tên "admin"!', 'error');
                     return;
                 }
-                await loadUsersFromServer();
+                await loadUsersFromServer();   // lấy danh sách mới nhất để kiểm tra trùng
                 if (USERS_CACHE.some(u => u.username.toLowerCase() === newUsername.toLowerCase() && u.username !== oldUsername)) {
                     showToast('❌ Tên người dùng này đã có người dùng!', 'error');
                     return;
@@ -1245,6 +1588,7 @@
                 return;
             }
 
+            // Đổi tên thì cập nhật luôn tin nhắn cũ để vẫn hiện đúng tên mới
             let renameWarn = false;
             if (usernameChanged) {
                 const results = await Promise.all([
@@ -1282,6 +1626,7 @@
             msgModal.classList.add('active');
             document.body.style.overflow = 'hidden';
             
+            // CHỈ ADMIN VÀ DEV MỚI ĐƯỢC THẤY Ô NHẬP
             const role = getCurrentUserRole();
             if (role === 'admin' || role === 'dev') {
                 msgForm.style.display = 'flex';
@@ -1368,6 +1713,7 @@
 
             const textHtml = renderMentions(m.text, session ? session.username : '');
             
+            // Click tên để mở chat riêng
             const nameHtml = isMine 
                 ? escapeHtml(m.username) 
                 : `<span class="clickable-name" data-user="${escapeAttr(m.username)}" onclick="openPrivateChat(this.dataset.user)" title="Nhắn tin riêng cho ${escapeAttr(m.username)}">${escapeHtml(m.username)}</span>`;
@@ -1381,13 +1727,16 @@
             container.scrollTop = container.scrollHeight;
         }
 
+        /* ============ SỬA LỖI MENTION TẠI ĐÂY ============ */
         function renderMentions(text, currentUser) {
             let escaped = escapeHtml(text);
             if (!USERS_CACHE || USERS_CACHE.length === 0) return escaped;
 
+            // Sắp xếp user theo tên dài trước để tránh nhầm lẫn (VD: "An" và "An Vũ")
             const sortedUsers = [...USERS_CACHE].sort((a, b) => b.username.length - a.username.length);
             const usernamesRegex = sortedUsers.map(u => escapeRegExp(u.username)).join('|');
             
+            // Tìm chính xác @username. Dùng (?!...) để đảm bảo không cắt nhầm chữ
             const regex = new RegExp(`@(${usernamesRegex})(?![a-zA-Z0-9_])`, 'g');
 
             escaped = escaped.replace(regex, (match, username) => {
@@ -1491,11 +1840,12 @@
             const filtered = USERS_CACHE.filter(u => {
                 if (session && u.username === session.username) return false;
                 
+                // LỌC: CHỈ LẤY ADMIN VÀ DEV
                 const profile = getProfile(u.username);
                 const role = (profile.title || '').toUpperCase().trim();
                 const isAdminOrDev = (role === 'ADMIN' || role === 'DEV' || role === 'DEVELOPER');
                 
-                if (!isAdminOrDev) return false;
+                if (!isAdminOrDev) return false; // Loại bỏ user thường, vip, mod...
 
                 if (!query) return true;
                 return u.username.toLowerCase().includes(query);
@@ -1556,6 +1906,7 @@
         async function sendMessage(event) {
             if (event) event.preventDefault();
             
+            // KIỂM TRA QUYỀN GỬI
             const role = getCurrentUserRole();
             if (role !== 'admin' && role !== 'dev') {
                 showToast('❌ Chỉ Admin và Dev mới có quyền gửi thông báo!', 'error');
@@ -1599,6 +1950,7 @@
         const pmListModal = document.getElementById('pmListModal');
         const pmModal = document.getElementById('pmModal');
 
+        // Mở danh sách chọn người
         function openPmList() {
             const session = getSession();
             if (!session) { showToast('❌ Bạn cần đăng nhập!', 'error'); return; }
@@ -1615,6 +1967,7 @@
 
         pmListModal.addEventListener('click', e => { if (e.target === pmListModal) closePmList(); });
 
+        // Vẽ danh sách user
         function renderPmList() {
             const container = document.getElementById('pmListContainer');
             const search = document.getElementById('pmSearchInput').value.toLowerCase().trim();
@@ -1657,6 +2010,7 @@
             });
         }
 
+        // Mở chat với 1 người cụ thể
         function openPrivateChat(targetUsername) {
             const session = getSession();
             if (!session) { showToast('❌ Bạn cần đăng nhập!', 'error'); return; }
@@ -1692,6 +2046,7 @@
                     { event: 'INSERT', schema: 'public', table: 'private_messages' },
                     payload => {
                         const m = payload.new;
+                        // Kiểm tra xem tin nhắn có thuộc phiên chat hiện tại không
                         if (
                             (m.sender_username === session.username && m.receiver_username === currentPmTarget) ||
                             (m.sender_username === currentPmTarget && m.receiver_username === session.username)
@@ -1717,6 +2072,7 @@
             const container = document.getElementById('pmContainer');
             container.innerHTML = `<p style="text-align: center; color: #666; font-size: 14px; margin-top: 20px;">Đang tải tin nhắn...</p>`;
 
+            // Lấy tin nhắn giữa 2 người
             const { data, error } = await supabaseClient
                 .from('private_messages')
                 .select('*')
@@ -1753,6 +2109,7 @@
 
             const time = new Date(m.created_at).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
             
+            // Lấy avatar người gửi
             const senderProfile = getProfile(m.sender_username);
             const senderAvatar = senderProfile.avatarUrl || '';
             const avatarHtml = smallAvatarTag(senderAvatar);
@@ -1844,6 +2201,7 @@
             clearInterval(countdownInterval);
 
             const now = new Date();
+            // Lấy ngày mở từ khối sự kiện (data-start) để khớp với nhóm "chưa bắt đầu / đã diễn ra"
             const evEl = btn.closest('.event');
             let targetDate = new Date(evEl && evEl.dataset.start ? evEl.dataset.start : '2026-11-20T00:00:00');
 
@@ -1906,8 +2264,8 @@
                 .map(el => ({ el, start: new Date(el.dataset.start) }))
                 .filter(x => !isNaN(x.start));
 
-            const upcoming = items.filter(x => x.start > now).sort((a, b) => a.start - b.start);
-            const past = items.filter(x => x.start <= now).sort((a, b) => b.start - a.start);
+            const upcoming = items.filter(x => x.start > now).sort((a, b) => a.start - b.start);   // sắp tới trước
+            const past = items.filter(x => x.start <= now).sort((a, b) => b.start - a.start);      // mới nhất trước
 
             upcoming.forEach(x => upList.appendChild(x.el));
             past.forEach(x => pastList.appendChild(x.el));
@@ -1924,16 +2282,15 @@
             startCountdown2011();
             
             setInterval(async () => {
-                if (document.hidden) return;
+                if (document.hidden) return;   // tab đang ẩn thì khỏi tải lại
                 await loadUsersFromServer();
                 updateUI();
             }, 10000);
         }
         arrangeEvents();
-        setInterval(arrangeEvents, 60000);
+        setInterval(arrangeEvents, 60000);   // tự cập nhật khi sang ngày mới
         init();
     </script>
-    
     <!-- ================= NÚT CHAT VỚI AI (góc phải dưới) ================= -->
     <button class="aiw-fab" id="aiwFab" type="button" aria-label="Chat với AI" aria-expanded="false" aria-controls="aiwPanel" title="Chat với AI">
         <svg class="aiw-ico-chat" viewBox="0 0 24 24" aria-hidden="true">
@@ -1965,34 +2322,36 @@
     </div>
 
     <script>
-    /* ================= CHAT AI — GỌI TRỰC TIẾP GOOGLE GEMINI TỪ TRÌNH DUYỆT ================= */
+    /* ================= CHAT AI — gọi /chat (Cloudflare Function), chạy độc lập với script chính ================= */
     (function () {
         'use strict';
 
-        // ⚠️ DÁN MÃ KEY AQ... CỦA BẠN VÀO GIỮA 2 DẤU NGOẶC KÉP DƯỚI ĐÂY:
-        const GEMINI_API_KEY = "DÁN_MÃ_API_KEY_AQ_CỦA_BẠN_VÀO_ĐÂY";
-
-        const MAX_HISTORY = 20;
-        const COOLDOWN_MS = 1000;
-        const TIMEOUT_MS = 30000;
+        /* ============ CẤU HÌNH ============ */
+        // API key KHÔNG nằm ở đây: nó được giữ bí mật trên Cloudflare, trình duyệt chỉ gọi /chat.
+        const CHAT_ENDPOINT = "/chat";
+        const MAX_HISTORY = 20;       // số tin nhắn gần nhất gửi kèm để AI nhớ ngữ cảnh
+        const COOLDOWN_MS = 1500;     // khoảng nghỉ tối thiểu giữa 2 lần gửi (chống spam)
+        const TIMEOUT_MS = 60000;
 
         const WELCOME = "Chào bạn! 👋 Mình là trợ lý AI của An Gờ 🔥\nBạn muốn hỏi gì về Free Fire hay trang web này?";
         const CHIPS = ["Trang web có gì hay?", "Mẹo leo rank Free Fire", "Sự kiện sắp tới"];
 
+        /* ============ PHẦN TỬ GIAO DIỆN ============ */
         const $ = id => document.getElementById(id);
         const fab = $('aiwFab'), panel = $('aiwPanel'), msgs = $('aiwMsgs'), input = $('aiwInput'),
               sendBtn = $('aiwSend'), clearBtn = $('aiwClear'), closeBtn = $('aiwClose');
         if (!fab || !panel || !msgs || !input) return;
 
-        let history = []; 
+        let history = [];      // [{ role: 'user' | 'model', text }]
         let busy = false;
         const isTouch = () => window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
 
+        /* ============ HIỂN THỊ TIN NHẮN (an toàn, chống XSS) ============ */
         function esc(s) {
             return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
                     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
         }
-        function inline(s) {
+        function inline(s) {   // s đã được escape
             return s.replace(/`([^`\n]+)`/g, '<code>$1</code>')
                     .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
                     .replace(/(^|[^*\w])\*([^\s*][^*\n]*?)\*(?![*\w])/g, '$1<em>$2</em>');
@@ -2028,7 +2387,7 @@
 
         function scrollDown() { msgs.scrollTop = msgs.scrollHeight; }
 
-        function addMsg(kind, content) {
+        function addMsg(kind, content) {   // kind: 'user' | 'bot' | 'err'
             const el = document.createElement('div');
             el.className = 'aiw-msg ' + (kind === 'user' ? 'user' : kind === 'err' ? 'bot err' : 'bot');
             if (kind === 'bot') el.innerHTML = renderMd(content);
@@ -2070,48 +2429,45 @@
             showChips();
         }
 
-        async function askGeminiDirectly() {
-            if (!GEMINI_API_KEY || GEMINI_API_KEY.includes("DÁN_MÃ_API_KEY")) {
-                throw new Error("Chủ web chưa dán API Key vào file index.html.");
-            }
-
-            const geminiContents = history.slice(-MAX_HISTORY).map(msg => ({
-                role: msg.role === "user" ? "user" : "model",
-                parts: [{ text: msg.text }]
-            }));
-
-            const url = "[https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent](https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent)";
-
+        /* ============ GỌI SERVER (/chat) ============ */
+        async function askServer() {
             const ctrl = new AbortController();
             const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
-
+            let res;
             try {
-                const response = await fetch(url, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "x-goog-api-key": GEMINI_API_KEY.trim()
-                    },
-                    body: JSON.stringify({ contents: geminiContents }),
+                res = await fetch(CHAT_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ messages: history.slice(-MAX_HISTORY) }),
                     signal: ctrl.signal
                 });
-
-                const data = await response.json();
-
-                if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
-                    return data.candidates[0].content.parts[0].text;
-                } else if (data.error) {
-                    throw new Error(data.error.message || "Lỗi từ Gemini API");
-                }
-                throw new Error("Không nhận được phản hồi từ AI.");
             } catch (err) {
-                if (err.name === 'AbortError') throw new Error("Thời gian chờ phản hồi quá hạn (Timeout).");
-                throw err;
+                throw { code: err && err.name === 'AbortError' ? 'timeout' : 'network' };
             } finally {
                 clearTimeout(timer);
             }
+            let data = {};
+            try { data = await res.json(); } catch (_) {}
+            if (res.ok && data.reply) return data.reply;
+            throw { code: data.code || res.status };
         }
 
+        function errorText(e) {
+            const c = e && e.code;
+            if (c === 'nokey') return 'Chưa có API key. Chủ web: thêm biến bí mật OPENAI_API_KEY trong Cloudflare Pages rồi deploy lại.';
+            if (c === 'key') return 'Trợ lý AI chưa cấu hình đúng (API key bị từ chối). Chủ web cần kiểm tra lại key.';
+            if (c === 'credit') return 'Trợ lý AI tạm nghỉ vì tài khoản OpenAI của chủ web đã hết credit. Bạn quay lại sau nhé!';
+            if (c === 'region') return 'OpenAI từ chối vì khu vực máy chủ không được hỗ trợ. Chủ web: xem hướng dẫn bật Smart Placement trong Cloudflare.';
+            if (c === 'forbidden') return 'Tên miền này chưa được phép dùng trợ lý AI. Chủ web kiểm tra ALLOWED_HOSTS trong functions/chat.js.';
+            if (c === 404) return 'Chưa tìm thấy /chat. Chủ web: kiểm tra thư mục functions/chat.js đã được đưa lên GitHub và deploy xong chưa.';
+            if (c === 'quota' || c === 429) return 'AI đang hết lượt dùng miễn phí hoặc quá tải. Bạn thử lại sau ít phút nhé.';
+            if (c === 'timeout') return 'AI phản hồi quá lâu. Bạn thử gửi lại nhé.';
+            if (c === 'network') return 'Không kết nối được tới AI. Kiểm tra mạng rồi thử lại nhé.';
+            if (c === 'empty') return 'AI chưa trả lời được câu này. Bạn thử diễn đạt lại nhé.';
+            return 'AI đang gặp lỗi' + (typeof c === 'number' ? ' (mã ' + c + ')' : '') + '. Bạn thử lại sau nhé.';
+        }
+
+        /* ============ GỬI TIN NHẮN ============ */
         function setBusy(v) { busy = v; sendBtn.disabled = v; }
 
         async function send(textArg) {
@@ -2125,22 +2481,22 @@
             const started = Date.now();
             const typing = showTyping();
             history.push({ role: 'user', text: text });
-
             try {
-                const reply = await askGeminiDirectly();
+                const reply = await askServer();
                 history.push({ role: 'model', text: reply });
                 typing.remove();
                 addMsg('bot', reply);
             } catch (e) {
-                history.pop();
+                history.pop();   // bỏ câu hỏi bị lỗi để lượt hội thoại không bị lệch
                 typing.remove();
-                addMsg('err', `Lỗi AI: ${e.message}`);
+                addMsg('err', errorText(e));
                 console.warn('[AI chat]', e);
             } finally {
                 setTimeout(() => setBusy(false), Math.max(0, COOLDOWN_MS - (Date.now() - started)));
             }
         }
 
+        /* ============ ĐÓNG / MỞ ============ */
         function setOpen(open) {
             panel.classList.toggle('open', open);
             fab.classList.toggle('open', open);
@@ -2161,6 +2517,7 @@
         sendBtn.addEventListener('click', () => send());
         input.addEventListener('input', autosize);
         input.addEventListener('keydown', e => {
+            // Enter = gửi, Shift+Enter = xuống dòng. Bỏ qua khi đang gõ tiếng Việt (Telex/VNI) và trên điện thoại.
             if (e.key === 'Enter' && !e.shiftKey && !e.isComposing && e.keyCode !== 229 && !isTouch()) {
                 e.preventDefault();
                 send();
