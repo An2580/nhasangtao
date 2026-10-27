@@ -1,5 +1,5 @@
 
-const MODEL = "gemini-3.8-flash";
+const MODEL = "gemini-3.6-flash";
 
 const TIMEOUT_MS = 45000;
 const ATTEMPT_TIMEOUT_MS = 15000;
