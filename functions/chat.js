@@ -9,10 +9,9 @@ export async function onRequestPost(context) {
       );
     }
 
-    // 2. Lấy dữ liệu tin nhắn gửi từ trang web
+    // 2. Nhận tin nhắn gửi lên từ giao diện web
     const requestData = await context.request.json();
     
-    // Chuyển đổi lịch sử chat sang định dạng của Google Gemini
     let geminiContents = [];
     if (requestData.messages && Array.isArray(requestData.messages)) {
       geminiContents = requestData.messages.map(msg => ({
@@ -24,8 +23,8 @@ export async function onRequestPost(context) {
       geminiContents = [{ role: "user", parts: [{ text: userPrompt }] }];
     }
 
-    // 3. Gọi API Google AI Studio (Model gemini-1.5-flash miễn phí & cực nhanh)
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    // 3. Gọi API Google AI Studio (Dùng model gemini-2.5-flash miễn phí & phản hồi cực nhanh)
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
     const apiResponse = await fetch(geminiUrl, {
       method: "POST",
@@ -39,7 +38,6 @@ export async function onRequestPost(context) {
 
     const data = await apiResponse.json();
 
-    // Lấy câu trả lời từ Gemini
     let replyText = "Không nhận được phản hồi từ AI.";
     if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
       replyText = data.candidates[0].content.parts[0].text;
@@ -47,7 +45,7 @@ export async function onRequestPost(context) {
       replyText = `Lỗi Gemini API: ${data.error.message}`;
     }
 
-    // 4. Trả kết quả chuẩn về cho khung chat giao diện web
+    // 4. Trả kết quả chuẩn về cho khung chat Trợ lý AI An Gờ
     return new Response(
       JSON.stringify({
         choices: [
