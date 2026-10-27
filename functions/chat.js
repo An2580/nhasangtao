@@ -1,45 +1,72 @@
 export async function onRequestPost(context) {
   try {
-    // 1. Lấy API Key từ Environment Variables trên Cloudflare Pages
-    const apiKey = context.env.OPENAI_API_KEY;
+    // 1. Lấy API Key từ Environment Variables trên Cloudflare
+    const apiKey = context.env.GEMINI_API_KEY || context.env.OPENAI_API_KEY;
     if (!apiKey) {
       return new Response(
-        JSON.stringify({ error: "Chưa cấu hình OPENAI_API_KEY trên Cloudflare." }),
+        JSON.stringify({ error: "Chưa cấu hình API Key trên Cloudflare Pages." }),
         { status: 500, headers: { "Content-Type": "application/json; charset=utf-8" } }
       );
     }
 
-    // 2. Nhận dữ liệu câu hỏi từ phía giao diện web (index.html)
+    // 2. Lấy dữ liệu tin nhắn gửi từ trang web
     const requestData = await context.request.json();
-    const userMessages = requestData.messages || [
-      { role: "user", content: requestData.prompt || "Chào bạn!" }
-    ];
+    
+    // Chuyển đổi lịch sử chat sang định dạng của Google Gemini
+    let geminiContents = [];
+    if (requestData.messages && Array.isArray(requestData.messages)) {
+      geminiContents = requestData.messages.map(msg => ({
+        role: msg.role === "user" ? "user" : "model",
+        parts: [{ text: msg.content }]
+      }));
+    } else {
+      const userPrompt = requestData.prompt || "Chào bạn!";
+      geminiContents = [{ role: "user", parts: [{ text: userPrompt }] }];
+    }
 
-    // 3. Gọi API của TokenPlus với mô hình Claude 3.5 Sonnet
-    // (TokenPlus hỗ trợ giao thức dạng OpenAI-compatible)
-    const apiResponse = await fetch("https://api.tokenplus.ai/v1/chat/completions", {
+    // 3. Gọi API Google AI Studio (Model gemini-1.5-flash miễn phí & cực nhanh)
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+    const apiResponse = await fetch(geminiUrl, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "claude-3-5-sonnet-20240620", // Bạn có thể đổi thành "claude-3-haiku-20240307" nếu muốn rẻ/nhanh hơn
-        messages: userMessages,
-        stream: false
+        contents: geminiContents
       })
     });
 
     const data = await apiResponse.json();
 
-    // 4. Trả kết quả về cho giao diện khung chat
-    return new Response(JSON.stringify(data), {
-      status: apiResponse.status,
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        "Access-Control-Allow-Origin": "*"
+    // Lấy câu trả lời từ Gemini
+    let replyText = "Không nhận được phản hồi từ AI.";
+    if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+      replyText = data.candidates[0].content.parts[0].text;
+    } else if (data.error) {
+      replyText = `Lỗi Gemini API: ${data.error.message}`;
+    }
+
+    // 4. Trả kết quả chuẩn về cho khung chat giao diện web
+    return new Response(
+      JSON.stringify({
+        choices: [
+          {
+            message: {
+              role: "assistant",
+              content: replyText
+            }
+          }
+        ]
+      }),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          "Access-Control-Allow-Origin": "*"
+        }
       }
-    });
+    );
 
   } catch (err) {
     return new Response(
