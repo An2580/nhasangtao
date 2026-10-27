@@ -29,8 +29,8 @@ export async function onRequestPost(context) {
       geminiContents = [{ role: "user", parts: [{ text: userText }] }];
     }
 
-    // 3. Gọi Gemini API với model thế hệ mới gemini-2.5-flash và Header x-goog-api-key chuẩn cho key AQ...
-    const geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+    // 3. Gọi Gemini API với model gemini-3.8-flash theo yêu cầu mới nhất của Google
+    const geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent";
 
     const apiResponse = await fetch(geminiUrl, {
       method: "POST",
